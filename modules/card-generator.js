@@ -9,14 +9,13 @@ function generateQRCode(element, text) {
     if (!text) return;
     
     try {
-        // Alapbeállítások felülírhatók CSS-el, de itt a librarynak kell méret
         new QRCode(element, {
             text: text,
             width: 128, 
             height: 128,
             colorDark : "#000000",
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.L // Alacsonyabb hibajavítás = kevésbé sűrű QR, jobban olvasható kis méretben
+            correctLevel : QRCode.CorrectLevel.L
         });
     } catch (e) {
         console.warn("QR Error:", e);
@@ -27,14 +26,11 @@ function generateQRCode(element, text) {
 function createCardFront(song) {
     const card = document.createElement('div');
     card.className = 'card front';
-    
-    // Front: Csak szöveg (Év, Előadó, Cím)
     card.innerHTML = `
         <div class="year">${song.year || ''}</div>
         <div class="artist">${song.artist || 'Ismeretlen'}</div>
         <div class="title">${song.title || 'Ismeretlen'}</div>
     `;
-
     return card;
 }
 
@@ -42,29 +38,54 @@ function createCardBack(song) {
     const card = document.createElement('div');
     card.className = 'card back';
     
-    // Háttér dizájn elem (Vinyl)
     const vinylBg = document.createElement('div');
     vinylBg.className = 'vinyl-bg';
     
-    // QR Konténer
     const qrContainer = document.createElement('div');
     qrContainer.className = 'qr-container';
 
     card.appendChild(vinylBg);
     card.appendChild(qrContainer);
 
-    // QR generálás a hátlapra
     if (song && song.qr_data) {
-        // Timeout kell, hogy a DOM elem létezzen, amikor a library dolgozik
         setTimeout(() => generateQRCode(qrContainer, song.qr_data), 0);
     } else if (song && !song.qr_data) {
-        // Ha nincs adat, de nem üres placeholder
         qrContainer.style.display = 'none';
     }
 
     return card;
 }
 
+// ÚJ: Csak egyetlen kártya pár (elő+hátlap) renderelése előnézethez
+export function renderPreviewPair(container, song) {
+    container.innerHTML = '';
+
+    // Wrapper az előlapnak
+    const frontWrapper = document.createElement('div');
+    frontWrapper.className = 'card-wrapper';
+    
+    const frontLabel = document.createElement('div');
+    frontLabel.className = 'preview-label';
+    frontLabel.textContent = "Előlap";
+    frontWrapper.appendChild(frontLabel);
+    
+    frontWrapper.appendChild(createCardFront(song));
+    container.appendChild(frontWrapper);
+
+    // Wrapper a hátlapnak
+    const backWrapper = document.createElement('div');
+    backWrapper.className = 'card-wrapper';
+    
+    const backLabel = document.createElement('div');
+    backLabel.className = 'preview-label';
+    backLabel.textContent = "Hátlap";
+    backWrapper.appendChild(backLabel);
+
+    backWrapper.appendChild(createCardBack(song));
+    container.appendChild(backWrapper);
+}
+
+// Megmarad a nyomtatáshoz: összes oldal generálása
 export function renderAllPages(container, data) {
     container.innerHTML = ''; 
 
@@ -72,20 +93,13 @@ export function renderAllPages(container, data) {
 
     for (let i = 0; i < pageCount; i++) {
         const dataChunk = data.slice(i * CARDS_PER_PAGE, (i + 1) * CARDS_PER_PAGE);
-        const pageNum = i + 1;
-
+        
         const itemsToRender = [...dataChunk];
-        // Kitöltés üres elemekkel, hogy a grid teljes legyen (fontos a tükrözéshez)
         while (itemsToRender.length < CARDS_PER_PAGE) {
             itemsToRender.push({ empty: true });
         }
 
-        // --- ELŐLAPOK (Szöveg) ---
-        const frontLabel = document.createElement('div');
-        frontLabel.className = 'page-label';
-        frontLabel.innerHTML = `<i class="fa-regular fa-file-lines"></i> ${pageNum}. Oldal - Előlap (Szöveg)`;
-        container.appendChild(frontLabel);
-
+        // --- ELŐLAPOK ---
         const frontPage = document.createElement('div');
         frontPage.className = 'page-container';
         
@@ -99,40 +113,24 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // --- HÁTLAPOK (QR + Dizájn) ---
-        const backLabel = document.createElement('div');
-        backLabel.className = 'page-label';
-        backLabel.innerHTML = `<i class="fa-solid fa-qrcode"></i> ${pageNum}. Oldal - Hátlap (QR & Dizájn)`;
-        container.appendChild(backLabel);
-
+        // --- HÁTLAPOK ---
         const backPage = document.createElement('div');
         backPage.className = 'page-container';
 
-        // TÜKRÖZÉS LOGIKA (Imposition)
-        // 4 oszlop esetén: [A, B, C, D] -> [D, C, B, A] a hátoldalon.
-        
+        // Tükrözés
         for (let r = 0; r < itemsToRender.length; r += COLUMNS) {
             const rowItems = itemsToRender.slice(r, r + COLUMNS);
-            const mirroredRow = rowItems.reverse(); // Sorrend megfordítása
+            const mirroredRow = rowItems.reverse();
 
             mirroredRow.forEach(song => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'card-wrapper';
-                
-                // Hátlap generálása
-                // Még az üres helyekre is teszünk wrapper-t a rács miatt,
-                // és opcionálisan üres hátlapot, ha a dizájn megköveteli (pl. vágójelek miatt).
                 if (!song.empty) { 
                     wrapper.appendChild(createCardBack(song));
-                } else {
-                    // Üres kártya helye a hátoldalon (üres papír)
-                    // De ha vágójeleket akarunk, érdemes lehet berakni egy üres divet
-                    // Most üresen hagyjuk a contentet
                 }
                 backPage.appendChild(wrapper);
             });
         }
-
         container.appendChild(backPage);
     }
 }

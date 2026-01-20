@@ -1,44 +1,72 @@
-import { initializeUI } from './modules/ui-controller.js';
+import { initializeUI, updateRecordCount } from './modules/ui-controller.js';
 import { loadSampleData } from './modules/data-handler.js';
-import { renderAllPages } from './modules/card-generator.js';
+import { renderAllPages, renderPreviewPair } from './modules/card-generator.js';
 
 const App = {
     data: [],
-    settings: {},
+    previewIntervalId: null,
 
     async init() {
         console.log("MusicStencil indítása...");
 
-        // Mintaadatok betöltése
+        // Alapértelmezett mintaadatok
         this.data = await loadSampleData();
-
-        // UI inicializálása, átadjuk az adatokat is, hogy a QR generálás működjön resize-nál ha kellene
+        
+        // UI inicializálás
         initializeUI(this.handleSettingsChange, this.handleDataLoaded, this.data);
-
-        // Első renderelés
-        this.render();
+        
+        // Kezdeti állapot beállítása (véletlen dal)
+        this.updateStats();
+        this.renderPrintView(); // Háttérben legeneráljuk az összeset
+        this.showRandomPreview(); // Képernyőre egy véletlen
     },
 
-    handleSettingsChange: (newSettings) => {
-        App.settings = { ...App.settings, ...newSettings };
-        // A renderelés CSS változókon keresztül történik nagyrészt, 
-        // de ha strukturális változás van, itt hívhatnánk a render-t.
+    handleSettingsChange: () => {
+        // Ha változik a beállítás (pl. méret), újra kell rajzolni a nézeteket
+        // (A CSS változók automatikusak, de ha strukturális változás lenne, itt kellene kezelni)
+        // A biztonság kedvéért újrarajzolhatjuk a QR kódok miatt
     },
 
     handleDataLoaded: (newData) => {
         App.data = newData;
-        App.render();
+        App.updateStats();
+        
+        // Nyomtatási nézet frissítése az új adatokkal
+        App.renderPrintView();
+
+        // Előnézeti ciklus indítása (15mp-enként új kártya)
+        App.startPreviewCycle();
     },
 
-    render() {
-        if (!this.data || this.data.length === 0) {
-            console.warn("Nincs adat a rendereléshez.");
-            return;
-        }
+    updateStats() {
+        updateRecordCount(this.data.length);
+    },
+
+    renderPrintView() {
+        if (!this.data || this.data.length === 0) return;
+        const printArea = document.getElementById('print-area');
+        renderAllPages(printArea, this.data);
+    },
+
+    showRandomPreview() {
+        if (!this.data || this.data.length === 0) return;
         const previewArea = document.getElementById('preview-area');
-        renderAllPages(previewArea, this.data);
+        const randomIndex = Math.floor(Math.random() * this.data.length);
+        renderPreviewPair(previewArea, this.data[randomIndex]);
+    },
+
+    startPreviewCycle() {
+        // Előző törlése ha van
+        if (this.previewIntervalId) clearInterval(this.previewIntervalId);
+        
+        // Azonnal mutatunk egyet
+        this.showRandomPreview();
+
+        // Indítjuk az időzítőt
+        this.previewIntervalId = setInterval(() => {
+            this.showRandomPreview();
+        }, 15000); // 15 másodperc
     }
 };
 
-// Alkalmazás indítása
 document.addEventListener('DOMContentLoaded', () => App.init());

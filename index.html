@@ -20,6 +20,9 @@
                 <i class="fa-solid fa-layer-group"></i>
                 <span>MusicStencil</span>
             </div>
+            <div class="stats-bar" id="stats-bar" style="display: none;">
+                <i class="fa-solid fa-database"></i> <span id="record-count-display">0</span> db kártya
+            </div>
             <div class="actions">
                 <label for="file-upload-button" class="action-btn upload-btn" title="Excel feltöltése">
                     <i class="fa-solid fa-file-import"></i> Feltöltés
@@ -127,15 +130,19 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v2.0
+                MusicStencil v2.1
             </footer>
         </div>
     </aside>
 
     <main id="main-content">
+        <!-- Ez a terület csak a képernyőn látszik, 1 pár kártyát mutat -->
         <div id="preview-area">
-            <!-- A generált kártyák ide kerülnek -->
+             <div class="preview-placeholder">Adatok betöltése...</div>
         </div>
+
+        <!-- Ez a terület rejtett a képernyőn, de ebbe generáljuk az ÖSSZES oldalt nyomtatáshoz -->
+        <div id="print-area"></div>
     </main>
 
     <script type="module" src="main.js"></script>

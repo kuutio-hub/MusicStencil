@@ -1,5 +1,5 @@
 import { parseXLS } from './data-handler.js';
-import { renderAllPages } from './card-generator.js';
+import { renderAllPages, renderPreviewPair } from './card-generator.js';
 
 function updateValueDisplay(input) {
     const displayId = `val-${input.id}`;
@@ -18,20 +18,21 @@ function updateCSSVariable(input) {
 }
 
 function handleQRToggle(isChecked) {
-    // Flex-et használunk a középre igazításhoz a CSS-ben
     const displayValue = isChecked ? 'flex' : 'none';
     document.documentElement.style.setProperty('--qr-display', displayValue);
 }
 
 function handleCropMarksToggle(isChecked) {
-    const containers = document.querySelectorAll('.page-container');
-    containers.forEach(container => {
-        if (isChecked) {
-            container.classList.add('crop-marks');
-        } else {
-            container.classList.remove('crop-marks');
-        }
-    });
+    const isVisible = isChecked;
+    document.body.classList.toggle('has-crop-marks', isVisible);
+}
+
+// UI Frissítő függvény exportálása
+export function updateRecordCount(count) {
+    const el = document.getElementById('record-count-display');
+    const container = document.getElementById('stats-bar');
+    if (el) el.textContent = count;
+    if (container) container.style.display = 'inline-flex';
 }
 
 let currentData = [];
@@ -49,6 +50,7 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
         input.addEventListener('input', () => {
             updateCSSVariable(input);
             if (input.type === 'range') updateValueDisplay(input);
+            // Ha dinamikus újragenerálás kellene (pl. preview-nál), itt hívható callback
         });
     });
 
@@ -63,26 +65,9 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
     if (cropMarksCheckbox) {
         cropMarksCheckbox.addEventListener('change', (e) => {
             handleCropMarksToggle(e.target.checked);
-            // Mivel a page-container elemek dinamikusan jönnek létre rendereléskor,
-            // de a toggle csak osztályt ad hozzá/vesz el, ez a meglévőkre hat.
-            // Új renderelésnél a CSS osztály alapból nincs rajta a JS generátorban, 
-            // ezért a legegyszerűbb, ha renderelés után mindig ellenőrizzük a checkbox állapotát
-            // a main.js-ben vagy a generátorban. 
-            // De egyszerűbb megoldás: CSS-el kezelni globálisan, vagy a generátorban alapból rárakni ha kell.
-            // Jelenlegi megoldás csak a már renderelt oldalakra hat.
-            // Javítás: A generátornak tudnia kellene róla, vagy globális state.
-            // Egyszerűsítés: Force re-render vagy body class használat.
-            // Legjobb: document.body.classList.toggle('show-crop-marks', isChecked) és CSS szelektor módosítás.
-            // De maradjunk a re-rendernél a konzisztencia miatt:
-            renderAllPages(document.getElementById('preview-area'), currentData);
-            // Ez újraépíti a DOM-ot, de elveszti a crop-marks osztályt, amit a generátor nem rak rá.
-            // Helyette: A crop marks állapotot tároljuk, és a renderAllPages olvassa, vagy
-            // a legegyszerűbb: A CSS-t írjuk át, hogy body class-ra figyeljen.
-            // Mivel most XML output van, a CSS selector módosítás biztonságosabb.
-            document.body.classList.toggle('has-crop-marks', isChecked);
         });
         // Init state
-        document.body.classList.toggle('has-crop-marks', cropMarksCheckbox.checked);
+        handleCropMarksToggle(cropMarksCheckbox.checked);
     }
 
     const fileUploadButton = document.getElementById('file-upload-button');
@@ -95,7 +80,7 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
                 onDataLoaded(data);
             } catch (error) {
                 console.error("Hiba:", error);
-                alert("Excel hiba.");
+                alert("Excel hiba: " + error.message);
             }
         }
     });
