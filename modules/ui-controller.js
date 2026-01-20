@@ -24,7 +24,19 @@ function handleQRToggle(isChecked) {
     document.documentElement.style.setProperty('--qr-display', displayValue);
 }
 
-// Az aktuális adat tárolása újrarajzoláshoz (QR generálás miatt kell)
+// Crop Marks Toggle logikája
+function handleCropMarksToggle(isChecked) {
+    const containers = document.querySelectorAll('.page-container');
+    containers.forEach(container => {
+        if (isChecked) {
+            container.classList.add('crop-marks');
+        } else {
+            container.classList.remove('crop-marks');
+        }
+    });
+}
+
+// Az aktuális adat tárolása újrarajzoláshoz
 let currentData = [];
 
 export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
@@ -42,17 +54,24 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
         input.addEventListener('input', () => {
             updateCSSVariable(input);
             if (input.type === 'range') updateValueDisplay(input);
-            
-            // Ha layout változik (pl gap), nem kell újrarajzolni, de ha QR méret, akkor sem, mert CSS kezeli.
-            // Kivétel: Ha a tartalom struktúráját érintő változás lenne, de most mindent CSS-el oldunk meg.
         });
     });
 
     // QR Checkbox
     const qrCheckbox = document.getElementById('show-qr');
-    qrCheckbox.addEventListener('change', (e) => {
-        handleQRToggle(e.target.checked);
-    });
+    if(qrCheckbox) {
+        qrCheckbox.addEventListener('change', (e) => {
+            handleQRToggle(e.target.checked);
+        });
+    }
+
+    // Crop Marks Checkbox
+    const cropMarksCheckbox = document.getElementById('show-crop-marks');
+    if (cropMarksCheckbox) {
+        cropMarksCheckbox.addEventListener('change', (e) => {
+            handleCropMarksToggle(e.target.checked);
+        });
+    }
 
     // Fájlfeltöltés kezelése
     const fileUploadButton = document.getElementById('file-upload-button');

@@ -1,23 +1,22 @@
 const CARDS_PER_PAGE = 8;
+const COLUMNS = 2; // Oszlopok száma
 
 function generateQRCode(element, text) {
-    // Töröljük az előző tartalmat
     element.innerHTML = "";
     if (!text) return;
     
-    // QRCode.js használata
     try {
         new QRCode(element, {
             text: text,
-            width: 128, // Nagyobb felbontásban generáljuk, CSS méretezi
+            width: 128,
             height: 128,
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
     } catch (e) {
-        console.warn("QR kód generálási hiba (lehet, hogy a lib még nem töltött be):", e);
-        element.textContent = "QR Error";
+        console.warn("QR Error:", e);
+        element.textContent = "QR";
     }
 }
 
@@ -25,11 +24,9 @@ function createCardFront(song) {
     const card = document.createElement('div');
     card.className = 'card front';
     
-    // QR konténer
     const qrContainer = document.createElement('div');
     qrContainer.className = 'qr-container';
     
-    // Tartalom konténer
     const content = document.createElement('div');
     content.className = 'card-content';
     content.innerHTML = `
@@ -38,13 +35,10 @@ function createCardFront(song) {
         <div class="title">${song.title || 'Ismeretlen cím'}</div>
     `;
 
-    // Felépítés: QR felül (vagy alul, flex-orderrel cserélhető lenne), szöveg alatta
     card.appendChild(qrContainer);
     card.appendChild(content);
 
-    // QR generálása (aszinkron is lehetne, de a lib szinkron)
     if (song.qr_data) {
-        // Kis késleltetés, hogy a DOM-ban biztosan ott legyen, bár createElemnél nem feltétlen kell
         setTimeout(() => generateQRCode(qrContainer, song.qr_data), 0);
     }
 
@@ -67,7 +61,7 @@ function createCardBack() {
 }
 
 export function renderAllPages(container, data) {
-    container.innerHTML = ''; // Konténer ürítése
+    container.innerHTML = ''; 
 
     const pageCount = Math.ceil(data.length / CARDS_PER_PAGE);
 
@@ -75,9 +69,14 @@ export function renderAllPages(container, data) {
         const dataChunk = data.slice(i * CARDS_PER_PAGE, (i + 1) * CARDS_PER_PAGE);
         const pageNum = i + 1;
 
-        // --- Előlapok ---
-        
-        // Címke az előnézethez
+        // Üres helyek kitöltése, hogy mindig tele legyen a rács
+        // Ez fontos a hátlapok tükrözésénél, hogy a megfelelő helyre kerüljön az üres hátlap is
+        const itemsToRender = [...dataChunk];
+        while (itemsToRender.length < CARDS_PER_PAGE) {
+            itemsToRender.push({ empty: true });
+        }
+
+        // --- ELŐLAPOK (FRONTS) ---
         const frontLabel = document.createElement('div');
         frontLabel.className = 'page-label';
         frontLabel.innerHTML = `<i class="fa-regular fa-file-lines"></i> ${pageNum}. Oldal - Előlap (Adatok)`;
@@ -86,12 +85,6 @@ export function renderAllPages(container, data) {
         const frontPage = document.createElement('div');
         frontPage.className = 'page-container';
         
-        // Üres helyek kitöltése, ha az utolsó oldalon vagyunk
-        const itemsToRender = [...dataChunk];
-        while (itemsToRender.length < CARDS_PER_PAGE) {
-            itemsToRender.push({ empty: true }); // Üres placeholder
-        }
-
         itemsToRender.forEach(song => {
             const wrapper = document.createElement('div');
             wrapper.className = 'card-wrapper';
@@ -102,9 +95,7 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // --- Hátlapok ---
-
-        // Címke az előnézethez
+        // --- HÁTLAPOK (BACKS) ---
         const backLabel = document.createElement('div');
         backLabel.className = 'page-label';
         backLabel.innerHTML = `<i class="fa-solid fa-compact-disc"></i> ${pageNum}. Oldal - Hátlap (Dizájn)`;
@@ -112,21 +103,35 @@ export function renderAllPages(container, data) {
 
         const backPage = document.createElement('div');
         backPage.className = 'page-container';
+
+        // TÜKRÖZÉSI LOGIKA (Imposition)
+        // Kétoldalas nyomtatásnál a lap vízszintes tengelyen fordul (long edge binding).
+        // Ezért a sorban lévő elemek sorrendjét meg kell fordítani.
+        // Bal 1. -> Jobb 1. lesz a hátoldalon.
         
-        // Hátlapoknál tükrözni kell a sorrendet a kétoldalas nyomtatáshoz!
-        // A papír vízszintes tengelyen fordul általában, de itt rácsos elrendezés van.
-        // A standard elv: A kártya hátulja ugyanott legyen fizikailag.
-        // Ha bal-felső az első kártya (Front), akkor a hátoldalon a jobb-felső lesz az (Back), ha "short edge" fordítás van?
-        // Egyszerűsítés: Mindenhova ugyanazt a hátlapot rakjuk, így a sorrend mindegy.
-        
-        for (let j = 0; j < CARDS_PER_PAGE; j++) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'card-wrapper';
-            // Csak akkor rajzolunk hátlapot, ha van ott kártya az előlapon (opcionális, de szebb ha van mindenhol)
-            // A kérés szerint: "amit látsz azt kapod", általában tele nyomtatják a lapot.
-            wrapper.appendChild(createCardBack());
-            backPage.appendChild(wrapper);
+        // 1. Chunkoljuk sorokra az elemeket
+        for (let r = 0; r < itemsToRender.length; r += COLUMNS) {
+            const rowItems = itemsToRender.slice(r, r + COLUMNS);
+            
+            // 2. Megfordítjuk a sort (Jobb elem -> Bal elem)
+            const mirroredRow = rowItems.reverse();
+
+            // 3. Rendereljük a megfordított sort
+            mirroredRow.forEach(song => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'card-wrapper';
+                // Még az üres helyekre is teszünk hátlapot (vagy üres wrapper-t), 
+                // de a kérés szerint "amit látsz azt kapsz", így a dizájn miatt generáljuk a hátlapot akkor is ha üres,
+                // vagy dönthetünk úgy, hogy nem. A konzisztencia miatt generáljuk.
+                // Ha song.empty igaz, akkor technikailag nem kellene kártya, de vágásnál jobb ha van vezető.
+                // Most generálunk mindenhova.
+                if (!song.empty || true) { 
+                    wrapper.appendChild(createCardBack());
+                }
+                backPage.appendChild(wrapper);
+            });
         }
+
         container.appendChild(backPage);
     }
 }

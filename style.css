@@ -305,9 +305,44 @@ select {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     /* Dashed line only for cutting guide visualization */
-    outline: 1px dashed rgba(0,0,0,0.2); 
+    outline: 1px dashed rgba(0,0,0,0.1); 
 }
+
+/* CROP MARKS (Vágójelek) */
+.page-container.crop-marks .card-wrapper::before,
+.page-container.crop-marks .card-wrapper::after {
+    content: '';
+    position: absolute;
+    background: #000;
+    pointer-events: none;
+}
+
+/* Horizontális jelek (felső/alsó) */
+.page-container.crop-marks .card-wrapper::before {
+    width: 10px;
+    height: 1px;
+    top: -5px; /* Kicsit kijjebb */
+    left: -5px;
+    box-shadow: 
+        calc(var(--card-width) + 10px) 0 0 #000, /* Jobb felső */
+        0 calc(var(--card-height) + 10px) 0 #000, /* Bal alsó */
+        calc(var(--card-width) + 10px) calc(var(--card-height) + 10px) 0 #000; /* Jobb alsó */
+}
+
+/* Vertikális jelek (bal/jobb) */
+.page-container.crop-marks .card-wrapper::after {
+    width: 1px;
+    height: 10px;
+    top: -5px;
+    left: -5px;
+    box-shadow: 
+        calc(var(--card-width) + 10px) 0 0 #000,
+        0 calc(var(--card-height) + 10px) 0 #000,
+        calc(var(--card-width) + 10px) calc(var(--card-height) + 10px) 0 #000;
+}
+
 
 .card {
     width: 100%;
@@ -467,8 +502,13 @@ select {
     }
     
     .card-wrapper {
-        outline: none; /* No cut lines on print usually, or make very faint grey */
-        /* outline: 1px dashed #eee; */ 
+        outline: none; /* Normál esetben nem kell outline, csak ha vágójel van */
+    }
+    
+    /* Ha crop marks be van kapcsolva, akkor nyomtatásban is látsszon */
+    .page-container.crop-marks .card-wrapper::before,
+    .page-container.crop-marks .card-wrapper::after {
+        display: block;
     }
 
     .card {
