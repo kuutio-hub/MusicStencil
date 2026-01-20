@@ -13,10 +13,8 @@ function updateCSSVariable(input) {
     if (!cssVar) return;
 
     let unit = input.dataset.unit || '';
-    // Speciális eset a százalékos méretezéshez
-    if (input.id === 'qr-size') {
-        unit = '%';
-    }
+    if (input.id === 'qr-size') unit = '%';
+
     document.documentElement.style.setProperty(cssVar, input.value + unit);
 }
 
@@ -54,9 +52,22 @@ function handleGlowToggle(elementId, cssVarShadow, cssVarColor) {
             _triggerRefresh();
         }
         checkbox.addEventListener('change', toggleAction);
-        // Kezdeti állapot beállítása
         const initialGlowValue = checkbox.checked ? `0 0 3px var(${cssVarColor})` : 'none';
         document.documentElement.style.setProperty(cssVarShadow, initialGlowValue);
+    }
+}
+
+function handleVinylGlowToggle(elementId, cssVarName, colorVarName) {
+    const checkbox = document.getElementById(elementId);
+    if(checkbox) {
+        const toggleAction = (e) => {
+            const glowValue = e.target.checked ? `drop-shadow(0 0 3px var(${colorVarName}))` : 'none';
+            document.documentElement.style.setProperty(cssVarName, glowValue);
+            _triggerRefresh();
+        }
+        checkbox.addEventListener('change', toggleAction);
+        const initialGlowValue = checkbox.checked ? `drop-shadow(0 0 3px var(${colorVarName}))` : 'none';
+        document.documentElement.style.setProperty(cssVarName, initialGlowValue);
     }
 }
 
@@ -84,10 +95,11 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     });
 
     document.getElementById('settings-panel').addEventListener('input', (e) => {
-        if (e.target.matches('[data-css-var]')) {
-            updateCSSVariable(e.target);
-            if (e.target.type === 'range') {
-                updateValueDisplay(e.target);
+        const target = e.target;
+        if (target.matches('[data-css-var]')) {
+            updateCSSVariable(target);
+            if (target.type === 'range') {
+                updateValueDisplay(target);
             }
         }
     });
@@ -120,6 +132,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     handleGlowToggle('glow-year', '--text-shadow-year', '--color-year');
     handleGlowToggle('glow-artist', '--text-shadow-artist', '--color-artist');
     handleGlowToggle('glow-title', '--text-shadow-title', '--color-title');
+    handleVinylGlowToggle('vinyl-glow', '--vinyl-glow-shadow', '--vinyl-groove-color');
 
 
     const fileUploadButton = document.getElementById('file-upload-button');
@@ -137,7 +150,6 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
 
     const printButton = document.getElementById('print-button');
     printButton.addEventListener('click', () => {
-        // Mielőtt nyomtatunk, győződjünk meg róla, hogy a rácsnézet aktív
         if (!document.body.classList.contains('grid-view-active')) {
             document.body.classList.add('grid-view-active');
         }

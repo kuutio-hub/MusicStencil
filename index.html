@@ -150,8 +150,8 @@
                             <option value="capitalize">Nagy Kezdőbetűs</option>
                         </select>
                     </div>
-                    <label class="indent">Távolság lentről: <span id="val-title-margin">8</span>mm</label>
-                    <input type="range" id="title-margin" min="0" max="20" value="8" step="0.5" data-unit="mm" data-css-var="--title-margin">
+                    <label class="indent">Távolság lentről: <span id="val-title-margin">5</span>mm</label>
+                    <input type="range" id="title-margin" min="0" max="20" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
 
                     <!-- Code1 & Code2 -->
                     <div class="sub-group">
@@ -169,18 +169,11 @@
                         <input type="checkbox" id="rotate-codes">
                         Kódok forgatása (90°)
                     </label>
-                    
-                    <label>Szöveg Igazítás (Cím/Előadó)</label>
-                    <select id="text-align" data-css-var="--text-align">
-                        <option value="center" selected>Közép</option>
-                        <option value="left">Balra</option>
-                        <option value="right">Jobbra</option>
-                    </select>
                 </div>
             </div>
 
              <div class="settings-section">
-                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl Glitch)</h3>
+                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl)</h3>
                 <div class="control-group">
                     <label class="checkbox-container">
                         <input type="checkbox" id="show-qr" checked>
@@ -192,7 +185,30 @@
                     <label>Lemez Opacitás: <span id="val-vinyl-opacity">0.15</span></label>
                     <input type="range" id="vinyl-opacity" min="0" max="1" value="0.15" step="0.05" data-unit="" data-css-var="--vinyl-opacity">
                     
-                    <!-- Glitch Controls -->
+                    <div class="color-picker-row">
+                        <label>Lemez Színe</label>
+                        <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
+                    </div>
+
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="vinyl-glow">
+                        Lemez Fény (Glow)
+                    </label>
+
+                    <!-- Glitch & Vinyl Controls -->
+                    <div class="sub-group">
+                         <label class="sub-label">Lemez Paraméterek</label>
+
+                         <label class="indent">Körök száma: <span id="val-vinyl-groove-count">8</span></label>
+                         <input type="range" id="vinyl-groove-count" min="3" max="20" value="8" step="1" data-css-var="--vinyl-groove-count">
+                         
+                         <label class="indent">Eltolás szélétől: <span id="val-vinyl-offset">2</span></label>
+                         <input type="range" id="vinyl-offset" min="0" max="10" value="2" step="0.5" data-css-var="--vinyl-offset">
+                         
+                         <label class="indent">Körök távolsága: <span id="val-vinyl-spacing">4</span></label>
+                         <input type="range" id="vinyl-spacing" min="1" max="10" value="4" step="0.5" data-css-var="--vinyl-spacing">
+                    </div>
+
                     <div class="sub-group">
                          <label class="sub-label">Glitch Paraméterek</label>
                          
@@ -206,15 +222,11 @@
                          <input type="range" id="vinyl-gap-max" min="0" max="90" value="40" step="5" data-unit="%" data-css-var="--vinyl-gap-max">
                     </div>
 
-                    <div class="color-picker-row">
-                        <label>Lemez Színe</label>
-                        <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
-                    </div>
                 </div>
             </div>
             
             <footer class="app-footer">
-                MusicStencil v6.1.0
+                MusicStencil v6.2.0
             </footer>
         </div>
     </aside>

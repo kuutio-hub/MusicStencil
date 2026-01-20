@@ -20,7 +20,7 @@
     --card-padding: 4px;
 
     --artist-margin: 4mm;
-    --title-margin: 8mm;
+    --title-margin: 5mm;
     --code-margin: 2mm;
 
     --primary-color: #000000; /* Keret színe */
@@ -50,13 +50,15 @@
     --color-codes: var(--text-card-dark);
     --font-weight-codes: normal;
     
-    --text-align: center;
-
     /* Hátlap Változók */
     --qr-size: 40%;
     --qr-display: flex;
     --vinyl-opacity: 0.15;
     --vinyl-groove-color: #000000;
+    --vinyl-glow-shadow: none;
+    --vinyl-groove-count: 8;
+    --vinyl-offset: 2;
+    --vinyl-spacing: 4;
     --vinyl-sections: 3;
     --vinyl-gap-min: 10;
     --vinyl-gap-max: 40;
@@ -289,10 +291,13 @@ body.grid-view-active #preview-area { display: none; }
     position: relative;
     border-radius: var(--card-radius);
     padding: var(--card-padding);
-    text-align: var(--text-align);
+    text-align: center;
     box-sizing: border-box;
     font-family: var(--font-family);
     border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .card.front {
     border: 1px solid var(--primary-color);
@@ -301,9 +306,9 @@ body.grid-view-active #preview-area { display: none; }
     border: none;
 }
 
-.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: var(--text-transform-artist); line-height: 1.2; z-index: 10; text-shadow: var(--text-shadow-artist); }
+.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: var(--text-transform-artist); line-height: 1.2; z-index: 10; text-shadow: var(--text-shadow-artist); word-wrap: break-word; }
 .card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: var(--color-year); line-height: 1; z-index: 10; text-shadow: var(--text-shadow-year); }
-.card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: var(--font-weight-title); font-style: italic; color: var(--color-title); text-transform: var(--text-transform-title); line-height: 1.2; z-index: 10; text-shadow: var(--text-shadow-title); }
+.card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: var(--font-weight-title); font-style: italic; color: var(--color-title); text-transform: var(--text-transform-title); line-height: 1.2; z-index: 10; text-shadow: var(--text-shadow-title); word-wrap: break-word;}
 
 .card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: var(--font-weight-codes); z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; }
 .card.front .code1 { bottom: var(--code-margin); left: var(--code-margin); text-align: left; }
@@ -316,7 +321,7 @@ body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--f
 
 .card.back { display: flex; justify-content: center; align-items: center; }
 .card.back .vinyl-bg { position: absolute; width: 90%; height: 90%; border-radius: 50%; opacity: var(--vinyl-opacity); z-index: 0; pointer-events: none; overflow: hidden; }
-.card.back .vinyl-bg svg { width: 100%; height: 100%; filter: drop-shadow(0 0 3px var(--vinyl-groove-color)); }
+.card.back .vinyl-bg svg { width: 100%; height: 100%; filter: var(--vinyl-glow-shadow); }
 .qr-container { display: var(--qr-display); width: var(--qr-size); height: var(--qr-size); z-index: 1; background: #fff; justify-content: center; align-items: center; padding: 2px; border-radius: 2px; }
 .qr-container img { width: 100%; height: 100%; display: block; }
 

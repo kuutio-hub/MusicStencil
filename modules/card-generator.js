@@ -26,6 +26,11 @@ function generateVinylSVG() {
     const computedStyle = getComputedStyle(document.documentElement);
     const color = computedStyle.getPropertyValue('--vinyl-groove-color').trim() || '#000000';
     
+    // Vinyl paraméterek
+    const grooveCount = parseInt(computedStyle.getPropertyValue('--vinyl-groove-count').trim()) || 8;
+    const offset = parseFloat(computedStyle.getPropertyValue('--vinyl-offset').trim()) || 2;
+    const spacing = parseFloat(computedStyle.getPropertyValue('--vinyl-spacing').trim()) || 4;
+
     // Glitch paraméterek
     const sections = parseInt(computedStyle.getPropertyValue('--vinyl-sections').trim()) || 3;
     const gapMinP = parseFloat(computedStyle.getPropertyValue('--vinyl-gap-min').trim()) || 10; // %
@@ -34,21 +39,19 @@ function generateVinylSVG() {
     const size = 100;
     const center = size / 2;
     const maxRadius = 45; 
-    const grooveCount = 8; 
 
     let svgContent = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
     
-    // Alap külső kör
     svgContent += `<circle cx="${center}" cy="${center}" r="${maxRadius}" fill="none" stroke="${color}" stroke-width="0.5" opacity="0.5" />`;
 
-    for (let i = 1; i <= grooveCount; i++) {
-        const radius = (maxRadius / grooveCount) * i;
+    for (let i = 0; i < grooveCount; i++) {
+        const radius = maxRadius - offset - (i * spacing);
+        if (radius <= 2) continue; // Ne rajzoljunk túl kicsi köröket
+
         const circumference = 2 * Math.PI * radius;
-        
         const sectionLength = circumference / sections;
         const dashArrayParts = [];
-        
-        const offset = Math.random() * circumference;
+        const randomOffset = Math.random() * circumference;
 
         for (let s = 0; s < sections; s++) {
             const gapPercent = gapMinP + Math.random() * (gapMaxP - gapMinP);
@@ -66,24 +69,63 @@ function generateVinylSVG() {
         svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" 
             fill="none" stroke="${color}" stroke-width="${strokeWidth.toFixed(2)}" 
             stroke-dasharray="${strokeDashArray}" 
-            stroke-dashoffset="${offset}" />`;
+            stroke-dashoffset="${randomOffset}" />`;
     }
 
     svgContent += `</svg>`;
     return svgContent;
 }
 
+
+function adjustTextForOverflow(element) {
+    if (!element || !element.parentElement) return;
+
+    // Kezdeti értékek lekérése
+    const computedStyle = window.getComputedStyle(element);
+    let currentFontSize = parseFloat(computedStyle.fontSize);
+    const originalLineHeight = parseFloat(computedStyle.lineHeight);
+    const minFontSize = 4; // pt
+    
+    // Maximális magasság (2 sor)
+    const maxAllowedHeight = originalLineHeight * 2.1;
+
+    // Ciklus a túlfolyás ellenőrzésére és a betűméret csökkentésére
+    while ((element.scrollHeight > maxAllowedHeight || element.scrollWidth > element.clientWidth) && currentFontSize > minFontSize) {
+        currentFontSize -= 0.5; // Lépésköz: 0.5px
+        element.style.fontSize = `${currentFontSize}px`;
+
+        // Ha a scrollHeight hirtelen lecsökken (a tördelés miatt), az jó jel lehet
+        if (element.scrollHeight <= maxAllowedHeight && element.scrollWidth <= element.clientWidth) {
+            break;
+        }
+    }
+}
+
+
 function createCardFront(song) {
     const card = document.createElement('div');
     card.className = 'card front';
+
+    const artistEl = document.createElement('div');
+    artistEl.className = 'artist';
+    artistEl.textContent = song.artist || 'Ismeretlen';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'title';
+    titleEl.textContent = song.title || 'Ismeretlen';
+    
     card.innerHTML = `
-        <div class="artist">${song.artist || 'Ismeretlen'}</div>
         <div class="year">${song.year || ''}</div>
-        <div class="title">${song.title || 'Ismeretlen'}</div>
-        
         <div class="code1">${song.code1 || ''}</div>
         <div class="code2">${song.code2 || ''}</div>
     `;
+
+    card.prepend(artistEl);
+    card.append(titleEl);
+    
+    // Az intelligens szövegtördelés itt még nem fut le, mert az elem nincs a DOM-ban.
+    // A renderelő funkciónak kell meghívnia az `adjust` funkciót.
+
     return card;
 }
 
@@ -101,8 +143,6 @@ function createCardBack(song) {
     card.appendChild(vinylBg);
     card.appendChild(qrContainer);
 
-    // A QR kód generálást egy nagyon rövid késleltetéssel indítjuk, 
-    // hogy ne blokkolja a fő renderelési szálat a sok kártya létrehozásakor.
     if (song && song.qr_data) {
         setTimeout(() => generateQRCode(qrContainer, song.qr_data), 0);
     } else if (song && !song.qr_data) {
@@ -115,15 +155,22 @@ function createCardBack(song) {
 export function renderPreviewPair(container, song) {
     container.innerHTML = '';
 
+    // Előlap
     const frontWrapper = document.createElement('div');
     frontWrapper.className = 'card-wrapper';
     const frontLabel = document.createElement('div');
     frontLabel.className = 'preview-label';
     frontLabel.textContent = "Előlap";
+    const frontCard = createCardFront(song);
     frontWrapper.appendChild(frontLabel);
-    frontWrapper.appendChild(createCardFront(song));
+    frontWrapper.appendChild(frontCard);
     container.appendChild(frontWrapper);
 
+    // Szövegigazítás futtatása, miután az elem a DOM-ba került
+    adjustTextForOverflow(frontCard.querySelector('.artist'));
+    adjustTextForOverflow(frontCard.querySelector('.title'));
+
+    // Hátlap
     const backWrapper = document.createElement('div');
     backWrapper.className = 'card-wrapper';
     const backLabel = document.createElement('div');
@@ -138,6 +185,7 @@ export function renderAllPages(container, data) {
     container.innerHTML = ''; 
 
     const pageCount = Math.ceil(data.length / CARDS_PER_PAGE);
+    const cardsToAdjust = [];
 
     for (let i = 0; i < pageCount; i++) {
         const dataChunk = data.slice(i * CARDS_PER_PAGE, (i + 1) * CARDS_PER_PAGE);
@@ -155,7 +203,9 @@ export function renderAllPages(container, data) {
             const wrapper = document.createElement('div');
             wrapper.className = 'card-wrapper';
             if (!song.empty) {
-                wrapper.appendChild(createCardFront(song));
+                const card = createCardFront(song);
+                wrapper.appendChild(card);
+                cardsToAdjust.push(card); // Gyűjtés későbbi feldolgozásra
             }
             frontPage.appendChild(wrapper);
         });
@@ -165,7 +215,6 @@ export function renderAllPages(container, data) {
         const backPage = document.createElement('div');
         backPage.className = 'page-container';
 
-        // Tükrözés a kétoldalas nyomtatáshoz
         for (let r = 0; r < itemsToRender.length; r += COLUMNS) {
             const rowItems = itemsToRender.slice(r, r + COLUMNS);
             const mirroredRow = rowItems.reverse();
@@ -181,4 +230,12 @@ export function renderAllPages(container, data) {
         }
         container.appendChild(backPage);
     }
+    
+    // Késleltetett futtatás, hogy a böngészőnek legyen ideje renderelni
+    setTimeout(() => {
+        cardsToAdjust.forEach(card => {
+            adjustTextForOverflow(card.querySelector('.artist'));
+            adjustTextForOverflow(card.querySelector('.title'));
+        });
+    }, 10);
 }
