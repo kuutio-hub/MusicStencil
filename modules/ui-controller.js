@@ -12,15 +12,21 @@ function updateCSSVariable(input) {
     const cssVar = input.dataset.cssVar;
     if (!cssVar) return;
 
-    const unit = input.dataset.unit || '';
+    let unit = input.dataset.unit || '';
+    // Speciális eset a százalékos méretezéshez
+    if (input.id === 'qr-size') {
+        unit = '%';
+    }
     document.documentElement.style.setProperty(cssVar, input.value + unit);
 }
+
 
 function handleSimpleToggle(elementId, classToToggle) {
     const checkbox = document.getElementById(elementId);
     if (checkbox) {
         const toggleAction = (e) => {
             document.body.classList.toggle(classToToggle, e.target.checked);
+            _triggerRefresh();
         };
         checkbox.addEventListener('change', toggleAction);
         document.body.classList.toggle(classToToggle, checkbox.checked);
@@ -32,10 +38,25 @@ function handleBoldToggle(elementId, cssVarName) {
     if(checkbox) {
         const toggleAction = (e) => {
             document.documentElement.style.setProperty(cssVarName, e.target.checked ? 'bold' : 'normal');
+            _triggerRefresh();
         }
         checkbox.addEventListener('change', toggleAction);
         document.documentElement.style.setProperty(cssVarName, checkbox.checked ? 'bold' : 'normal');
-        checkbox.addEventListener('change', () => _triggerRefresh());
+    }
+}
+
+function handleGlowToggle(elementId, cssVarShadow, cssVarColor) {
+     const checkbox = document.getElementById(elementId);
+    if(checkbox) {
+        const toggleAction = (e) => {
+            const glowValue = e.target.checked ? `0 0 3px var(${cssVarColor})` : 'none';
+            document.documentElement.style.setProperty(cssVarShadow, glowValue);
+            _triggerRefresh();
+        }
+        checkbox.addEventListener('change', toggleAction);
+        // Kezdeti állapot beállítása
+        const initialGlowValue = checkbox.checked ? `0 0 3px var(${cssVarColor})` : 'none';
+        document.documentElement.style.setProperty(cssVarShadow, initialGlowValue);
     }
 }
 
@@ -62,32 +83,32 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         if (input.type === 'range') updateValueDisplay(input);
     });
 
-    controls.forEach(input => {
-        input.addEventListener('input', () => {
-            updateCSSVariable(input);
-            if (input.type === 'range') updateValueDisplay(input);
-            
-            // Folyamatos renderelést igénylő beállítások
-            if (input.id.startsWith('vinyl-') || input.id.includes('margin')) {
-                _triggerRefresh();
+    document.getElementById('settings-panel').addEventListener('input', (e) => {
+        if (e.target.matches('[data-css-var]')) {
+            updateCSSVariable(e.target);
+            if (e.target.type === 'range') {
+                updateValueDisplay(e.target);
             }
-        });
-        // Az 'input' helyett 'change' esemény a kevésbé erőforrás-igényes beállításokhoz
-        input.addEventListener('change', () => {
-            if (!input.id.startsWith('vinyl-') && !input.id.includes('margin')) {
-                 _triggerRefresh();
-            }
-        });
+        }
+    });
+
+    document.getElementById('settings-panel').addEventListener('change', (e) => {
+        if (e.target.matches('[data-css-var]')) {
+             _triggerRefresh();
+        }
     });
 
     const qrCheckbox = document.getElementById('show-qr');
     if(qrCheckbox) {
-        qrCheckbox.addEventListener('change', (e) => {
-            const displayValue = e.target.checked ? 'flex' : 'none';
+        const setQrDisplay = (checked) => {
+            const displayValue = checked ? 'flex' : 'none';
             document.documentElement.style.setProperty('--qr-display', displayValue);
+        };
+        qrCheckbox.addEventListener('change', (e) => {
+            setQrDisplay(e.target.checked);
+            _triggerRefresh();
         });
-         // Kezdeti állapot
-        document.documentElement.style.setProperty('--qr-display', qrCheckbox.checked ? 'flex' : 'none');
+        setQrDisplay(qrCheckbox.checked);
     }
 
     // Toggle-ök inicializálása
@@ -96,6 +117,9 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     handleBoldToggle('bold-artist', '--font-weight-artist');
     handleBoldToggle('bold-title', '--font-weight-title');
     handleBoldToggle('bold-codes', '--font-weight-codes');
+    handleGlowToggle('glow-year', '--text-shadow-year', '--color-year');
+    handleGlowToggle('glow-artist', '--text-shadow-artist', '--color-artist');
+    handleGlowToggle('glow-title', '--text-shadow-title', '--color-title');
 
 
     const fileUploadButton = document.getElementById('file-upload-button');
@@ -106,8 +130,6 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
                 const data = await parseXLS(file);
                 onDataLoaded(data);
             } catch (error) {
-                // A globális hibakezelő a main.js-ben fogja ezt elkapni és megjeleníteni.
-                // Itt csak továbbdobjuk a hibát, hogy a Promise elutasított állapotba kerüljön.
                 throw new Error(`Hiba az Excel fájl ("${file.name}") feldolgozása közben: ${error.message}`);
             }
         }
@@ -115,6 +137,27 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
 
     const printButton = document.getElementById('print-button');
     printButton.addEventListener('click', () => {
+        // Mielőtt nyomtatunk, győződjünk meg róla, hogy a rácsnézet aktív
+        if (!document.body.classList.contains('grid-view-active')) {
+            document.body.classList.add('grid-view-active');
+        }
         window.print();
     });
+
+    const viewToggleButton = document.getElementById('view-toggle-button');
+    if (viewToggleButton) {
+        viewToggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('grid-view-active');
+            const isGridView = document.body.classList.contains('grid-view-active');
+            const icon = viewToggleButton.querySelector('i');
+            
+            if (isGridView) {
+                viewToggleButton.title = 'Előnézet';
+                icon.className = 'fa-solid fa-eye';
+            } else {
+                viewToggleButton.title = 'Rácsnézet';
+                icon.className = 'fa-solid fa-grip';
+            }
+        });
+    }
 }
