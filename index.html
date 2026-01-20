@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicStencil - Pro Card Generator</title>
+    <title>MusicStencil - Card Generator</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -17,7 +17,7 @@
     <aside id="settings-panel">
         <header>
             <div class="logo">
-                <i class="fa-solid fa-compact-disc fa-spin-pulse"></i>
+                <i class="fa-solid fa-layer-group"></i>
                 <span>MusicStencil</span>
             </div>
             <div class="actions">
@@ -37,70 +37,64 @@
             <div class="settings-section">
                 <h3><i class="fa-solid fa-ruler-combined"></i> Kártya Méretek</h3>
                 <div class="control-group">
-                    <label>Szélesség: <span id="val-card-width">63.5</span>mm</label>
-                    <input type="range" id="card-width" min="50" max="100" value="63.5" step="0.1" data-unit="mm" data-css-var="--card-width">
+                    <label>Szélesség: <span id="val-card-width">46</span>mm</label>
+                    <input type="range" id="card-width" min="30" max="100" value="46" step="0.1" data-unit="mm" data-css-var="--card-width">
                     
-                    <label>Magasság: <span id="val-card-height">88.9</span>mm</label>
-                    <input type="range" id="card-height" min="70" max="120" value="88.9" step="0.1" data-unit="mm" data-css-var="--card-height">
+                    <label>Magasság: <span id="val-card-height">46</span>mm</label>
+                    <input type="range" id="card-height" min="30" max="100" value="46" step="0.1" data-unit="mm" data-css-var="--card-height">
                     
                     <label>Térköz: <span id="val-card-gap">0</span>mm</label>
                     <input type="range" id="card-gap" min="0" max="10" value="0" step="0.1" data-unit="mm" data-css-var="--card-gap">
 
-                    <label>Sarokkerekítés: <span id="val-card-radius">0</span>mm</label>
-                    <input type="range" id="card-radius" min="0" max="10" value="4" step="0.5" data-unit="mm" data-css-var="--card-radius">
+                    <label>Sarokkerekítés: <span id="val-card-radius">2</span>mm</label>
+                    <input type="range" id="card-radius" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--card-radius">
 
-                    <label>Belső Margó: <span id="val-card-padding">10</span>px</label>
-                    <input type="range" id="card-padding" min="0" max="30" value="10" step="1" data-unit="px" data-css-var="--card-padding">
+                    <label>Belső Margó: <span id="val-card-padding">4</span>px</label>
+                    <input type="range" id="card-padding" min="0" max="20" value="4" step="1" data-unit="px" data-css-var="--card-padding">
                     
                     <label class="checkbox-container">
-                        <input type="checkbox" id="show-crop-marks">
+                        <input type="checkbox" id="show-crop-marks" checked>
                         Vágójelek (Crop Marks)
                     </label>
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3><i class="fa-solid fa-palette"></i> Színek & Stílus</h3>
+                <h3><i class="fa-solid fa-palette"></i> Színek (Nyomtatás)</h3>
                 <div class="control-group">
                     <div class="color-picker-row">
-                        <label>Keret / Kiemelés</label>
-                        <input type="color" id="primary-color" value="#00f3ff" data-css-var="--primary-color">
+                        <label>Keret</label>
+                        <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
                     </div>
                     <div class="color-picker-row">
                         <label>Háttérszín</label>
-                        <input type="color" id="card-bg-color" value="#000000" data-css-var="--card-bg-color">
+                        <input type="color" id="card-bg-color" value="#ffffff" data-css-var="--card-bg-color">
                     </div>
-                    <div class="color-picker-row">
-                        <label>Ragyogás (Glow)</label>
-                        <input type="color" id="glow-color" value="#00f3ff" data-css-var="--glow-color">
-                    </div>
-                    <label>Ragyogás Erőssége</label>
-                    <input type="range" id="glow-strength" min="0" max="30" value="10" step="1" data-unit="px" data-css-var="--glow-strength">
                 </div>
             </div>
 
             <div class="settings-section">
-                <h3><i class="fa-solid fa-font"></i> Tipográfia</h3>
+                <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg)</h3>
                 <div class="control-group">
                     <!-- Évszám -->
                     <div class="sub-group">
                         <label class="sub-label">Évszám</label>
-                        <input type="range" min="10" max="60" value="32" step="1" data-unit="pt" data-css-var="--font-size-year">
-                        <input type="color" value="#00f3ff" data-css-var="--color-year" class="mini-color">
+                        <input type="range" min="8" max="40" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
+                        <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
                     </div>
 
                     <!-- Előadó -->
                     <div class="sub-group">
                         <label class="sub-label">Előadó</label>
-                        <input type="range" min="6" max="30" value="11" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
-                        <input type="color" value="#ffffff" data-css-var="--color-artist" class="mini-color">
+                        <input type="range" min="4" max="20" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
+                        <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
                     </div>
 
                     <!-- Cím -->
                     <div class="sub-group">
                         <label class="sub-label">Dal Címe</label>
-                        <input type="range" min="6" max="30" value="9" step="0.5" data-unit="pt" data-css-var="--font-size-title">
-                        <input type="color" value="#aaaaaa" data-css-var="--color-title" class="mini-color">
+                        <input type="range" min="4" max="20" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
+                        <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
                     </div>
                     
                     <label>Igazítás</label>
@@ -112,37 +106,28 @@
                 </div>
             </div>
 
-            <div class="settings-section">
-                <h3><i class="fa-solid fa-qrcode"></i> QR Kód</h3>
+             <div class="settings-section">
+                <h3><i class="fa-solid fa-qrcode"></i> Hátlap (QR & Dizájn)</h3>
                 <div class="control-group">
                     <label class="checkbox-container">
                         <input type="checkbox" id="show-qr" checked>
                         QR Kód megjelenítése
                     </label>
-                    <label>QR Méret: <span id="val-qr-size">80</span>px</label>
-                    <input type="range" id="qr-size" min="40" max="150" value="80" step="5" data-unit="px" data-css-var="--qr-size">
-                </div>
-            </div>
-
-             <div class="settings-section">
-                <h3><i class="fa-solid fa-record-vinyl"></i> Hátlap (Vinyl)</h3>
-                <div class="control-group">
-                    <label>Lemez Méret: <span id="val-vinyl-size">90</span>%</label>
-                    <input type="range" id="vinyl-size" min="50" max="100" value="90" step="1" data-unit="%" data-css-var="--vinyl-size">
+                    <label>QR Méret: <span id="val-qr-size">28</span>mm</label>
+                    <input type="range" id="qr-size" min="10" max="40" value="28" step="1" data-unit="mm" data-css-var="--qr-size">
+                
+                    <label>Lemez Opacitás: <span id="val-vinyl-opacity">0.1</span></label>
+                    <input type="range" id="vinyl-opacity" min="0" max="1" value="0.1" step="0.05" data-unit="" data-css-var="--vinyl-opacity">
                     
                     <div class="color-picker-row">
-                        <label>Címke Színe</label>
-                        <input type="color" value="#ffffff" data-css-var="--vinyl-label-color">
-                    </div>
-                    <div class="color-picker-row">
                         <label>Lemez Színe</label>
-                        <input type="color" value="#111111" data-css-var="--vinyl-groove-color">
+                        <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
                     </div>
                 </div>
             </div>
             
             <footer class="app-footer">
-                v1.0.0 &bull; MusicStencil
+                MusicStencil v2.0
             </footer>
         </div>
     </aside>

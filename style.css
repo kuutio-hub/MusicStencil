@@ -1,43 +1,36 @@
 :root {
-    /* Layout alapok */
-    --card-width: 63.5mm;
-    --card-height: 88.9mm;
+    /* Layout alapok: 46x46mm alapértelmezett */
+    --card-width: 46mm;
+    --card-height: 46mm;
     --card-gap: 0mm;
-    --card-radius: 4mm;
-    --card-padding: 10px;
+    --card-radius: 2mm;
+    --card-padding: 4px;
 
-    /* Színek */
-    --primary-color: #00f3ff; /* Neon Cyan */
-    --accent-color: #ff00ff; /* Neon Magenta */
-    --card-bg-color: #000000;
+    /* Színek - Nyomtatásbarát */
+    --primary-color: #000000; /* Keret */
+    --card-bg-color: #ffffff; /* Fehér papír */
     
-    /* Glow */
-    --glow-color: #00f3ff;
-    --glow-strength: 10px;
-
     /* Tipográfia */
-    --font-size-year: 32pt;
-    --color-year: #00f3ff;
+    --font-size-year: 24pt;
+    --color-year: #000000;
     
-    --font-size-artist: 11pt;
-    --color-artist: #ffffff;
+    --font-size-artist: 8pt;
+    --color-artist: #000000;
     
-    --font-size-title: 9pt;
-    --color-title: #aaaaaa;
+    --font-size-title: 7pt;
+    --color-title: #333333;
     
     --text-align: center;
 
-    /* QR */
-    --qr-size: 80px;
-    --qr-display: block;
-
-    /* Vinyl */
-    --vinyl-size: 90%;
-    --vinyl-label-color: #ffffff;
-    --vinyl-groove-color: #111111;
+    /* QR és Hátlap */
+    --qr-size: 28mm;
+    --qr-display: flex;
     
-    /* UI Fonts */
-    --font-heading: 'Orbitron', sans-serif;
+    --vinyl-opacity: 0.1; /* Halvány háttér elem */
+    --vinyl-groove-color: #000000;
+    
+    /* Fonts */
+    --font-heading: 'Orbitron', sans-serif; /* Modern, de olvasható */
     --font-ui: 'Montserrat', sans-serif;
 }
 
@@ -49,154 +42,111 @@
 
 body {
     font-family: var(--font-ui);
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    color: #fff;
+    background: #e0e5ec; /* Halvány szürke UI háttér */
+    color: #333;
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
 
-/* --- SIDEBAR & SETTINGS --- */
+/* --- SIDEBAR --- */
 #settings-panel {
-    width: 350px;
-    background: rgba(16, 16, 24, 0.65);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    width: 320px;
+    background: #ffffff;
+    border-right: 1px solid #ccc;
     display: flex;
     flex-direction: column;
     z-index: 100;
-    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     flex-shrink: 0;
 }
 
 #settings-panel header {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #000;
+    margin-bottom: 1rem;
 }
 
 .actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 8px;
 }
 
 .action-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff;
-    padding: 10px;
-    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 8px;
+    border-radius: 4px;
     cursor: pointer;
     text-align: center;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    font-size: 0.85rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     font-weight: 600;
 }
-
-.action-btn:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-}
+.action-btn:hover { background: #f0f0f0; }
 
 .print-btn {
-    background: var(--primary-color);
-    color: #000;
-    border: none;
+    background: #333;
+    color: #fff;
+    border-color: #333;
 }
-.print-btn:hover {
-    background: #fff;
-    color: #000;
-    box-shadow: 0 0 20px var(--primary-color);
-}
+.print-btn:hover { background: #000; }
 
 .scroll-container {
     overflow-y: auto;
     flex-grow: 1;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
-/* Custom Scrollbar */
-.scroll-container::-webkit-scrollbar { width: 6px; }
-.scroll-container::-webkit-scrollbar-track { background: transparent; }
-.scroll-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-
 .settings-section {
-    margin-bottom: 2rem;
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px;
-    padding: 1rem;
-    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
 }
 
 .settings-section h3 {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 1rem;
+    color: #888;
+    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
-.settings-section h3 i { color: var(--primary-color); }
 
 .control-group {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 label {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.8);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #555;
     display: flex;
     justify-content: space-between;
 }
 
-label span {
-    color: var(--primary-color);
-    font-family: monospace;
-}
-
-/* Inputs */
 input[type="range"] {
-    -webkit-appearance: none;
     width: 100%;
-    height: 4px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 2px;
-    outline: none;
+    accent-color: #333;
 }
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    cursor: pointer;
-    box-shadow: 0 0 10px var(--primary-color);
-    transition: transform 0.1s;
-}
-input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
 .color-picker-row {
     display: flex;
@@ -205,59 +155,39 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 }
 
 input[type="color"] {
-    -webkit-appearance: none;
     border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    overflow: hidden;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     background: none;
     padding: 0;
 }
-input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }
-
-.sub-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.sub-label { width: 60px; }
-.mini-color { width: 20px; height: 20px; }
+.mini-color { width: 18px; height: 18px; }
 
 select {
-    background: rgba(0,0,0,0.5);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 5px;
+    padding: 4px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    width: 100%;
 }
 
 .checkbox-container {
     justify-content: flex-start;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
+    align-items: center;
 }
 
 .app-footer {
     text-align: center;
     font-size: 0.7rem;
-    color: rgba(255,255,255,0.3);
-    margin-top: 2rem;
+    color: #aaa;
+    margin-top: 1rem;
 }
 
 /* --- MAIN PREVIEW --- */
 #main-content {
     flex-grow: 1;
-    background-color: #1a1a2e;
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-color: #555; /* Sötét háttér, hogy a fehér papír jól látszódjon */
     overflow-y: auto;
     padding: 2rem;
     display: flex;
@@ -271,29 +201,30 @@ select {
     align-items: center;
 }
 
-/* --- CARD PAGES --- */
 .page-label {
     text-align: left;
     width: 100%;
-    color: rgba(255,255,255,0.5);
-    font-family: var(--font-heading);
+    color: #fff;
+    font-weight: bold;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
-    padding-left: 1rem;
-    border-left: 3px solid var(--primary-color);
+    background: rgba(0,0,0,0.5);
+    padding: 5px 10px;
+    border-radius: 4px;
 }
 
 .page-container {
     background: #fff;
     width: 210mm;
     height: 297mm;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    /* Dynamic padding calculation to center grid */
-    padding: calc( (297mm - (4 * var(--card-height)) - (3 * var(--card-gap))) / 2)
-             calc( (210mm - (2 * var(--card-width)) - (1 * var(--card-gap))) / 2);
+    /* Grid számítása JS-ben történik vagy fixen 4 oszlop */
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: repeat(6, 1fr);
+    /* Középre igazítás */
+    padding: calc( (297mm - (6 * var(--card-height)) - (5 * var(--card-gap))) / 2)
+             calc( (210mm - (4 * var(--card-width)) - (3 * var(--card-gap))) / 2);
     gap: var(--card-gap);
     margin-bottom: 2rem;
     position: relative;
@@ -302,108 +233,122 @@ select {
 .card-wrapper {
     width: var(--card-width);
     height: var(--card-height);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
-    /* Dashed line only for cutting guide visualization */
-    outline: 1px dashed rgba(0,0,0,0.1); 
+    outline: 1px dashed #eee; /* Halvány segédvonal a képernyőn */
 }
 
-/* CROP MARKS (Vágójelek) */
-.page-container.crop-marks .card-wrapper::before,
-.page-container.crop-marks .card-wrapper::after {
+/* CROP MARKS - Body class vezérelt */
+body.has-crop-marks .card-wrapper::before,
+body.has-crop-marks .card-wrapper::after {
     content: '';
     position: absolute;
     background: #000;
     pointer-events: none;
+    z-index: 10;
 }
 
-/* Horizontális jelek (felső/alsó) */
-.page-container.crop-marks .card-wrapper::before {
-    width: 10px;
-    height: 1px;
-    top: -5px; /* Kicsit kijjebb */
-    left: -5px;
+body.has-crop-marks .card-wrapper::before {
+    width: 6px;
+    height: 0.5px; /* Vékonyabb vonal */
+    top: -3px;
+    left: -3px;
     box-shadow: 
-        calc(var(--card-width) + 10px) 0 0 #000, /* Jobb felső */
-        0 calc(var(--card-height) + 10px) 0 #000, /* Bal alsó */
-        calc(var(--card-width) + 10px) calc(var(--card-height) + 10px) 0 #000; /* Jobb alsó */
+        calc(var(--card-width) + 6px) 0 0 #000, 
+        0 calc(var(--card-height) + 6px) 0 #000, 
+        calc(var(--card-width) + 6px) calc(var(--card-height) + 6px) 0 #000; 
 }
 
-/* Vertikális jelek (bal/jobb) */
-.page-container.crop-marks .card-wrapper::after {
-    width: 1px;
-    height: 10px;
-    top: -5px;
-    left: -5px;
+body.has-crop-marks .card-wrapper::after {
+    width: 0.5px;
+    height: 6px;
+    top: -3px;
+    left: -3px;
     box-shadow: 
-        calc(var(--card-width) + 10px) 0 0 #000,
-        0 calc(var(--card-height) + 10px) 0 #000,
-        calc(var(--card-width) + 10px) calc(var(--card-height) + 10px) 0 #000;
+        calc(var(--card-width) + 6px) 0 0 #000,
+        0 calc(var(--card-height) + 6px) 0 #000,
+        calc(var(--card-width) + 6px) calc(var(--card-height) + 6px) 0 #000;
 }
 
-
+/* --- KÁRTYA DESIGN --- */
 .card {
     width: 100%;
     height: 100%;
     background-color: var(--card-bg-color);
-    color: var(--text-color-primary);
     overflow: hidden;
     position: relative;
-    border: 1px solid var(--primary-color);
+    border: 1px solid var(--primary-color); /* Vékony keret */
     border-radius: var(--card-radius);
-    box-shadow: 0 0 var(--glow-strength) var(--glow-color), inset 0 0 var(--glow-strength) var(--glow-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Space out content */
     padding: var(--card-padding);
     text-align: var(--text-align);
-}
-
-.card-content {
-    flex-grow: 1;
+    
+    /* Flex layout */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.5em;
-    z-index: 2;
+    align-items: center;
 }
 
-.card .year {
+/* FRONT: Csak Szöveg */
+.card.front .year {
     font-family: var(--font-heading);
     font-size: var(--font-size-year);
     font-weight: 700;
     color: var(--color-year);
-    text-shadow: 0 0 calc(var(--glow-strength) * 0.8) var(--glow-color);
-    line-height: 1.1;
+    line-height: 1;
+    margin-bottom: 4px;
 }
 
-.card .artist {
+.card.front .artist {
     font-size: var(--font-size-artist);
     font-weight: 600;
     color: var(--color-artist);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    line-height: 1.2;
+    margin-bottom: 2px;
 }
 
-.card .title {
+.card.front .title {
     font-size: var(--font-size-title);
-    font-weight: 300;
+    font-weight: 400;
     font-style: italic;
     color: var(--color-title);
+    line-height: 1.2;
 }
 
+/* BACK: Dizájn + QR */
+.card.back {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Vinyl Háttér/Dizájn */
+.card.back .vinyl-bg {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    opacity: var(--vinyl-opacity);
+    background: repeating-radial-gradient(
+        circle at center,
+        var(--vinyl-groove-color) 0,
+        var(--vinyl-groove-color) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* QR Kód */
 .qr-container {
     display: var(--qr-display);
     width: var(--qr-size);
     height: var(--qr-size);
-    background: #fff;
-    padding: 5px;
-    margin: 0 auto; /* Center horizontally if flex col */
-    border-radius: 4px;
-    flex-shrink: 0;
-    align-self: center; /* Flex alignment */
+    z-index: 1;
+    background: #fff; /* Opcionális: fehér háttér a QR kód mögött a jobb olvashatóságért */
+    justify-content: center;
+    align-items: center;
 }
 .qr-container img {
     width: 100%;
@@ -411,57 +356,6 @@ select {
     display: block;
 }
 
-/* Card Back - Vinyl */
-.card.back {
-    background-color: var(--card-bg-color);
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-}
-
-.vinyl-disc {
-    width: var(--vinyl-size);
-    padding-bottom: var(--vinyl-size); /* Aspect Ratio trick */
-    height: 0;
-    position: relative;
-    border-radius: 50%;
-    background: repeating-radial-gradient(
-        circle at center,
-        var(--vinyl-groove-color) 0,
-        var(--vinyl-groove-color) 2px,
-        #000 3px,
-        #000 4px
-    );
-    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Re-center absolute children in vinyl because of aspect ratio trick */
-.vinyl-center-helper {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; justify-content: center; align-items: center;
-}
-
-.vinyl-label {
-    width: 40%;
-    height: 40%;
-    background: var(--vinyl-label-color);
-    border-radius: 50%;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.vinyl-hole {
-    width: 12%;
-    height: 12%;
-    background: #000;
-    border-radius: 50%;
-}
 
 /* --- PRINT STYLES --- */
 @media print {
@@ -469,50 +363,19 @@ select {
         size: A4 portrait;
         margin: 0;
     }
-
-    body {
-        background: #fff;
-        display: block;
-        height: auto;
-        overflow: visible;
-    }
-
-    #settings-panel, .page-label {
-        display: none !important;
-    }
-
-    #main-content {
-        background: none;
-        padding: 0;
-        margin: 0;
-        overflow: visible;
-        display: block;
-    }
-    
-    #preview-area {
-        gap: 0;
-        display: block;
-    }
-
+    body { background: #fff; height: auto; display: block; }
+    #settings-panel, .page-label { display: none !important; }
+    #main-content { background: none; padding: 0; display: block; }
+    #preview-area { gap: 0; display: block; }
     .page-container {
-        box-shadow: none;
-        margin: 0;
-        page-break-after: always;
-        border: none;
+        box-shadow: none; margin: 0; page-break-after: always; border: none;
     }
+    .card-wrapper { outline: none; }
+    .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     
-    .card-wrapper {
-        outline: none; /* Normál esetben nem kell outline, csak ha vágójel van */
-    }
-    
-    /* Ha crop marks be van kapcsolva, akkor nyomtatásban is látsszon */
-    .page-container.crop-marks .card-wrapper::before,
-    .page-container.crop-marks .card-wrapper::after {
+    /* Vágójelek láthatósága nyomtatáskor */
+    body.has-crop-marks .card-wrapper::before,
+    body.has-crop-marks .card-wrapper::after {
         display: block;
-    }
-
-    .card {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
     }
 }

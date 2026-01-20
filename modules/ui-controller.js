@@ -1,7 +1,6 @@
 import { parseXLS } from './data-handler.js';
 import { renderAllPages } from './card-generator.js';
 
-// Segédfüggvény a csúszkák melletti számok frissítésére
 function updateValueDisplay(input) {
     const displayId = `val-${input.id}`;
     const displayEl = document.getElementById(displayId);
@@ -18,13 +17,12 @@ function updateCSSVariable(input) {
     document.documentElement.style.setProperty(cssVar, input.value + unit);
 }
 
-// QR Toggle logikája
 function handleQRToggle(isChecked) {
-    const displayValue = isChecked ? 'block' : 'none';
+    // Flex-et használunk a középre igazításhoz a CSS-ben
+    const displayValue = isChecked ? 'flex' : 'none';
     document.documentElement.style.setProperty('--qr-display', displayValue);
 }
 
-// Crop Marks Toggle logikája
 function handleCropMarksToggle(isChecked) {
     const containers = document.querySelectorAll('.page-container');
     containers.forEach(container => {
@@ -36,20 +34,17 @@ function handleCropMarksToggle(isChecked) {
     });
 }
 
-// Az aktuális adat tárolása újrarajzoláshoz
 let currentData = [];
 
 export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
     currentData = initialData;
     const controls = document.querySelectorAll('#settings-panel [data-css-var]');
     
-    // Kezdeti értékek beállítása
     controls.forEach(input => {
         updateCSSVariable(input);
         if (input.type === 'range') updateValueDisplay(input);
     });
 
-    // Eseményfigyelők CSS változókhoz
     controls.forEach(input => {
         input.addEventListener('input', () => {
             updateCSSVariable(input);
@@ -57,7 +52,6 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
         });
     });
 
-    // QR Checkbox
     const qrCheckbox = document.getElementById('show-qr');
     if(qrCheckbox) {
         qrCheckbox.addEventListener('change', (e) => {
@@ -65,15 +59,32 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
         });
     }
 
-    // Crop Marks Checkbox
     const cropMarksCheckbox = document.getElementById('show-crop-marks');
     if (cropMarksCheckbox) {
         cropMarksCheckbox.addEventListener('change', (e) => {
             handleCropMarksToggle(e.target.checked);
+            // Mivel a page-container elemek dinamikusan jönnek létre rendereléskor,
+            // de a toggle csak osztályt ad hozzá/vesz el, ez a meglévőkre hat.
+            // Új renderelésnél a CSS osztály alapból nincs rajta a JS generátorban, 
+            // ezért a legegyszerűbb, ha renderelés után mindig ellenőrizzük a checkbox állapotát
+            // a main.js-ben vagy a generátorban. 
+            // De egyszerűbb megoldás: CSS-el kezelni globálisan, vagy a generátorban alapból rárakni ha kell.
+            // Jelenlegi megoldás csak a már renderelt oldalakra hat.
+            // Javítás: A generátornak tudnia kellene róla, vagy globális state.
+            // Egyszerűsítés: Force re-render vagy body class használat.
+            // Legjobb: document.body.classList.toggle('show-crop-marks', isChecked) és CSS szelektor módosítás.
+            // De maradjunk a re-rendernél a konzisztencia miatt:
+            renderAllPages(document.getElementById('preview-area'), currentData);
+            // Ez újraépíti a DOM-ot, de elveszti a crop-marks osztályt, amit a generátor nem rak rá.
+            // Helyette: A crop marks állapotot tároljuk, és a renderAllPages olvassa, vagy
+            // a legegyszerűbb: A CSS-t írjuk át, hogy body class-ra figyeljen.
+            // Mivel most XML output van, a CSS selector módosítás biztonságosabb.
+            document.body.classList.toggle('has-crop-marks', isChecked);
         });
+        // Init state
+        document.body.classList.toggle('has-crop-marks', cropMarksCheckbox.checked);
     }
 
-    // Fájlfeltöltés kezelése
     const fileUploadButton = document.getElementById('file-upload-button');
     fileUploadButton.addEventListener('change', async (event) => {
         const file = event.target.files[0];
@@ -83,13 +94,12 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
                 currentData = data;
                 onDataLoaded(data);
             } catch (error) {
-                console.error("Hiba a fájl feldolgozása közben:", error);
-                alert("Hiba történt az Excel fájl beolvasása során. Ellenőrizze a formátumot!");
+                console.error("Hiba:", error);
+                alert("Excel hiba.");
             }
         }
     });
 
-    // Nyomtatás gomb
     const printButton = document.getElementById('print-button');
     printButton.addEventListener('click', () => {
         window.print();
