@@ -46,7 +46,7 @@
                     <label>Magasság: <span id="val-card-height">46</span>mm</label>
                     <input type="range" id="card-height" min="30" max="100" value="46" step="0.1" data-unit="mm" data-css-var="--card-height">
                     
-                    <label>Térköz: <span id="val-card-gap">0</span>mm</label>
+                    <label>Térköz (Gap): <span id="val-card-gap">0</span>mm</label>
                     <input type="range" id="card-gap" min="0" max="10" value="0" step="0.1" data-unit="mm" data-css-var="--card-gap">
 
                     <label>Sarokkerekítés: <span id="val-card-radius">2</span>mm</label>
@@ -77,30 +77,34 @@
             </div>
 
             <div class="settings-section">
-                <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg)</h3>
+                <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg & Pozíció)</h3>
                 <div class="control-group">
-                    <!-- Évszám -->
+                    <!-- Évszám (Közép) -->
                     <div class="sub-group">
-                        <label class="sub-label">Évszám</label>
-                        <input type="range" min="8" max="40" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
+                        <label class="sub-label">Évszám (Közép)</label>
+                        <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
                         <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
                     </div>
 
-                    <!-- Előadó -->
+                    <!-- Előadó (Fent) -->
                     <div class="sub-group">
-                        <label class="sub-label">Előadó</label>
-                        <input type="range" min="4" max="20" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
+                        <label class="sub-label">Előadó (Fent)</label>
+                        <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
                         <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
                     </div>
+                    <label class="indent">Távolság fentről: <span id="val-artist-margin">4</span>mm</label>
+                    <input type="range" id="artist-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
 
-                    <!-- Cím -->
+                    <!-- Cím (Lent) -->
                     <div class="sub-group">
-                        <label class="sub-label">Dal Címe</label>
-                        <input type="range" min="4" max="20" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
+                        <label class="sub-label">Dal Címe (Lent)</label>
+                        <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
                         <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
                     </div>
+                    <label class="indent">Távolság lentről: <span id="val-title-margin">4</span>mm</label>
+                    <input type="range" id="title-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--title-margin">
                     
-                    <label>Igazítás</label>
+                    <label>Szöveg Igazítás</label>
                     <select id="text-align" data-css-var="--text-align">
                         <option value="center" selected>Közép</option>
                         <option value="left">Balra</option>
@@ -110,7 +114,7 @@
             </div>
 
              <div class="settings-section">
-                <h3><i class="fa-solid fa-qrcode"></i> Hátlap (QR & Dizájn)</h3>
+                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl)</h3>
                 <div class="control-group">
                     <label class="checkbox-container">
                         <input type="checkbox" id="show-qr" checked>
@@ -122,6 +126,9 @@
                     <label>Lemez Opacitás: <span id="val-vinyl-opacity">0.1</span></label>
                     <input type="range" id="vinyl-opacity" min="0" max="1" value="0.1" step="0.05" data-unit="" data-css-var="--vinyl-opacity">
                     
+                    <label>Roncsolás / Random: <span id="val-vinyl-randomness">0.5</span></label>
+                    <input type="range" id="vinyl-randomness" min="0" max="1" value="0.5" step="0.1" data-unit="" data-css-var="--vinyl-randomness">
+
                     <div class="color-picker-row">
                         <label>Lemez Színe</label>
                         <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
@@ -130,18 +137,15 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v2.1
+                MusicStencil v2.2
             </footer>
         </div>
     </aside>
 
     <main id="main-content">
-        <!-- Ez a terület csak a képernyőn látszik, 1 pár kártyát mutat -->
         <div id="preview-area">
              <div class="preview-placeholder">Adatok betöltése...</div>
         </div>
-
-        <!-- Ez a terület rejtett a képernyőn, de ebbe generáljuk az ÖSSZES oldalt nyomtatáshoz -->
         <div id="print-area"></div>
     </main>
 

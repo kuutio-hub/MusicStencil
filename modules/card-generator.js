@@ -23,12 +23,58 @@ function generateQRCode(element, text) {
     }
 }
 
+// SVG Vinyl Generátor Random Megszakításokkal
+function generateVinylSVG() {
+    // Kiolvassuk a CSS változókból a színt és a randomness értéket
+    const computedStyle = getComputedStyle(document.documentElement);
+    const color = computedStyle.getPropertyValue('--vinyl-groove-color').trim() || '#000000';
+    const randomnessStr = computedStyle.getPropertyValue('--vinyl-randomness').trim();
+    const randomness = parseFloat(randomnessStr) || 0; // 0 = nincs megszakítás, 1 = nagyon töredezett
+
+    const size = 100;
+    const center = size / 2;
+    const maxRadius = 45; // 90% width -> 45 radius
+    const grooveCount = 8; // Barázdák száma
+
+    let svgContent = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
+    
+    // Alap kör
+    svgContent += `<circle cx="${center}" cy="${center}" r="${maxRadius}" fill="none" stroke="${color}" stroke-width="0.5" opacity="0.5" />`;
+
+    for (let i = 1; i <= grooveCount; i++) {
+        const radius = (maxRadius / grooveCount) * i;
+        const circumference = 2 * Math.PI * radius;
+        
+        let strokeDashArray = "";
+        
+        if (randomness > 0) {
+            // Random dash generálás
+            let currentLen = 0;
+            const segments = [];
+            while (currentLen < circumference) {
+                // Hosszabb vonal, rövidebb szünet, randomness factorral torzítva
+                // Minél nagyobb a randomness, annál nagyobbak a lyukak
+                const dash = Math.random() * (20 - (randomness * 10)) + 5; 
+                const gap = Math.random() * (randomness * 10);
+                segments.push(`${dash.toFixed(1)} ${gap.toFixed(1)}`);
+                currentLen += dash + gap;
+            }
+            strokeDashArray = `stroke-dasharray="${segments.join(' ')}"`;
+        }
+
+        svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${color}" stroke-width="${1 + (i * 0.2)}" ${strokeDashArray} />`;
+    }
+
+    svgContent += `</svg>`;
+    return svgContent;
+}
+
 function createCardFront(song) {
     const card = document.createElement('div');
     card.className = 'card front';
     card.innerHTML = `
-        <div class="year">${song.year || ''}</div>
         <div class="artist">${song.artist || 'Ismeretlen'}</div>
+        <div class="year">${song.year || ''}</div>
         <div class="title">${song.title || 'Ismeretlen'}</div>
     `;
     return card;
@@ -40,6 +86,8 @@ function createCardBack(song) {
     
     const vinylBg = document.createElement('div');
     vinylBg.className = 'vinyl-bg';
+    // SVG beillesztése
+    vinylBg.innerHTML = generateVinylSVG();
     
     const qrContainer = document.createElement('div');
     qrContainer.className = 'qr-container';
@@ -56,36 +104,28 @@ function createCardBack(song) {
     return card;
 }
 
-// ÚJ: Csak egyetlen kártya pár (elő+hátlap) renderelése előnézethez
 export function renderPreviewPair(container, song) {
     container.innerHTML = '';
 
-    // Wrapper az előlapnak
     const frontWrapper = document.createElement('div');
     frontWrapper.className = 'card-wrapper';
-    
     const frontLabel = document.createElement('div');
     frontLabel.className = 'preview-label';
     frontLabel.textContent = "Előlap";
     frontWrapper.appendChild(frontLabel);
-    
     frontWrapper.appendChild(createCardFront(song));
     container.appendChild(frontWrapper);
 
-    // Wrapper a hátlapnak
     const backWrapper = document.createElement('div');
     backWrapper.className = 'card-wrapper';
-    
     const backLabel = document.createElement('div');
     backLabel.className = 'preview-label';
     backLabel.textContent = "Hátlap";
     backWrapper.appendChild(backLabel);
-
     backWrapper.appendChild(createCardBack(song));
     container.appendChild(backWrapper);
 }
 
-// Megmarad a nyomtatáshoz: összes oldal generálása
 export function renderAllPages(container, data) {
     container.innerHTML = ''; 
 

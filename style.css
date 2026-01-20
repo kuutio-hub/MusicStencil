@@ -6,6 +6,10 @@
     --card-radius: 2mm;
     --card-padding: 4px;
 
+    /* Pozicionálás */
+    --artist-margin: 4mm;
+    --title-margin: 4mm;
+
     /* Színek - Nyomtatásbarát */
     --primary-color: #000000; /* Keret */
     --card-bg-color: #ffffff; /* Fehér papír */
@@ -26,11 +30,12 @@
     --qr-size: 28mm;
     --qr-display: flex;
     
-    --vinyl-opacity: 0.1; /* Halvány háttér elem */
+    --vinyl-opacity: 0.1;
     --vinyl-groove-color: #000000;
+    --vinyl-randomness: 0.5; /* JS használja */
     
     /* Fonts */
-    --font-heading: 'Orbitron', sans-serif; /* Modern, de olvasható */
+    --font-heading: 'Orbitron', sans-serif;
     --font-ui: 'Montserrat', sans-serif;
 }
 
@@ -42,7 +47,7 @@
 
 body {
     font-family: var(--font-ui);
-    background: #e0e5ec; /* Halvány szürke UI háttér */
+    background: #e0e5ec;
     color: #333;
     display: flex;
     height: 100vh;
@@ -149,12 +154,23 @@ body {
     gap: 10px;
 }
 
+.sub-group {
+    padding-left: 5px;
+    border-left: 2px solid #eee;
+}
+
 label {
     font-size: 0.75rem;
     font-weight: 600;
     color: #555;
     display: flex;
     justify-content: space-between;
+}
+
+label.indent {
+    padding-left: 10px;
+    font-weight: 400;
+    font-size: 0.7rem;
 }
 
 input[type="range"] {
@@ -210,7 +226,7 @@ select {
     justify-content: center;
 }
 
-/* --- PREVIEW AREA (SINGLE CARD PAIR) --- */
+/* --- PREVIEW AREA --- */
 #preview-area {
     display: flex;
     gap: 20px;
@@ -227,11 +243,8 @@ select {
     height: var(--card-height);
     background: #fff;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    /* Az előnézetben lehetnek kicsit nagyobbak a kártyák a jobb láthatóságért, 
-       de a pontos méretarány tartása miatt maradjunk a CSS változóknál, 
-       esetleg scale transzformációval */
-    transform: scale(1.5); /* 50%-kal nagyobb a képernyőn */
-    margin: 20px; /* Hely a scale miatt */
+    transform: scale(1.5); 
+    margin: 20px;
     outline: none;
 }
 
@@ -247,10 +260,9 @@ select {
     font-weight: 600;
 }
 
-
-/* --- PRINT AREA (HIDDEN ON SCREEN) --- */
+/* --- PRINT AREA --- */
 #print-area {
-    display: none; /* Képernyőn nem látszik */
+    display: none;
 }
 
 /* --- KÁRTYA DESIGN --- */
@@ -264,60 +276,79 @@ select {
     border-radius: var(--card-radius);
     padding: var(--card-padding);
     text-align: var(--text-align);
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    box-sizing: border-box;
 }
 
-.card.front .year {
-    font-family: var(--font-heading);
-    font-size: var(--font-size-year);
-    font-weight: 700;
-    color: var(--color-year);
-    line-height: 1;
-    margin-bottom: 4px;
+/* FRONT: Abszolút pozicionálás */
+.card.front {
+    display: block; /* Nem flex, mert abszolút pozíciókat használunk */
 }
 
 .card.front .artist {
+    position: absolute;
+    top: var(--artist-margin);
+    left: var(--card-padding);
+    right: var(--card-padding);
+    
     font-size: var(--font-size-artist);
     font-weight: 600;
     color: var(--color-artist);
     text-transform: uppercase;
     line-height: 1.2;
-    margin-bottom: 2px;
+    z-index: 10;
+}
+
+.card.front .year {
+    position: absolute;
+    top: 50%;
+    left: var(--card-padding);
+    right: var(--card-padding);
+    transform: translateY(-50%);
+    
+    font-family: var(--font-heading);
+    font-size: var(--font-size-year);
+    font-weight: 700;
+    color: var(--color-year);
+    line-height: 1;
+    z-index: 10;
 }
 
 .card.front .title {
+    position: absolute;
+    bottom: var(--title-margin);
+    left: var(--card-padding);
+    right: var(--card-padding);
+    
     font-size: var(--font-size-title);
     font-weight: 400;
     font-style: italic;
     color: var(--color-title);
     line-height: 1.2;
+    z-index: 10;
 }
 
+/* BACK: Dizájn + QR */
 .card.back {
-    position: relative;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Vinyl Háttér - SVG lesz benne */
 .card.back .vinyl-bg {
     position: absolute;
     width: 90%;
     height: 90%;
     border-radius: 50%;
     opacity: var(--vinyl-opacity);
-    background: repeating-radial-gradient(
-        circle at center,
-        var(--vinyl-groove-color) 0,
-        var(--vinyl-groove-color) 1px,
-        transparent 2px,
-        transparent 4px
-    );
     z-index: 0;
     pointer-events: none;
+    overflow: hidden;
+}
+
+.card.back .vinyl-bg svg {
+    width: 100%;
+    height: 100%;
 }
 
 .qr-container {
@@ -359,14 +390,16 @@ select {
 }
 
 /* CROP MARKS */
+/* Ha body.has-crop-marks aktív, akkor látszódjanak */
 body.has-crop-marks .card-wrapper::before,
 body.has-crop-marks .card-wrapper::after {
     content: '';
     position: absolute;
     background: #000;
     pointer-events: none;
-    z-index: 10;
+    z-index: 100;
 }
+
 body.has-crop-marks .card-wrapper::before {
     width: 6px; height: 0.5px; top: -3px; left: -3px;
     box-shadow: calc(var(--card-width) + 6px) 0 0 #000, 0 calc(var(--card-height) + 6px) 0 #000, calc(var(--card-width) + 6px) calc(var(--card-height) + 6px) 0 #000; 
@@ -381,12 +414,8 @@ body.has-crop-marks .card-wrapper::after {
     @page { size: A4 portrait; margin: 0; }
     body { background: #fff; height: auto; display: block; }
     
-    /* Hide settings and SINGLE preview */
     #settings-panel, #preview-area { display: none !important; }
-    
     #main-content { background: none; padding: 0; display: block; margin: 0; overflow: visible; }
-    
-    /* Show PRINT area */
     #print-area { display: block !important; }
     
     .page-container {
@@ -395,6 +424,7 @@ body.has-crop-marks .card-wrapper::after {
     .card-wrapper { outline: none; margin: 0; transform: none; }
     .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     
+    /* Vágójelek biztos megjelenítése nyomtatáskor is, ha be van kapcsolva */
     body.has-crop-marks .card-wrapper::before,
     body.has-crop-marks .card-wrapper::after { display: block; }
 }
