@@ -2,6 +2,24 @@ import { initializeUI, updateRecordCount } from './modules/ui-controller.js';
 import { loadSampleData } from './modules/data-handler.js';
 import { renderAllPages, renderPreviewPair } from './modules/card-generator.js';
 
+const showError = (message, error) => {
+    console.error(message, error);
+    const previewArea = document.getElementById('preview-area');
+    if (previewArea) {
+        const errorMessage = `<strong>Hiba történt!</strong><br><br>${message}<br><br>Részletek: ${error ? error.stack : 'N/A'}`;
+        previewArea.innerHTML = `<div class="preview-placeholder error">${errorMessage}</div>`;
+    }
+};
+
+window.addEventListener('unhandledrejection', event => {
+  showError('Kezeletlen Promise hiba:', event.reason);
+});
+
+window.addEventListener('error', event => {
+  showError('Kezeletlen hiba:', event.error);
+});
+
+
 const App = {
     data: [],
     previewIntervalId: null,
@@ -15,19 +33,18 @@ const App = {
             
             initializeUI(
                 () => this.handleSettingsChange(),
-                (d) => this.handleDataLoaded(d), 
-                this.data
+                (d) => this.handleDataLoaded(d)
             );
             
-            // Statisztika sávot itt már NEM frissítjük, csak fájlbetöltéskor
-            this.renderPrintView();
-            this.showRandomPreview();
-        } catch (error) {
-            console.error("Végzetes hiba az App.init során:", error);
-            const previewArea = document.getElementById('preview-area');
-            if (previewArea) {
-                previewArea.innerHTML = `<div class="preview-placeholder" style="color: #ff6b6b; font-weight: bold;">Hiba történt az alkalmazás indítása közben. Kérjük, ellenőrizze a konzolt a részletekért.</div>`;
+            if (this.data && this.data.length > 0) {
+                this.renderPrintView();
+                this.startPreviewCycle();
+            } else {
+                 showError("Nem sikerült betölteni a minta adatokat.", "Az adatforrás üresnek tűnik.");
             }
+
+        } catch (error) {
+            showError("Végzetes hiba az App.init során:", error);
         }
     },
 
@@ -37,8 +54,12 @@ const App = {
     },
 
     handleDataLoaded(newData) {
+        if (!newData || newData.length === 0) {
+            showError("A feltöltött fájl üres vagy hibás formátumú.", "Nincsenek feldolgozható adatok.");
+            return;
+        }
         this.data = newData;
-        this.updateStats(); // CSAK itt hívjuk meg
+        this.updateStats();
         this.renderPrintView();
         this.startPreviewCycle();
     },
@@ -67,8 +88,6 @@ const App = {
         renderPreviewPair(previewArea, this.data[this.currentPreviewIndex]);
     },
 
-
-
     startPreviewCycle() {
         if (this.previewIntervalId) clearInterval(this.previewIntervalId);
         
@@ -80,4 +99,10 @@ const App = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => App.init());
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        App.init();
+    } catch(error) {
+        showError('Kritikus hiba az alkalmazás indítása során:', error);
+    }
+});

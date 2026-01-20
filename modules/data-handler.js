@@ -1,9 +1,14 @@
 import sampleData from './sample-data.js';
 
 export async function loadSampleData() {
-    // A fetch helyett közvetlenül a beimportált adatokat adjuk vissza.
-    // Az 'async' kulcsszó biztosítja, hogy a függvény továbbra is Promise-t adjon vissza,
-    // így a main.js-ben nem kell változtatni a hívás módján.
+    // === TERVEZÉSI DÖNTÉS ===
+    // A mintaadatokat (sampleData) szándékosan egy beágyazott JS modulból importáljuk
+    // ahelyett, hogy külső JSON-t töltenénk be (pl. fetch-csel).
+    // OKA: 100%-os megbízhatóságot nyújt a fejlesztői környezetben is, elkerülve
+    // a fájl elérési úttal kapcsolatos hibákat, és garantálja, hogy az alkalmazás
+    // induláskor azonnal megjeleníthessen valamit. Ez a módszer csak a kicsi,
+    // statikus mintaadatok esetében javasolt. A nagy, dinamikus (felhasználói)
+    // adatokat továbbra is a parseXLS funkció kezeli futási időben.
     return sampleData;
 }
 
@@ -37,7 +42,7 @@ export function parseXLS(file) {
                         year: row[2],
                         qr_data: row[3],
                         code1: row[4],
-                        code2: row[5]
+                        code2: row[5] // HIBA JAVÍTVA: 'seminar' helyett 5
                     };
                 });
                 

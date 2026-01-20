@@ -37,7 +37,7 @@ export function updateRecordCount(count) {
 
 let _triggerRefresh = () => {};
 
-export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
+export function initializeUI(onSettingsChange, onDataLoaded) {
     
     if (onSettingsChange) {
         _triggerRefresh = () => onSettingsChange();
@@ -55,8 +55,15 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
             updateCSSVariable(input);
             if (input.type === 'range') updateValueDisplay(input);
             
-            if (input.id.startsWith('vinyl-') || input.id === 'vinyl-groove-color') {
+            // Folyamatos renderelést igénylő beállítások
+            if (input.id.startsWith('vinyl-') || input.id === 'vinyl-groove-color' || input.id.includes('margin')) {
                 _triggerRefresh();
+            }
+        });
+        // Az 'input' helyett 'change' esemény a kevésbé erőforrás-igényes beállításokhoz
+        input.addEventListener('change', () => {
+            if (!input.id.startsWith('vinyl-') && !input.id.includes('margin')) {
+                 _triggerRefresh();
             }
         });
     });
@@ -67,6 +74,8 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
             const displayValue = e.target.checked ? 'flex' : 'none';
             document.documentElement.style.setProperty('--qr-display', displayValue);
         });
+         // Kezdeti állapot
+        document.documentElement.style.setProperty('--qr-display', qrCheckbox.checked ? 'flex' : 'none');
     }
 
     // Toggle-ök inicializálása
@@ -81,9 +90,10 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
             try {
                 const data = await parseXLS(file);
                 onDataLoaded(data);
-            } catch (error)
-                console.error("Hiba:", error);
-                alert("Excel hiba: " + error.message);
+            } catch (error) {
+                // A globális hibakezelő a main.js-ben fogja ezt elkapni és megjeleníteni.
+                // Itt csak továbbdobjuk a hibát, hogy a Promise elutasított állapotba kerüljön.
+                throw new Error(`Hiba az Excel fájl ("${file.name}") feldolgozása közben: ${error.message}`);
             }
         }
     });
