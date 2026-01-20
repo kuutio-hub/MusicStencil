@@ -12,6 +12,9 @@ const App = {
 
         this.data = await loadSampleData();
         
+        // Statisztika frissítése az alap adatokkal is
+        this.updateStats(); 
+
         initializeUI(
             () => this.handleSettingsChange(),
             (d) => this.handleDataLoaded(d), 
@@ -19,7 +22,6 @@ const App = {
         );
         
         this.renderPrintView();
-        // Elindítjuk az előnézetet a beépített adatokkal is
         this.startPreviewCycle(); 
     },
 
@@ -30,7 +32,7 @@ const App = {
 
     handleDataLoaded(newData) {
         this.data = newData;
-        this.updateStats(); // Statisztika sáv mutatása csak user feltöltés után
+        this.updateStats(); 
         this.renderPrintView();
         this.startPreviewCycle();
     },
