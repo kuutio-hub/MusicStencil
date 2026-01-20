@@ -1,20 +1,10 @@
+import sampleData from './sample-data.js';
+
 export async function loadSampleData() {
-    try {
-        const response = await fetch('assets/sample-data.json');
-        if (!response.ok) {
-            throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Hiba a mintaadatok betöltésekor:", error);
-        return [{ 
-            year: "2024", 
-            artist: "Hiba történt", 
-            title: "Mintaadat hiba",
-            code1: "ERR",
-            code2: "000"
-        }];
-    }
+    // A fetch helyett közvetlenül a beimportált adatokat adjuk vissza.
+    // Az 'async' kulcsszó biztosítja, hogy a függvény továbbra is Promise-t adjon vissza,
+    // így a main.js-ben nem kell változtatni a hívás módján.
+    return sampleData;
 }
 
 export function parseXLS(file) {
