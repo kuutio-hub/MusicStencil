@@ -8,19 +8,27 @@ const App = {
     currentPreviewIndex: 0, 
 
     async init() {
-        console.log("MusicStencil indítása...");
+        try {
+            console.log("MusicStencil indítása...");
 
-        this.data = await loadSampleData();
-        
-        initializeUI(
-            () => this.handleSettingsChange(),
-            (d) => this.handleDataLoaded(d), 
-            this.data
-        );
-        
-        // Statisztika sávot itt már NEM frissítjük, csak fájlbetöltéskor
-        this.renderPrintView();
-        this.showRandomPreview();
+            this.data = await loadSampleData();
+            
+            initializeUI(
+                () => this.handleSettingsChange(),
+                (d) => this.handleDataLoaded(d), 
+                this.data
+            );
+            
+            // Statisztika sávot itt már NEM frissítjük, csak fájlbetöltéskor
+            this.renderPrintView();
+            this.showRandomPreview();
+        } catch (error) {
+            console.error("Végzetes hiba az App.init során:", error);
+            const previewArea = document.getElementById('preview-area');
+            if (previewArea) {
+                previewArea.innerHTML = `<div class="preview-placeholder" style="color: #ff6b6b; font-weight: bold;">Hiba történt az alkalmazás indítása közben. Kérjük, ellenőrizze a konzolt a részletekért.</div>`;
+            }
+        }
     },
 
     handleSettingsChange() {

@@ -1,6 +1,6 @@
 export async function loadSampleData() {
     try {
-        const response = await fetch('/assets/sample-data.json');
+        const response = await fetch('assets/sample-data.json');
         if (!response.ok) {
             throw new Error(`HTTP hiba! Státusz: ${response.status}`);
         }
