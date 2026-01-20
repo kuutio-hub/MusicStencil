@@ -1,6 +1,5 @@
 import { parseXLS } from './data-handler.js';
 import { renderAllPages, renderPreviewPair } from './card-generator.js';
-import { updateRecordCount as updateCount } from './ui-controller.js'; // Self import fix for circular dep if needed, or just function def
 
 function updateValueDisplay(input) {
     const displayId = `val-${input.id}`;
@@ -25,7 +24,6 @@ function handleQRToggle(isChecked) {
 
 function handleCropMarksToggle(isChecked) {
     const isVisible = isChecked;
-    // Használjuk a toggle második paraméterét a kényszerítéshez
     document.body.classList.toggle('has-crop-marks', isVisible);
 }
 
@@ -36,16 +34,12 @@ export function updateRecordCount(count) {
     if (container) container.style.display = 'inline-flex';
 }
 
-// Segéd a globális adatok eléréséhez (closure megoldás lenne szebb, de a struktúra adott)
 let currentData = [];
-// Callback placeholder
 let _triggerRefresh = () => {};
 
 export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
     currentData = initialData;
     
-    // Callback beállítása, ha a main.js átadja
-    // (A main.js-ben: handleSettingsChange hívja a renderelést)
     if (onSettingsChange) {
         _triggerRefresh = () => onSettingsChange();
     }
@@ -62,14 +56,10 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
             updateCSSVariable(input);
             if (input.type === 'range') updateValueDisplay(input);
             
-            // Ha a vinyl randomness változik, újra kell generálni az SVG-t,
-            // nem elég a CSS változó frissítése.
-            if (input.id === 'vinyl-randomness' || input.id === 'vinyl-groove-color') {
+            // Vinyl glitch paraméterek vagy méretváltozás esetén újra kell generálni az SVG-t vagy a layoutot
+            if (input.id.startsWith('vinyl-') || input.id === 'vinyl-groove-color') {
                 _triggerRefresh();
             }
-            
-            // Margók változásánál nem kell teljes újragenerálás, azt a CSS kezeli,
-            // kivéve ha nagyon drasztikus layout váltás lenne.
         });
     });
 
@@ -85,7 +75,6 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
         cropMarksCheckbox.addEventListener('change', (e) => {
             handleCropMarksToggle(e.target.checked);
         });
-        // Init state
         handleCropMarksToggle(cropMarksCheckbox.checked);
     }
 

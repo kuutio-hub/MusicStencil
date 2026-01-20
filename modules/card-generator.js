@@ -1,6 +1,4 @@
-// 46x46mm kártya esetén az A4 (210mm) lapon 4 oszlop fér el kényelmesen (184mm).
-// 297mm magasságon 6 sor fér el (276mm).
-// Összesen 24 kártya / oldal.
+// 46x46mm -> 4 oszlop. Max biztonságos méret kb 48mm.
 const CARDS_PER_PAGE = 24;
 const COLUMNS = 4;
 
@@ -23,18 +21,20 @@ function generateQRCode(element, text) {
     }
 }
 
-// SVG Vinyl Generátor Random Megszakításokkal
+// Speciális Vinyl Generátor: Szekciók + Tól-Ig Hézag
 function generateVinylSVG() {
-    // Kiolvassuk a CSS változókból a színt és a randomness értéket
     const computedStyle = getComputedStyle(document.documentElement);
     const color = computedStyle.getPropertyValue('--vinyl-groove-color').trim() || '#000000';
-    const randomnessStr = computedStyle.getPropertyValue('--vinyl-randomness').trim();
-    const randomness = parseFloat(randomnessStr) || 0; // 0 = nincs megszakítás, 1 = nagyon töredezett
+    
+    // Új paraméterek
+    const sections = parseInt(computedStyle.getPropertyValue('--vinyl-sections').trim()) || 3;
+    const gapMinP = parseFloat(computedStyle.getPropertyValue('--vinyl-gap-min').trim()) || 10; // %
+    const gapMaxP = parseFloat(computedStyle.getPropertyValue('--vinyl-gap-max').trim()) || 40; // %
 
     const size = 100;
     const center = size / 2;
-    const maxRadius = 45; // 90% width -> 45 radius
-    const grooveCount = 8; // Barázdák száma
+    const maxRadius = 45; 
+    const grooveCount = 8; 
 
     let svgContent = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
     
@@ -47,22 +47,31 @@ function generateVinylSVG() {
         
         let strokeDashArray = "";
         
-        if (randomness > 0) {
-            // Random dash generálás
-            let currentLen = 0;
-            const segments = [];
-            while (currentLen < circumference) {
-                // Hosszabb vonal, rövidebb szünet, randomness factorral torzítva
-                // Minél nagyobb a randomness, annál nagyobbak a lyukak
-                const dash = Math.random() * (20 - (randomness * 10)) + 5; 
-                const gap = Math.random() * (randomness * 10);
-                segments.push(`${dash.toFixed(1)} ${gap.toFixed(1)}`);
-                currentLen += dash + gap;
-            }
-            strokeDashArray = `stroke-dasharray="${segments.join(' ')}"`;
-        }
+        // Logika: A kerületet 'sections' darab részre osztjuk.
+        // Minden szekcióban van egy vonal és egy hézag.
+        // A hézag mérete random a gapMin és gapMax % között (a szekció hosszához viszonyítva).
+        
+        const sectionLength = circumference / sections;
+        const dashArrayParts = [];
+        
+        // Offset randomizálás, hogy ne egy vonalba essenek a vágások
+        const offset = Math.random() * circumference;
 
-        svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${color}" stroke-width="${1 + (i * 0.2)}" ${strokeDashArray} />`;
+        for (let s = 0; s < sections; s++) {
+            // Random gap százalék a tartományon belül
+            const gapPercent = gapMinP + Math.random() * (gapMaxP - gapMinP);
+            const gapLen = sectionLength * (gapPercent / 100);
+            const dashLen = sectionLength - gapLen;
+            
+            dashArrayParts.push(`${dashLen.toFixed(2)} ${gapLen.toFixed(2)}`);
+        }
+        
+        strokeDashArray = dashArrayParts.join(' ');
+
+        svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" 
+            fill="none" stroke="${color}" stroke-width="${1 + (i * 0.2)}" 
+            stroke-dasharray="${strokeDashArray}" 
+            stroke-dashoffset="${offset}" />`;
     }
 
     svgContent += `</svg>`;
@@ -76,6 +85,9 @@ function createCardFront(song) {
         <div class="artist">${song.artist || 'Ismeretlen'}</div>
         <div class="year">${song.year || ''}</div>
         <div class="title">${song.title || 'Ismeretlen'}</div>
+        
+        <div class="code1">${song.code1 || ''}</div>
+        <div class="code2">${song.code2 || ''}</div>
     `;
     return card;
 }
@@ -86,7 +98,6 @@ function createCardBack(song) {
     
     const vinylBg = document.createElement('div');
     vinylBg.className = 'vinyl-bg';
-    // SVG beillesztése
     vinylBg.innerHTML = generateVinylSVG();
     
     const qrContainer = document.createElement('div');

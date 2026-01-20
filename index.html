@@ -38,21 +38,15 @@
         <div class="scroll-container">
             
             <div class="settings-section">
-                <h3><i class="fa-solid fa-ruler-combined"></i> Kártya Méretek</h3>
+                <h3><i class="fa-solid fa-ruler-combined"></i> Kártya Méretek (Négyzet)</h3>
                 <div class="control-group">
-                    <label>Szélesség: <span id="val-card-width">46</span>mm</label>
-                    <input type="range" id="card-width" min="30" max="100" value="46" step="0.1" data-unit="mm" data-css-var="--card-width">
+                    <label>Méret: <span id="val-card-size">46</span>mm</label>
+                    <input type="range" id="card-size" min="30" max="48" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
                     
-                    <label>Magasság: <span id="val-card-height">46</span>mm</label>
-                    <input type="range" id="card-height" min="30" max="100" value="46" step="0.1" data-unit="mm" data-css-var="--card-height">
-                    
-                    <label>Térköz (Gap): <span id="val-card-gap">0</span>mm</label>
-                    <input type="range" id="card-gap" min="0" max="10" value="0" step="0.1" data-unit="mm" data-css-var="--card-gap">
-
                     <label>Sarokkerekítés: <span id="val-card-radius">2</span>mm</label>
                     <input type="range" id="card-radius" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--card-radius">
 
-                    <label>Belső Margó: <span id="val-card-padding">4</span>px</label>
+                    <label>Belső Margó (Padding): <span id="val-card-padding">4</span>px</label>
                     <input type="range" id="card-padding" min="0" max="20" value="4" step="1" data-unit="px" data-css-var="--card-padding">
                     
                     <label class="checkbox-container">
@@ -77,7 +71,7 @@
             </div>
 
             <div class="settings-section">
-                <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg & Pozíció)</h3>
+                <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg)</h3>
                 <div class="control-group">
                     <!-- Évszám (Közép) -->
                     <div class="sub-group">
@@ -101,10 +95,19 @@
                         <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
                         <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
                     </div>
-                    <label class="indent">Távolság lentről: <span id="val-title-margin">4</span>mm</label>
-                    <input type="range" id="title-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--title-margin">
+                    <label class="indent">Távolság lentről: <span id="val-title-margin">8</span>mm</label>
+                    <input type="range" id="title-margin" min="0" max="20" value="8" step="0.5" data-unit="mm" data-css-var="--title-margin">
+
+                    <!-- Code1 & Code2 -->
+                    <div class="sub-group">
+                        <label class="sub-label">Code 1 & 2 (Alul sarok)</label>
+                        <input type="range" min="4" max="14" value="6" step="0.5" data-unit="pt" data-css-var="--font-size-codes">
+                        <input type="color" value="#000000" data-css-var="--color-codes" class="mini-color">
+                    </div>
+                    <label class="indent">Code távolság (szél/alj): <span id="val-code-margin">2</span>mm</label>
+                    <input type="range" id="code-margin" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
                     
-                    <label>Szöveg Igazítás</label>
+                    <label>Szöveg Igazítás (Cím/Előadó)</label>
                     <select id="text-align" data-css-var="--text-align">
                         <option value="center" selected>Közép</option>
                         <option value="left">Balra</option>
@@ -114,7 +117,7 @@
             </div>
 
              <div class="settings-section">
-                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl)</h3>
+                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl Glitch)</h3>
                 <div class="control-group">
                     <label class="checkbox-container">
                         <input type="checkbox" id="show-qr" checked>
@@ -126,8 +129,19 @@
                     <label>Lemez Opacitás: <span id="val-vinyl-opacity">0.1</span></label>
                     <input type="range" id="vinyl-opacity" min="0" max="1" value="0.1" step="0.05" data-unit="" data-css-var="--vinyl-opacity">
                     
-                    <label>Roncsolás / Random: <span id="val-vinyl-randomness">0.5</span></label>
-                    <input type="range" id="vinyl-randomness" min="0" max="1" value="0.5" step="0.1" data-unit="" data-css-var="--vinyl-randomness">
+                    <!-- Glitch Controls -->
+                    <div class="sub-group">
+                         <label class="sub-label">Glitch Paraméterek</label>
+                         
+                         <label class="indent">Szekciók száma: <span id="val-vinyl-sections">3</span></label>
+                         <input type="range" id="vinyl-sections" min="1" max="20" value="3" step="1" data-unit="" data-css-var="--vinyl-sections">
+                         
+                         <label class="indent">Hézag Min %: <span id="val-vinyl-gap-min">10</span>%</label>
+                         <input type="range" id="vinyl-gap-min" min="0" max="50" value="10" step="5" data-unit="%" data-css-var="--vinyl-gap-min">
+                         
+                         <label class="indent">Hézag Max %: <span id="val-vinyl-gap-max">40</span>%</label>
+                         <input type="range" id="vinyl-gap-max" min="0" max="90" value="40" step="5" data-unit="%" data-css-var="--vinyl-gap-max">
+                    </div>
 
                     <div class="color-picker-row">
                         <label>Lemez Színe</label>
@@ -137,7 +151,7 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v2.2
+                MusicStencil v3.0
             </footer>
         </div>
     </aside>

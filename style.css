@@ -1,18 +1,21 @@
 :root {
-    /* Layout alapok: 46x46mm alapértelmezett */
-    --card-width: 46mm;
-    --card-height: 46mm;
-    --card-gap: 0mm;
+    /* Layout alapok: Négyzetes */
+    --card-size: 46mm; /* Szélesség és Magasság egyben */
+    --card-width: var(--card-size);
+    --card-height: var(--card-size);
+    
+    --card-gap: 0mm; /* Fixen 0, a JS kezeli a margót a biztonságért */
     --card-radius: 2mm;
     --card-padding: 4px;
 
     /* Pozicionálás */
     --artist-margin: 4mm;
-    --title-margin: 4mm;
+    --title-margin: 8mm; /* Kicsit feljebb, hogy a kódok elférjenek alatta */
+    --code-margin: 2mm;
 
     /* Színek - Nyomtatásbarát */
-    --primary-color: #000000; /* Keret */
-    --card-bg-color: #ffffff; /* Fehér papír */
+    --primary-color: #000000;
+    --card-bg-color: #ffffff;
     
     /* Tipográfia */
     --font-size-year: 24pt;
@@ -23,6 +26,9 @@
     
     --font-size-title: 7pt;
     --color-title: #333333;
+
+    --font-size-codes: 6pt;
+    --color-codes: #000000;
     
     --text-align: center;
 
@@ -32,7 +38,11 @@
     
     --vinyl-opacity: 0.1;
     --vinyl-groove-color: #000000;
-    --vinyl-randomness: 0.5; /* JS használja */
+    
+    /* Glitch változók (JS olvassa) */
+    --vinyl-sections: 3;
+    --vinyl-gap-min: 10;
+    --vinyl-gap-max: 40;
     
     /* Fonts */
     --font-heading: 'Orbitron', sans-serif;
@@ -229,22 +239,22 @@ select {
 /* --- PREVIEW AREA --- */
 #preview-area {
     display: flex;
-    gap: 20px;
+    gap: 40px; /* Nagyobb térköz a previewban */
     align-items: center;
     justify-content: center;
     background: rgba(255,255,255,0.1);
-    padding: 40px;
+    padding: 60px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 #preview-area .card-wrapper {
-    width: var(--card-width);
-    height: var(--card-height);
+    width: var(--card-size);
+    height: var(--card-size);
     background: #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     transform: scale(1.5); 
-    margin: 20px;
+    margin: 0; /* A gap kezeli a távolságot */
     outline: none;
 }
 
@@ -281,7 +291,7 @@ select {
 
 /* FRONT: Abszolút pozicionálás */
 .card.front {
-    display: block; /* Nem flex, mert abszolút pozíciókat használunk */
+    display: block; 
 }
 
 .card.front .artist {
@@ -327,6 +337,30 @@ select {
     z-index: 10;
 }
 
+/* Codes: Bottom Corners */
+.card.front .code1,
+.card.front .code2 {
+    position: absolute;
+    bottom: var(--code-margin);
+    font-family: 'Orbitron', monospace;
+    font-size: var(--font-size-codes);
+    color: var(--color-codes);
+    font-weight: 700;
+    z-index: 10;
+    line-height: 1;
+}
+
+.card.front .code1 {
+    left: var(--code-margin);
+    text-align: left;
+}
+
+.card.front .code2 {
+    right: var(--code-margin);
+    text-align: right;
+}
+
+
 /* BACK: Dizájn + QR */
 .card.back {
     display: flex;
@@ -334,7 +368,6 @@ select {
     align-items: center;
 }
 
-/* Vinyl Háttér - SVG lesz benne */
 .card.back .vinyl-bg {
     position: absolute;
     width: 90%;
@@ -371,26 +404,27 @@ select {
     background: #fff;
     width: 210mm;
     height: 297mm;
+    /* Margó biztosítása, hogy ne csússzon le a papírról a Grid */
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
     grid-template-rows: repeat(6, 1fr);
-    padding: calc( (297mm - (6 * var(--card-height)) - (5 * var(--card-gap))) / 2)
-             calc( (210mm - (4 * var(--card-width)) - (3 * var(--card-gap))) / 2);
+    /* Középre igazítás + biztonsági margó */
+    padding: calc( (297mm - (6 * var(--card-size)) - (5 * var(--card-gap))) / 2)
+             calc( (210mm - (4 * var(--card-size)) - (3 * var(--card-gap))) / 2);
     gap: var(--card-gap);
     margin-bottom: 2rem;
     position: relative;
 }
 
 .card-wrapper {
-    width: var(--card-width);
-    height: var(--card-height);
+    width: var(--card-size);
+    height: var(--card-size);
     position: relative;
     outline: 1px dashed #eee;
 }
 
 /* CROP MARKS */
-/* Ha body.has-crop-marks aktív, akkor látszódjanak */
 body.has-crop-marks .card-wrapper::before,
 body.has-crop-marks .card-wrapper::after {
     content: '';
@@ -402,11 +436,11 @@ body.has-crop-marks .card-wrapper::after {
 
 body.has-crop-marks .card-wrapper::before {
     width: 6px; height: 0.5px; top: -3px; left: -3px;
-    box-shadow: calc(var(--card-width) + 6px) 0 0 #000, 0 calc(var(--card-height) + 6px) 0 #000, calc(var(--card-width) + 6px) calc(var(--card-height) + 6px) 0 #000; 
+    box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000; 
 }
 body.has-crop-marks .card-wrapper::after {
     width: 0.5px; height: 6px; top: -3px; left: -3px;
-    box-shadow: calc(var(--card-width) + 6px) 0 0 #000, 0 calc(var(--card-height) + 6px) 0 #000, calc(var(--card-width) + 6px) calc(var(--card-height) + 6px) 0 #000;
+    box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000;
 }
 
 /* --- PRINT STYLES --- */
@@ -424,7 +458,6 @@ body.has-crop-marks .card-wrapper::after {
     .card-wrapper { outline: none; margin: 0; transform: none; }
     .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     
-    /* Vágójelek biztos megjelenítése nyomtatáskor is, ha be van kapcsolva */
     body.has-crop-marks .card-wrapper::before,
     body.has-crop-marks .card-wrapper::after { display: block; }
 }
