@@ -20,12 +20,15 @@
     /* Tipográfia */
     --font-size-year: 24pt;
     --color-year: #000000;
+    --font-family-year: 'Orbitron', sans-serif;
     
     --font-size-artist: 8pt;
     --color-artist: #000000;
+    --font-family-artist: 'Montserrat', sans-serif;
     
     --font-size-title: 7pt;
     --color-title: #333333;
+    --font-family-title: 'Playfair Display', serif;
 
     --font-size-codes: 6pt;
     --color-codes: #000000;
@@ -39,7 +42,10 @@
     --vinyl-opacity: 0.1;
     --vinyl-groove-color: #000000;
     
-    /* Glitch változók (JS olvassa) */
+    /* Vinyl változók (JS olvassa) */
+    --vinyl-groove-count: 8;
+    --vinyl-groove-thickness: 1;
+    --vinyl-size-offset: 0;
     --vinyl-sections: 3;
     --vinyl-gap-min: 10;
     --vinyl-gap-max: 40;
@@ -183,6 +189,8 @@ select {
     border-radius: 4px;
     background: var(--color-bg-main);
     color: var(--color-text-light);
+    width: 100%;
+    margin-bottom: 5px;
 }
 
 .checkbox-container { justify-content: flex-start; gap: 8px; cursor: pointer; align-items: center; }
@@ -250,9 +258,9 @@ select {
 
 .card.front { display: block; }
 
-.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: 600; color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; }
-.card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: 700; color: var(--color-year); line-height: 1; z-index: 10; }
-.card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: 400; font-style: italic; color: var(--color-title); line-height: 1.2; z-index: 10; }
+.card.front .artist { font-family: var(--font-family-artist); position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: 600; color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; }
+.card.front .year { font-family: var(--font-family-year); position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-weight: 700; font-size: var(--font-size-year); color: var(--color-year); line-height: 1; z-index: 10; }
+.card.front .title { font-family: var(--font-family-title); position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: 400; font-style: italic; color: var(--color-title); line-height: 1.2; z-index: 10; }
 
 /* --- Codes: Alap és Forgatott Stílus --- */
 .card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: 700; z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; }
@@ -266,15 +274,16 @@ body.codes-rotated .card.front .code1,
 body.codes-rotated .card.front .code2 {
     bottom: auto; /* Felülírjuk az alapot */
     top: 50%;
+    transform-origin: center;
     transform: translateY(-50%) rotate(-90deg);
 }
-body.codes-rotated .card.front .code1 { left: calc(var(--code-margin) - var(--font-size-codes) / 2); }
-body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--font-size-codes) / 2); }
+body.codes-rotated .card.front .code1 { left: calc(var(--code-margin) - var(--font-size-codes) * 0.5); }
+body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--font-size-codes) * 0.5); }
 
 
 /* BACK: Dizájn + QR */
 .card.back { display: flex; justify-content: center; align-items: center; }
-.card.back .vinyl-bg { position: absolute; width: 90%; height: 90%; border-radius: 50%; opacity: var(--vinyl-opacity); z-index: 0; pointer-events: none; overflow: hidden; }
+.card.back .vinyl-bg { position: absolute; width: 100%; height: 100%; /* Kitölti a kártyát, a túlnyúláshoz kell */ opacity: var(--vinyl-opacity); z-index: 0; pointer-events: none; overflow: hidden; display: flex; justify-content: center; align-items: center; }
 .card.back .vinyl-bg svg { width: 100%; height: 100%; }
 
 .qr-container { display: var(--qr-display); width: var(--qr-size); height: var(--qr-size); z-index: 1; background: #fff; justify-content: center; align-items: center; }

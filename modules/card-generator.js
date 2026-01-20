@@ -21,55 +21,57 @@ function generateQRCode(element, text) {
     }
 }
 
-// Speciális Vinyl Generátor: Szekciók + Tól-Ig Hézag
+
 function generateVinylSVG() {
     const computedStyle = getComputedStyle(document.documentElement);
     const color = computedStyle.getPropertyValue('--vinyl-groove-color').trim() || '#000000';
     
-    // Új paraméterek
+    // Vinyl paraméterek
+    const grooveCount = parseInt(computedStyle.getPropertyValue('--vinyl-groove-count').trim()) || 8;
+    const thicknessMultiplier = parseFloat(computedStyle.getPropertyValue('--vinyl-groove-thickness').trim()) || 1;
+    const sizeOffset = parseFloat(computedStyle.getPropertyValue('--vinyl-size-offset').trim()) || 0; // %
+    
+    // Glitch paraméterek
     const sections = parseInt(computedStyle.getPropertyValue('--vinyl-sections').trim()) || 3;
     const gapMinP = parseFloat(computedStyle.getPropertyValue('--vinyl-gap-min').trim()) || 10; // %
     const gapMaxP = parseFloat(computedStyle.getPropertyValue('--vinyl-gap-max').trim()) || 40; // %
 
     const size = 100;
     const center = size / 2;
-    const maxRadius = 45; 
-    const grooveCount = 8; 
+    
+    // Méret / Túlnyúlás számítása
+    const baseRadius = 45; // 90%
+    const maxRadius = baseRadius * (1 - (sizeOffset / 100));
 
     let svgContent = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
     
-    // Alap kör
+    // Alap külső kör
     svgContent += `<circle cx="${center}" cy="${center}" r="${maxRadius}" fill="none" stroke="${color}" stroke-width="0.5" opacity="0.5" />`;
 
     for (let i = 1; i <= grooveCount; i++) {
         const radius = (maxRadius / grooveCount) * i;
         const circumference = 2 * Math.PI * radius;
         
-        let strokeDashArray = "";
-        
-        // Logika: A kerületet 'sections' darab részre osztjuk.
-        // Minden szekcióban van egy vonal és egy hézag.
-        // A hézag mérete random a gapMin és gapMax % között (a szekció hosszához viszonyítva).
-        
         const sectionLength = circumference / sections;
         const dashArrayParts = [];
         
-        // Offset randomizálás, hogy ne egy vonalba essenek a vágások
         const offset = Math.random() * circumference;
 
         for (let s = 0; s < sections; s++) {
-            // Random gap százalék a tartományon belül
             const gapPercent = gapMinP + Math.random() * (gapMaxP - gapMinP);
             const gapLen = sectionLength * (gapPercent / 100);
             const dashLen = sectionLength - gapLen;
             
-            dashArrayParts.push(`${dashLen.toFixed(2)} ${gapLen.toFixed(2)}`);
+            if (dashLen > 0) { // Negatív dash ne legyen
+                dashArrayParts.push(`${dashLen.toFixed(2)} ${gapLen.toFixed(2)}`);
+            }
         }
         
-        strokeDashArray = dashArrayParts.join(' ');
+        const strokeDashArray = dashArrayParts.join(' ');
+        const strokeWidth = (0.8 + (i * 0.15)) * thicknessMultiplier;
 
         svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" 
-            fill="none" stroke="${color}" stroke-width="${1 + (i * 0.2)}" 
+            fill="none" stroke="${color}" stroke-width="${strokeWidth.toFixed(2)}" 
             stroke-dasharray="${strokeDashArray}" 
             stroke-dashoffset="${offset}" />`;
     }

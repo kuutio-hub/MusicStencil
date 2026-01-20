@@ -18,9 +18,9 @@ const App = {
             this.data
         );
         
-        // Statisztika sávot itt már NEM frissítjük, csak fájlbetöltéskor
         this.renderPrintView();
-        this.showRandomPreview();
+        // Visszaállítva: az előnézeti ciklus induljon el a mintaadatokkal is
+        this.startPreviewCycle(); 
     },
 
     handleSettingsChange() {
