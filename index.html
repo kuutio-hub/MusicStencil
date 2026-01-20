@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Caveat&family=Lato&family=Lobster&family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@400;700&family=Playfair+Display&family=Roboto+Slab&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -76,16 +76,6 @@
                     <!-- Évszám (Közép) -->
                     <div class="sub-group">
                         <label class="sub-label">Évszám (Közép)</label>
-                        <select data-css-var="--font-family-year">
-                            <option value="'Orbitron', sans-serif" selected>Orbitron</option>
-                            <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-                            <option value="'Anton', sans-serif">Anton</option>
-                            <option value="'Montserrat', sans-serif">Montserrat</option>
-                            <option value="'Roboto Slab', serif">Roboto Slab</option>
-                            <option value="'Playfair Display', serif">Playfair Display</option>
-                            <option value="'Lobster', cursive">Lobster</option>
-                            <option value="'Caveat', cursive">Caveat</option>
-                        </select>
                         <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
                         <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
                     </div>
@@ -93,16 +83,6 @@
                     <!-- Előadó (Fent) -->
                     <div class="sub-group">
                         <label class="sub-label">Előadó (Fent)</label>
-                         <select data-css-var="--font-family-artist">
-                            <option value="'Montserrat', sans-serif" selected>Montserrat</option>
-                            <option value="'Orbitron', sans-serif">Orbitron</option>
-                            <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-                            <option value="'Anton', sans-serif">Anton</option>
-                            <option value="'Roboto Slab', serif">Roboto Slab</option>
-                            <option value="'Playfair Display', serif">Playfair Display</option>
-                            <option value="'Lobster', cursive">Lobster</option>
-                            <option value="'Caveat', cursive">Caveat</option>
-                        </select>
                         <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
                         <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
                     </div>
@@ -112,16 +92,6 @@
                     <!-- Cím (Lent) -->
                     <div class="sub-group">
                         <label class="sub-label">Dal Címe (Lent)</label>
-                         <select data-css-var="--font-family-title">
-                            <option value="'Playfair Display', serif" selected>Playfair Display</option>
-                            <option value="'Montserrat', sans-serif">Montserrat</option>
-                            <option value="'Orbitron', sans-serif">Orbitron</option>
-                            <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-                            <option value="'Anton', sans-serif">Anton</option>
-                            <option value="'Roboto Slab', serif">Roboto Slab</option>
-                            <option value="'Lobster', cursive">Lobster</option>
-                            <option value="'Caveat', cursive">Caveat</option>
-                        </select>
                         <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
                         <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
                     </div>
@@ -151,7 +121,7 @@
             </div>
 
              <div class="settings-section">
-                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl)</h3>
+                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl Glitch)</h3>
                 <div class="control-group">
                     <label class="checkbox-container">
                         <input type="checkbox" id="show-qr" checked>
@@ -163,22 +133,16 @@
                     <label>Lemez Opacitás: <span id="val-vinyl-opacity">0.1</span></label>
                     <input type="range" id="vinyl-opacity" min="0" max="1" value="0.1" step="0.05" data-unit="" data-css-var="--vinyl-opacity">
                     
-                    <div class="sub-group">
-                        <label class="sub-label">Vinyl Paraméterek</label>
-                         <label class="indent">Barázdák száma: <span id="val-vinyl-groove-count">8</span></label>
-                         <input type="range" id="vinyl-groove-count" min="1" max="20" value="8" step="1" data-unit="" data-css-var="--vinyl-groove-count">
-                         <label class="indent">Barázda vastagság: <span id="val-vinyl-groove-thickness">1</span></label>
-                         <input type="range" id="vinyl-groove-thickness" min="0.2" max="3" value="1" step="0.1" data-unit="" data-css-var="--vinyl-groove-thickness">
-                         <label class="indent">Lemez méret / túlnyúlás: <span id="val-vinyl-size-offset">0</span>%</label>
-                         <input type="range" id="vinyl-size-offset" min="-50" max="50" value="0" step="5" data-unit="%" data-css-var="--vinyl-size-offset">
-                    </div>
-
+                    <!-- Glitch Controls -->
                     <div class="sub-group">
                          <label class="sub-label">Glitch Paraméterek</label>
+                         
                          <label class="indent">Szekciók száma: <span id="val-vinyl-sections">3</span></label>
                          <input type="range" id="vinyl-sections" min="1" max="20" value="3" step="1" data-unit="" data-css-var="--vinyl-sections">
+                         
                          <label class="indent">Hézag Min %: <span id="val-vinyl-gap-min">10</span>%</label>
                          <input type="range" id="vinyl-gap-min" min="0" max="50" value="10" step="5" data-unit="%" data-css-var="--vinyl-gap-min">
+                         
                          <label class="indent">Hézag Max %: <span id="val-vinyl-gap-max">40</span>%</label>
                          <input type="range" id="vinyl-gap-max" min="0" max="90" value="40" step="5" data-unit="%" data-css-var="--vinyl-gap-max">
                     </div>
@@ -191,7 +155,7 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v3.2
+                MusicStencil v3.1
             </footer>
         </div>
     </aside>

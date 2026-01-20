@@ -26,11 +26,6 @@ function generateVinylSVG() {
     const computedStyle = getComputedStyle(document.documentElement);
     const color = computedStyle.getPropertyValue('--vinyl-groove-color').trim() || '#000000';
     
-    // Vinyl paraméterek
-    const grooveCount = parseInt(computedStyle.getPropertyValue('--vinyl-groove-count').trim()) || 8;
-    const thicknessMultiplier = parseFloat(computedStyle.getPropertyValue('--vinyl-groove-thickness').trim()) || 1;
-    const sizeOffset = parseFloat(computedStyle.getPropertyValue('--vinyl-size-offset').trim()) || 0; // %
-    
     // Glitch paraméterek
     const sections = parseInt(computedStyle.getPropertyValue('--vinyl-sections').trim()) || 3;
     const gapMinP = parseFloat(computedStyle.getPropertyValue('--vinyl-gap-min').trim()) || 10; // %
@@ -38,10 +33,8 @@ function generateVinylSVG() {
 
     const size = 100;
     const center = size / 2;
-    
-    // Méret / Túlnyúlás számítása
-    const baseRadius = 45; // 90%
-    const maxRadius = baseRadius * (1 - (sizeOffset / 100));
+    const maxRadius = 45; 
+    const grooveCount = 8; 
 
     let svgContent = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
     
@@ -62,13 +55,13 @@ function generateVinylSVG() {
             const gapLen = sectionLength * (gapPercent / 100);
             const dashLen = sectionLength - gapLen;
             
-            if (dashLen > 0) { // Negatív dash ne legyen
+            if (dashLen > 0) {
                 dashArrayParts.push(`${dashLen.toFixed(2)} ${gapLen.toFixed(2)}`);
             }
         }
         
         const strokeDashArray = dashArrayParts.join(' ');
-        const strokeWidth = (0.8 + (i * 0.15)) * thicknessMultiplier;
+        const strokeWidth = (0.8 + (i * 0.15));
 
         svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" 
             fill="none" stroke="${color}" stroke-width="${strokeWidth.toFixed(2)}" 

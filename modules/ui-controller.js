@@ -81,7 +81,7 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
             try {
                 const data = await parseXLS(file);
                 onDataLoaded(data);
-            } catch (error)
+            } catch (error) {
                 console.error("Hiba:", error);
                 alert("Excel hiba: " + error.message);
             }

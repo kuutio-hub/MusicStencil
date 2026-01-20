@@ -19,7 +19,7 @@ const App = {
         );
         
         this.renderPrintView();
-        // Visszaállítva: az előnézeti ciklus induljon el a mintaadatokkal is
+        // Elindítjuk az előnézetet a beépített adatokkal is
         this.startPreviewCycle(); 
     },
 
@@ -30,7 +30,7 @@ const App = {
 
     handleDataLoaded(newData) {
         this.data = newData;
-        this.updateStats(); // CSAK itt hívjuk meg
+        this.updateStats(); // Statisztika sáv mutatása csak user feltöltés után
         this.renderPrintView();
         this.startPreviewCycle();
     },
