@@ -10,7 +10,7 @@
 
     /* Pozicionálás */
     --artist-margin: 4mm;
-    --title-margin: 8mm; 
+    --title-margin: 8mm; /* Kicsit feljebb, hogy a kódok elférjenek alatta */
     --code-margin: 2mm;
 
     /* Színek - Nyomtatásbarát */
@@ -47,6 +47,15 @@
     /* Fonts */
     --font-heading: 'Orbitron', sans-serif;
     --font-ui: 'Montserrat', sans-serif;
+
+    /* ÚJ SZÍNVILÁG VÁLTOZÓK */
+    --color-bg-main: #34495e; /* Sötétkék-szürke háttér */
+    --color-bg-sidebar: #2c3e50; /* Még sötétebb sidebar */
+    --color-text-light: #ecf0f1; /* Világos szöveg */
+    --color-text-dark: #2c3e50; /* Sötét szöveg (kártyán) */
+    --color-accent: #1abc9c; /* Türkiz */
+    --color-border: #4a627a;
+    --color-header: #34495e;
 }
 
 *, *::before, *::after {
@@ -57,8 +66,8 @@
 
 body {
     font-family: var(--font-ui);
-    background: #f0f2f5;
-    color: #333;
+    background: var(--color-bg-main);
+    color: var(--color-text-light);
     display: flex;
     height: 100vh;
     overflow: hidden;
@@ -67,19 +76,19 @@ body {
 /* --- SIDEBAR --- */
 #settings-panel {
     width: 320px;
-    background: #ffffff;
-    border-right: 1px solid #ddd;
+    background: var(--color-bg-sidebar);
+    border-right: 1px solid #000;
     display: flex;
     flex-direction: column;
     z-index: 100;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
     flex-shrink: 0;
 }
 
 #settings-panel header {
     padding: 1rem;
-    background: #fff;
-    border-bottom: 1px solid #eee;
+    background: var(--color-header);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .logo {
@@ -88,14 +97,14 @@ body {
     gap: 10px;
     font-weight: 800;
     font-size: 1.2rem;
-    color: #2c3e50;
+    color: var(--color-accent);
     margin-bottom: 0.5rem;
 }
 
 .stats-bar {
     font-size: 0.8rem;
-    color: #555;
-    background: #f7f7f7;
+    color: var(--color-text-light);
+    background: rgba(0,0,0,0.2);
     padding: 5px 10px;
     border-radius: 4px;
     margin-bottom: 1rem;
@@ -103,7 +112,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-border);
 }
 
 .actions {
@@ -113,9 +122,9 @@ body {
 }
 
 .action-btn {
-    background: #f0f2f5;
-    border: 1px solid #ddd;
-    color: #333;
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-light);
     padding: 8px;
     border-radius: 4px;
     cursor: pointer;
@@ -127,14 +136,14 @@ body {
     font-weight: 600;
     transition: all 0.2s ease;
 }
-.action-btn:hover { background: #e9ecef; }
+.action-btn:hover { background: var(--color-border); }
 
 .print-btn {
-    background: #3498db;
+    background: var(--color-accent);
     color: #fff;
-    border-color: #3498db;
+    border-color: var(--color-accent);
 }
-.print-btn:hover { background: #2980b9; }
+.print-btn:hover { background: #16a085; }
 
 .scroll-container {
     overflow-y: auto;
@@ -144,14 +153,14 @@ body {
 
 .settings-section {
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     padding-bottom: 1rem;
 }
 
 .settings-section h3 {
     font-size: 0.8rem;
     text-transform: uppercase;
-    color: #777;
+    color: #95a5a6; /* Halványabb szürke */
     margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
@@ -159,30 +168,30 @@ body {
 }
 
 .control-group { display: flex; flex-direction: column; gap: 10px; }
-.sub-group { padding-left: 5px; border-left: 2px solid #eee; }
+.sub-group { padding-left: 5px; border-left: 2px solid var(--color-border); }
 
-label { font-size: 0.75rem; font-weight: 600; color: #444; display: flex; justify-content: space-between; }
+label { font-size: 0.75rem; font-weight: 600; color: var(--color-text-light); display: flex; justify-content: space-between; }
 label.indent { padding-left: 10px; font-weight: 400; font-size: 0.7rem; }
 
-input[type="range"] { width: 100%; accent-color: #3498db; }
-input[type="color"] { border: 1px solid #ddd; width: 24px; height: 24px; cursor: pointer; background: none; padding: 2px; }
+input[type="range"] { width: 100%; accent-color: var(--color-accent); }
+input[type="color"] { border: none; width: 24px; height: 24px; cursor: pointer; background: none; padding: 0; }
 .mini-color { width: 18px; height: 18px; }
 
 select {
     padding: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 4px;
-    background: #fff;
-    color: #333;
+    background: var(--color-bg-main);
+    color: var(--color-text-light);
 }
 
 .checkbox-container { justify-content: flex-start; gap: 8px; cursor: pointer; align-items: center; }
-.app-footer { text-align: center; font-size: 0.7rem; color: #aaa; margin-top: 1rem; }
+.app-footer { text-align: center; font-size: 0.7rem; color: #7f8c8d; margin-top: 1rem; }
 
 /* --- MAIN LAYOUT --- */
 #main-content {
     flex-grow: 1;
-    background-color: #f0f2f5;
+    background-color: var(--color-bg-main);
     overflow-y: auto;
     padding: 2rem;
     display: flex;
@@ -202,12 +211,12 @@ select {
 #preview-area .card-wrapper {
     width: var(--card-size);
     height: var(--card-size);
-    background: var(--card-bg-color);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    background: var(--card-bg-color); /* A kártya marad fehér */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     transform: scale(1.5); 
     margin: 0 40px; /* Fix margó a scale miatti átfedés ellen */
     outline: none;
-    flex-shrink: 0; 
+    flex-shrink: 0; /* Ne zsugorodjon */
 }
 
 .preview-label {
@@ -216,7 +225,7 @@ select {
     left: 0;
     width: 100%;
     text-align: center;
-    color: #888;
+    color: var(--color-text-light);
     font-size: 10px;
     text-transform: uppercase;
     font-weight: 600;
@@ -229,7 +238,7 @@ select {
 .card {
     width: 100%; height: 100%;
     background-color: var(--card-bg-color);
-    color: #000;
+    color: var(--color-text-dark); /* Kártyán belüli szöveg sötét */
     overflow: hidden;
     position: relative;
     border: 1px solid var(--primary-color);
@@ -274,7 +283,7 @@ body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--f
 /* --- PAGE CONTAINER (FOR PRINT) --- */
 .page-container {
     background: #fff; width: 210mm; height: 297mm;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
     grid-template-rows: repeat(6, 1fr);
