@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Roboto+Slab:wght@400;700&family=Playfair+Display:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Merriweather:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Nunito:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -41,18 +41,13 @@
                 <h3><i class="fa-solid fa-ruler-combined"></i> Kártya Méretek (Négyzet)</h3>
                 <div class="control-group">
                     <label>Méret: <span id="val-card-size">46</span>mm</label>
-                    <input type="range" id="card-size" min="30" max="48" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
+                    <input type="range" id="card-size" min="30" max="90" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
                     
                     <label>Sarokkerekítés: <span id="val-card-radius">2</span>mm</label>
                     <input type="range" id="card-radius" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--card-radius">
 
                     <label>Belső Margó (Padding): <span id="val-card-padding">4</span>px</label>
                     <input type="range" id="card-padding" min="0" max="20" value="4" step="1" data-unit="px" data-css-var="--card-padding">
-                    
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="show-crop-marks" checked>
-                        Vágójelek (Crop Marks)
-                    </label>
                 </div>
             </div>
 
@@ -73,11 +68,35 @@
             <div class="settings-section">
                 <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg)</h3>
                 <div class="control-group">
+                    <!-- Betűtípus -->
+                     <label>Betűtípus</label>
+                     <select id="font-family" data-css-var="--font-family">
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Orbitron', sans-serif">Orbitron</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Lato', sans-serif">Lato</option>
+                        <option value="'Roboto Slab', serif">Roboto Slab</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="'Merriweather', serif">Merriweather</option>
+                        <option value="'Oswald', sans-serif">Oswald</option>
+                        <option value="'Raleway', sans-serif">Raleway</option>
+                        <option value="'Nunito', sans-serif">Nunito</option>
+                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Source Code Pro', monospace">Source Code Pro</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="'Courier New', monospace">Courier New</option>
+                    </select>
+                    
                     <!-- Évszám (Közép) -->
                     <div class="sub-group">
                         <label class="sub-label">Évszám (Közép)</label>
                         <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
                         <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
+                         <label class="checkbox-container indent">
+                            <input type="checkbox" id="bold-year">
+                            Félkövér
+                        </label>
                     </div>
 
                     <!-- Előadó (Fent) -->
@@ -85,6 +104,10 @@
                         <label class="sub-label">Előadó (Fent)</label>
                         <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
                         <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
+                        <label class="checkbox-container indent">
+                            <input type="checkbox" id="bold-artist">
+                            Félkövér
+                        </label>
                     </div>
                     <label class="indent">Távolság fentről: <span id="val-artist-margin">4</span>mm</label>
                     <input type="range" id="artist-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
@@ -94,6 +117,10 @@
                         <label class="sub-label">Dal Címe (Lent)</label>
                         <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
                         <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
+                        <label class="checkbox-container indent">
+                            <input type="checkbox" id="bold-title">
+                            Félkövér
+                        </label>
                     </div>
                     <label class="indent">Távolság lentről: <span id="val-title-margin">8</span>mm</label>
                     <input type="range" id="title-margin" min="0" max="20" value="8" step="0.5" data-unit="mm" data-css-var="--title-margin">
@@ -103,6 +130,10 @@
                         <label class="sub-label">Code 1 & 2</label>
                         <input type="range" min="4" max="14" value="6" step="0.5" data-unit="pt" data-css-var="--font-size-codes">
                         <input type="color" value="#000000" data-css-var="--color-codes" class="mini-color">
+                        <label class="checkbox-container indent">
+                            <input type="checkbox" id="bold-codes">
+                            Félkövér
+                        </label>
                     </div>
                     <label class="indent">Code távolság (szél/alj): <span id="val-code-margin">2</span>mm</label>
                     <input type="range" id="code-margin" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
@@ -155,7 +186,7 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v4.0
+                MusicStencil v5.0
             </footer>
         </div>
     </aside>

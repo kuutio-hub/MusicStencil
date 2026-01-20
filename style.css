@@ -18,17 +18,23 @@
     --card-bg-color: #ffffff;
     
     /* Tipográfia */
+    --font-family: 'Montserrat', sans-serif;
+    
     --font-size-year: 24pt;
     --color-year: #000000;
+    --font-weight-year: normal;
     
     --font-size-artist: 8pt;
     --color-artist: #000000;
+    --font-weight-artist: normal;
     
     --font-size-title: 7pt;
     --color-title: #333333;
+    --font-weight-title: normal;
 
     --font-size-codes: 6pt;
     --color-codes: #000000;
+    --font-weight-codes: normal;
     
     --text-align: center;
 
@@ -168,9 +174,10 @@ body {
 }
 
 .control-group { display: flex; flex-direction: column; gap: 10px; }
-.sub-group { padding-left: 5px; border-left: 2px solid var(--color-border); }
+.sub-group { padding-left: 5px; border-left: 2px solid var(--color-border); margin-top: 10px; padding-top: 10px; }
+.sub-group .sub-label { font-weight: bold; color: var(--color-accent); }
 
-label { font-size: 0.75rem; font-weight: 600; color: var(--color-text-light); display: flex; justify-content: space-between; }
+label { font-size: 0.75rem; font-weight: 600; color: var(--color-text-light); display: flex; justify-content: space-between; align-items: center; }
 label.indent { padding-left: 10px; font-weight: 400; font-size: 0.7rem; }
 
 input[type="range"] { width: 100%; accent-color: var(--color-accent); }
@@ -260,16 +267,17 @@ select {
     padding: var(--card-padding);
     text-align: var(--text-align);
     box-sizing: border-box;
+    font-family: var(--font-family);
 }
 
 .card.front { display: block; }
 
-.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: 600; color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; }
-.card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: 700; color: var(--color-year); line-height: 1; z-index: 10; }
-.card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: 400; font-style: italic; color: var(--color-title); line-height: 1.2; z-index: 10; }
+.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; }
+.card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: var(--color-year); line-height: 1; z-index: 10; }
+.card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: var(--font-weight-title); font-style: italic; color: var(--color-title); line-height: 1.2; z-index: 10; }
 
 /* --- Codes: Alap és Forgatott Stílus --- */
-.card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: 700; z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; }
+.card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: var(--font-weight-codes); z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; }
 
 /* Alapértelmezett (alsó sarok) */
 .card.front .code1 { bottom: var(--code-margin); left: var(--code-margin); text-align: left; }
@@ -299,19 +307,17 @@ body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--f
     background: #fff; width: 210mm; height: 297mm;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     display: grid;
-    grid-template-columns: repeat(4, 1fr); 
-    grid-template-rows: repeat(6, 1fr);
-    padding: calc( (297mm - (6 * var(--card-size)) - (5 * var(--card-gap))) / 2)
-             calc( (210mm - (4 * var(--card-size)) - (3 * var(--card-gap))) / 2);
+    grid-template-columns: repeat(auto-fill, var(--card-size));
+    grid-auto-rows: var(--card-size);
+    justify-content: center;
+    align-content: center;
+    padding: 10mm;
     gap: var(--card-gap); margin-bottom: 2rem; position: relative;
+    box-sizing: border-box;
 }
 
 .card-wrapper { width: var(--card-size); height: var(--card-size); position: relative; outline: 1px dashed #eee; }
 
-/* CROP MARKS */
-body.has-crop-marks .card-wrapper::before, body.has-crop-marks .card-wrapper::after { content: ''; position: absolute; background: #000; pointer-events: none; z-index: 100; }
-body.has-crop-marks .card-wrapper::before { width: 6px; height: 0.5px; top: -3px; left: -3px; box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000; }
-body.has-crop-marks .card-wrapper::after { width: 0.5px; height: 6px; top: -3px; left: -3px; box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000; }
 
 /* --- PRINT STYLES --- */
 @media print {
@@ -325,6 +331,4 @@ body.has-crop-marks .card-wrapper::after { width: 0.5px; height: 6px; top: -3px;
     .page-container { box-shadow: none; margin: 0; page-break-after: always; border: none; }
     .card-wrapper { outline: none; margin: 0; transform: none; }
     .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    
-    body.has-crop-marks .card-wrapper::before, body.has-crop-marks .card-wrapper::after { display: block; }
 }

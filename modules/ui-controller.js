@@ -16,17 +16,29 @@ function updateCSSVariable(input) {
     document.documentElement.style.setProperty(cssVar, input.value + unit);
 }
 
-function handleToggle(elementId, classToToggle, bodyClass = true) {
+function handleSimpleToggle(elementId, classToToggle) {
     const checkbox = document.getElementById(elementId);
     if (checkbox) {
         const toggleAction = (e) => {
             document.body.classList.toggle(classToToggle, e.target.checked);
         };
         checkbox.addEventListener('change', toggleAction);
-        // Kezdeti állapot beállítása
         document.body.classList.toggle(classToToggle, checkbox.checked);
     }
 }
+
+function handleBoldToggle(elementId, cssVarName) {
+    const checkbox = document.getElementById(elementId);
+    if(checkbox) {
+        const toggleAction = (e) => {
+            document.documentElement.style.setProperty(cssVarName, e.target.checked ? 'bold' : 'normal');
+        }
+        checkbox.addEventListener('change', toggleAction);
+        document.documentElement.style.setProperty(cssVarName, checkbox.checked ? 'bold' : 'normal');
+        checkbox.addEventListener('change', () => _triggerRefresh());
+    }
+}
+
 
 export function updateRecordCount(count) {
     const el = document.getElementById('record-count-display');
@@ -56,7 +68,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             if (input.type === 'range') updateValueDisplay(input);
             
             // Folyamatos renderelést igénylő beállítások
-            if (input.id.startsWith('vinyl-') || input.id === 'vinyl-groove-color' || input.id.includes('margin')) {
+            if (input.id.startsWith('vinyl-') || input.id.includes('margin')) {
                 _triggerRefresh();
             }
         });
@@ -79,8 +91,11 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     }
 
     // Toggle-ök inicializálása
-    handleToggle('show-crop-marks', 'has-crop-marks');
-    handleToggle('rotate-codes', 'codes-rotated');
+    handleSimpleToggle('rotate-codes', 'codes-rotated');
+    handleBoldToggle('bold-year', '--font-weight-year');
+    handleBoldToggle('bold-artist', '--font-weight-artist');
+    handleBoldToggle('bold-title', '--font-weight-title');
+    handleBoldToggle('bold-codes', '--font-weight-codes');
 
 
     const fileUploadButton = document.getElementById('file-upload-button');
