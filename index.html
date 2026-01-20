@@ -55,12 +55,12 @@
                 <h3><i class="fa-solid fa-palette"></i> Színek (Nyomtatás)</h3>
                 <div class="control-group">
                     <div class="color-picker-row">
-                        <label>Keret Fény (Glow)</label>
-                        <input type="color" id="primary-color" value="#1DB954" data-css-var="--primary-color">
+                        <label>Keret Szín</label>
+                        <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
                     </div>
                     <div class="color-picker-row">
                         <label>Háttérszín</label>
-                        <input type="color" id="card-bg-color" value="#121212" data-css-var="--card-bg-color">
+                        <input type="color" id="card-bg-color" value="#ffffff" data-css-var="--card-bg-color">
                     </div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
                     <div class="sub-group">
                         <label class="sub-label">Évszám (Közép)</label>
                         <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
-                        <input type="color" value="#FFFFFF" data-css-var="--color-year" class="mini-color">
+                        <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
                          <label class="checkbox-container indent">
                             <input type="checkbox" id="bold-year" checked>
                             Félkövér
@@ -103,9 +103,9 @@
                     <div class="sub-group">
                         <label class="sub-label">Előadó (Fent)</label>
                         <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
-                        <input type="color" value="#E0E0E0" data-css-var="--color-artist" class="mini-color">
+                        <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
                         <label class="checkbox-container indent">
-                            <input type="checkbox" id="bold-artist" checked>
+                            <input type="checkbox" id="bold-artist">
                             Félkövér
                         </label>
                     </div>
@@ -116,7 +116,7 @@
                     <div class="sub-group">
                         <label class="sub-label">Dal Címe (Lent)</label>
                         <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
-                        <input type="color" value="#B3B3B3" data-css-var="--color-title" class="mini-color">
+                        <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
                         <label class="checkbox-container indent">
                             <input type="checkbox" id="bold-title">
                             Félkövér
@@ -129,9 +129,9 @@
                     <div class="sub-group">
                         <label class="sub-label">Code 1 & 2</label>
                         <input type="range" min="4" max="14" value="6" step="0.5" data-unit="pt" data-css-var="--font-size-codes">
-                        <input type="color" value="#FFFFFF" data-css-var="--color-codes" class="mini-color">
+                        <input type="color" value="#000000" data-css-var="--color-codes" class="mini-color">
                         <label class="checkbox-container indent">
-                            <input type="checkbox" id="bold-codes" checked>
+                            <input type="checkbox" id="bold-codes">
                             Félkövér
                         </label>
                     </div>
@@ -169,7 +169,7 @@
                          <label class="sub-label">Glitch Paraméterek</label>
                          
                          <label class="indent">Szekciók száma: <span id="val-vinyl-sections">3</span></label>
-                         <input type="range" id="vinyl-sections" min="1" max="20" value="3" step="1" data-unit="" data-css-var="--vinyl-sections">
+                         <input type="range" id="vinyl-sections" min="2" max="20" value="3" step="1" data-unit="" data-css-var="--vinyl-sections">
                          
                          <label class="indent">Hézag Min %: <span id="val-vinyl-gap-min">10</span>%</label>
                          <input type="range" id="vinyl-gap-min" min="0" max="50" value="10" step="5" data-unit="%" data-css-var="--vinyl-gap-min">
@@ -186,7 +186,7 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v5.0
+                MusicStencil v6.0
             </footer>
         </div>
     </aside>

@@ -1,65 +1,57 @@
 :root {
-    /* Layout alapok: Négyzetes */
-    --card-size: 46mm;
-    --card-radius: 2mm;
-    --card-padding: 4px;
-
-    /* Pozicionálás */
-    --artist-margin: 4mm;
-    --title-margin: 8mm;
-    --code-margin: 2mm;
-
-    /* --- ÚJ NEON SZÍN PALETTA --- */
+    /* --- UI Stílus Változók --- */
     --spotify-black: #121212;
     --spotify-dark-gray: #181818;
     --spotify-gray: #282828;
-    --spotify-light-gray: #B3B3B3;
     --spotify-green: #1DB954;
     --hitster-magenta: #E100E1; 
     --text-white: #FFFFFF;
-    --text-light: #E0E0E0;
 
-    /* UI Színek */
     --color-bg-main: var(--spotify-dark-gray);
     --color-bg-sidebar: #000;
     --color-text-light: #ecf0f1;
     --color-accent: var(--spotify-green);
     --color-accent-hover: var(--hitster-magenta);
     --color-border: #282828;
-
-    /* Kártya alapbeállítások */
-    --primary-color: var(--spotify-green); /* Keret színe */
-    --card-bg-color: var(--spotify-black);
     
-    /* Tipográfia */
+    /* --- KÁRTYA Stílus Változók (Nyomtatóbarát Alapértékek) --- */
+    --card-size: 46mm;
+    --card-radius: 2mm;
+    --card-padding: 4px;
+
+    --artist-margin: 4mm;
+    --title-margin: 8mm;
+    --code-margin: 2mm;
+
+    --primary-color: #000000; /* Keret színe */
+    --card-bg-color: #ffffff;
+    --text-card-dark: #000000;
+    
     --font-family: 'Poppins', sans-serif;
     
     --font-size-year: 24pt;
-    --color-year: var(--text-white);
+    --color-year: var(--text-card-dark);
     --font-weight-year: bold;
     
     --font-size-artist: 8pt;
-    --color-artist: var(--text-light);
-    --font-weight-artist: bold;
+    --color-artist: var(--text-card-dark);
+    --font-weight-artist: normal;
     
     --font-size-title: 7pt;
-    --color-title: var(--spotify-light-gray);
+    --color-title: #333333;
     --font-weight-title: normal;
 
     --font-size-codes: 6pt;
-    --color-codes: var(--text-white);
-    --font-weight-codes: bold;
+    --color-codes: var(--text-card-dark);
+    --font-weight-codes: normal;
     
     --text-align: center;
 
-    /* QR és Hátlap */
+    /* Hátlap Változók */
     --qr-size: 28mm;
     --qr-display: flex;
-    
     --vinyl-opacity: 0.15;
     --vinyl-groove-color: var(--spotify-green);
-    
-    /* Glitch változók */
     --vinyl-sections: 3;
     --vinyl-gap-min: 10;
     --vinyl-gap-max: 40;
@@ -84,7 +76,7 @@ body {
     overflow: hidden;
 }
 
-/* --- SIDEBAR --- */
+/* --- SIDEBAR (UI STÍLUS) --- */
 #settings-panel {
     width: 320px;
     background: var(--color-bg-sidebar);
@@ -220,7 +212,6 @@ input[type="range"]::-moz-range-thumb {
     border-radius: 50%;
 }
 
-
 input[type="color"] { border: 1px solid var(--color-border); width: 24px; height: 24px; cursor: pointer; background: none; padding: 2px; border-radius: 50%; }
 .mini-color { width: 18px; height: 18px; }
 
@@ -260,34 +251,40 @@ select {
 #preview-area .card-wrapper {
     width: var(--card-size);
     height: var(--card-size);
-    background: transparent;
-    box-shadow: none;
+    background: var(--card-bg-color);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     transform: scale(1.5); 
     margin: 0 40px;
     outline: none;
     flex-shrink: 0;
 }
 
-/* --- KÁRTYA DESIGN --- */
+/* --- KÁRTYA DESIGN (NYOMTATÓBARÁT) --- */
 .card {
     width: 100%; height: 100%;
     background-color: var(--card-bg-color);
-    color: var(--text-white);
+    color: var(--text-card-dark);
     overflow: hidden;
     position: relative;
-    border: none;
-    box-shadow: 0 0 2px var(--primary-color), 0 0 5px var(--primary-color), 0 0 8px var(--primary-color), inset 0 0 3px var(--primary-color);
     border-radius: var(--card-radius);
     padding: var(--card-padding);
     text-align: var(--text-align);
     box-sizing: border-box;
     font-family: var(--font-family);
+    border: none;
 }
-.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; text-shadow: 0 0 3px var(--color-artist); }
-.card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: var(--color-year); line-height: 1; z-index: 10; text-shadow: 0 0 5px var(--color-year); }
+.card.front {
+    border: 1px solid var(--primary-color);
+}
+.card.back {
+    border: none;
+}
+
+.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; }
+.card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: var(--color-year); line-height: 1; z-index: 10; }
 .card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: var(--font-weight-title); font-style: italic; color: var(--color-title); line-height: 1.2; z-index: 10; }
 
-.card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: var(--font-weight-codes); z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; text-shadow: 0 0 3px var(--color-codes); }
+.card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: var(--font-weight-codes); z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; }
 .card.front .code1 { bottom: var(--code-margin); left: var(--code-margin); text-align: left; }
 .card.front .code2 { bottom: var(--code-margin); right: var(--code-margin); text-align: right; }
 
@@ -330,10 +327,7 @@ body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--f
     
     .page-container { box-shadow: none; margin: 0; page-break-after: always; border: none; }
     .card-wrapper { transform: none; }
-    .card {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        box-shadow: none !important; /* Nyomtatásban nincs glow */
-        border: 1px solid #000; /* Nyomtatásban legyen vékony keret */
-    }
+    .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card.front { border: 1px solid #000 !important; }
+    .card.back { border: none !important; }
 }
