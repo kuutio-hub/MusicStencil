@@ -48,7 +48,7 @@
     --text-align: center;
 
     /* Hátlap Változók */
-    --qr-size: 28mm;
+    --qr-size: 40%;
     --qr-display: flex;
     --vinyl-opacity: 0.15;
     --vinyl-groove-color: var(--spotify-green);
