@@ -33,7 +33,7 @@ export function parseXLS(file) {
                 // Első sor a fejléc, ezt eldobjuk
                 const rows = rawData.slice(1);
                 
-                const json = rows.filter(row => row.length > 0).map(row => {
+                const json = rows.filter(row => row && row.length > 0 && row.some(cell => cell !== null && cell !== undefined && cell !== '')).map(row => {
                     // Megfeleltetés a képen látható sorrend alapján:
                     // Col 0: Artist
                     // Col 1: Title

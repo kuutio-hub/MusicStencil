@@ -101,6 +101,8 @@ function createCardBack(song) {
     card.appendChild(vinylBg);
     card.appendChild(qrContainer);
 
+    // A QR kód generálást egy nagyon rövid késleltetéssel indítjuk, 
+    // hogy ne blokkolja a fő renderelési szálat a sok kártya létrehozásakor.
     if (song && song.qr_data) {
         setTimeout(() => generateQRCode(qrContainer, song.qr_data), 0);
     } else if (song && !song.qr_data) {
@@ -163,7 +165,7 @@ export function renderAllPages(container, data) {
         const backPage = document.createElement('div');
         backPage.className = 'page-container';
 
-        // Tükrözés
+        // Tükrözés a kétoldalas nyomtatáshoz
         for (let r = 0; r < itemsToRender.length; r += COLUMNS) {
             const rowItems = itemsToRender.slice(r, r + COLUMNS);
             const mirroredRow = rowItems.reverse();
