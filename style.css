@@ -1,0 +1,478 @@
+:root {
+    /* Layout alapok */
+    --card-width: 63.5mm;
+    --card-height: 88.9mm;
+    --card-gap: 0mm;
+    --card-radius: 4mm;
+    --card-padding: 10px;
+
+    /* Színek */
+    --primary-color: #00f3ff; /* Neon Cyan */
+    --accent-color: #ff00ff; /* Neon Magenta */
+    --card-bg-color: #000000;
+    
+    /* Glow */
+    --glow-color: #00f3ff;
+    --glow-strength: 10px;
+
+    /* Tipográfia */
+    --font-size-year: 32pt;
+    --color-year: #00f3ff;
+    
+    --font-size-artist: 11pt;
+    --color-artist: #ffffff;
+    
+    --font-size-title: 9pt;
+    --color-title: #aaaaaa;
+    
+    --text-align: center;
+
+    /* QR */
+    --qr-size: 80px;
+    --qr-display: block;
+
+    /* Vinyl */
+    --vinyl-size: 90%;
+    --vinyl-label-color: #ffffff;
+    --vinyl-groove-color: #111111;
+    
+    /* UI Fonts */
+    --font-heading: 'Orbitron', sans-serif;
+    --font-ui: 'Montserrat', sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-ui);
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- SIDEBAR & SETTINGS --- */
+#settings-panel {
+    width: 350px;
+    background: rgba(16, 16, 24, 0.65);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+}
+
+#settings-panel header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0,0,0,0.2);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.action-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.action-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.print-btn {
+    background: var(--primary-color);
+    color: #000;
+    border: none;
+}
+.print-btn:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+.scroll-container {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 1.5rem;
+}
+
+/* Custom Scrollbar */
+.scroll-container::-webkit-scrollbar { width: 6px; }
+.scroll-container::-webkit-scrollbar-track { background: transparent; }
+.scroll-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+.settings-section {
+    margin-bottom: 2rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.settings-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.settings-section h3 i { color: var(--primary-color); }
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: space-between;
+}
+
+label span {
+    color: var(--primary-color);
+    font-family: monospace;
+}
+
+/* Inputs */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--primary-color);
+    transition: transform 0.1s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.color-picker-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }
+
+.sub-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sub-label { width: 60px; }
+.mini-color { width: 20px; height: 20px; }
+
+select {
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 5px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.checkbox-container {
+    justify-content: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.app-footer {
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 2rem;
+}
+
+/* --- MAIN PREVIEW --- */
+#main-content {
+    flex-grow: 1;
+    background-color: #1a1a2e;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+#preview-area {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+/* --- CARD PAGES --- */
+.page-label {
+    text-align: left;
+    width: 100%;
+    color: rgba(255,255,255,0.5);
+    font-family: var(--font-heading);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--primary-color);
+}
+
+.page-container {
+    background: #fff;
+    width: 210mm;
+    height: 297mm;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    /* Dynamic padding calculation to center grid */
+    padding: calc( (297mm - (4 * var(--card-height)) - (3 * var(--card-gap))) / 2)
+             calc( (210mm - (2 * var(--card-width)) - (1 * var(--card-gap))) / 2);
+    gap: var(--card-gap);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.card-wrapper {
+    width: var(--card-width);
+    height: var(--card-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Dashed line only for cutting guide visualization */
+    outline: 1px dashed rgba(0,0,0,0.2); 
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    background-color: var(--card-bg-color);
+    color: var(--text-color-primary);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--card-radius);
+    box-shadow: 0 0 var(--glow-strength) var(--glow-color), inset 0 0 var(--glow-strength) var(--glow-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out content */
+    padding: var(--card-padding);
+    text-align: var(--text-align);
+}
+
+.card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5em;
+    z-index: 2;
+}
+
+.card .year {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-year);
+    font-weight: 700;
+    color: var(--color-year);
+    text-shadow: 0 0 calc(var(--glow-strength) * 0.8) var(--glow-color);
+    line-height: 1.1;
+}
+
+.card .artist {
+    font-size: var(--font-size-artist);
+    font-weight: 600;
+    color: var(--color-artist);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card .title {
+    font-size: var(--font-size-title);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--color-title);
+}
+
+.qr-container {
+    display: var(--qr-display);
+    width: var(--qr-size);
+    height: var(--qr-size);
+    background: #fff;
+    padding: 5px;
+    margin: 0 auto; /* Center horizontally if flex col */
+    border-radius: 4px;
+    flex-shrink: 0;
+    align-self: center; /* Flex alignment */
+}
+.qr-container img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Card Back - Vinyl */
+.card.back {
+    background-color: var(--card-bg-color);
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.vinyl-disc {
+    width: var(--vinyl-size);
+    padding-bottom: var(--vinyl-size); /* Aspect Ratio trick */
+    height: 0;
+    position: relative;
+    border-radius: 50%;
+    background: repeating-radial-gradient(
+        circle at center,
+        var(--vinyl-groove-color) 0,
+        var(--vinyl-groove-color) 2px,
+        #000 3px,
+        #000 4px
+    );
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Re-center absolute children in vinyl because of aspect ratio trick */
+.vinyl-center-helper {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.vinyl-label {
+    width: 40%;
+    height: 40%;
+    background: var(--vinyl-label-color);
+    border-radius: 50%;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vinyl-hole {
+    width: 12%;
+    height: 12%;
+    background: #000;
+    border-radius: 50%;
+}
+
+/* --- PRINT STYLES --- */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    body {
+        background: #fff;
+        display: block;
+        height: auto;
+        overflow: visible;
+    }
+
+    #settings-panel, .page-label {
+        display: none !important;
+    }
+
+    #main-content {
+        background: none;
+        padding: 0;
+        margin: 0;
+        overflow: visible;
+        display: block;
+    }
+    
+    #preview-area {
+        gap: 0;
+        display: block;
+    }
+
+    .page-container {
+        box-shadow: none;
+        margin: 0;
+        page-break-after: always;
+        border: none;
+    }
+    
+    .card-wrapper {
+        outline: none; /* No cut lines on print usually, or make very faint grey */
+        /* outline: 1px dashed #eee; */ 
+    }
+
+    .card {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
