@@ -1,5 +1,4 @@
 import { parseXLS } from './data-handler.js';
-import { renderAllPages, renderPreviewPair } from './card-generator.js';
 
 function updateValueDisplay(input) {
     const displayId = `val-${input.id}`;
@@ -17,14 +16,16 @@ function updateCSSVariable(input) {
     document.documentElement.style.setProperty(cssVar, input.value + unit);
 }
 
-function handleQRToggle(isChecked) {
-    const displayValue = isChecked ? 'flex' : 'none';
-    document.documentElement.style.setProperty('--qr-display', displayValue);
-}
-
-function handleCropMarksToggle(isChecked) {
-    const isVisible = isChecked;
-    document.body.classList.toggle('has-crop-marks', isVisible);
+function handleToggle(elementId, classToToggle, bodyClass = true) {
+    const checkbox = document.getElementById(elementId);
+    if (checkbox) {
+        const toggleAction = (e) => {
+            document.body.classList.toggle(classToToggle, e.target.checked);
+        };
+        checkbox.addEventListener('change', toggleAction);
+        // Kezdeti állapot beállítása
+        document.body.classList.toggle(classToToggle, checkbox.checked);
+    }
 }
 
 export function updateRecordCount(count) {
@@ -34,11 +35,9 @@ export function updateRecordCount(count) {
     if (container) container.style.display = 'inline-flex';
 }
 
-let currentData = [];
 let _triggerRefresh = () => {};
 
 export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
-    currentData = initialData;
     
     if (onSettingsChange) {
         _triggerRefresh = () => onSettingsChange();
@@ -56,7 +55,6 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
             updateCSSVariable(input);
             if (input.type === 'range') updateValueDisplay(input);
             
-            // Vinyl glitch paraméterek vagy méretváltozás esetén újra kell generálni az SVG-t vagy a layoutot
             if (input.id.startsWith('vinyl-') || input.id === 'vinyl-groove-color') {
                 _triggerRefresh();
             }
@@ -66,17 +64,15 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
     const qrCheckbox = document.getElementById('show-qr');
     if(qrCheckbox) {
         qrCheckbox.addEventListener('change', (e) => {
-            handleQRToggle(e.target.checked);
+            const displayValue = e.target.checked ? 'flex' : 'none';
+            document.documentElement.style.setProperty('--qr-display', displayValue);
         });
     }
 
-    const cropMarksCheckbox = document.getElementById('show-crop-marks');
-    if (cropMarksCheckbox) {
-        cropMarksCheckbox.addEventListener('change', (e) => {
-            handleCropMarksToggle(e.target.checked);
-        });
-        handleCropMarksToggle(cropMarksCheckbox.checked);
-    }
+    // Toggle-ök inicializálása
+    handleToggle('show-crop-marks', 'has-crop-marks');
+    handleToggle('rotate-codes', 'codes-rotated');
+
 
     const fileUploadButton = document.getElementById('file-upload-button');
     fileUploadButton.addEventListener('change', async (event) => {
@@ -84,9 +80,8 @@ export function initializeUI(onSettingsChange, onDataLoaded, initialData) {
         if (file) {
             try {
                 const data = await parseXLS(file);
-                currentData = data;
                 onDataLoaded(data);
-            } catch (error) {
+            } catch (error)
                 console.error("Hiba:", error);
                 alert("Excel hiba: " + error.message);
             }

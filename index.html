@@ -100,12 +100,16 @@
 
                     <!-- Code1 & Code2 -->
                     <div class="sub-group">
-                        <label class="sub-label">Code 1 & 2 (Alul sarok)</label>
+                        <label class="sub-label">Code 1 & 2</label>
                         <input type="range" min="4" max="14" value="6" step="0.5" data-unit="pt" data-css-var="--font-size-codes">
                         <input type="color" value="#000000" data-css-var="--color-codes" class="mini-color">
                     </div>
                     <label class="indent">Code távolság (szél/alj): <span id="val-code-margin">2</span>mm</label>
                     <input type="range" id="code-margin" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="rotate-codes">
+                        Kódok forgatása (90°)
+                    </label>
                     
                     <label>Szöveg Igazítás (Cím/Előadó)</label>
                     <select id="text-align" data-css-var="--text-align">
@@ -151,7 +155,7 @@
             </div>
             
             <footer class="app-footer">
-                MusicStencil v3.0
+                MusicStencil v3.1
             </footer>
         </div>
     </aside>

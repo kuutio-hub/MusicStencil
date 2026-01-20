@@ -47,6 +47,15 @@
     /* Fonts */
     --font-heading: 'Orbitron', sans-serif;
     --font-ui: 'Montserrat', sans-serif;
+
+    /* ÚJ SZÍNVILÁG VÁLTOZÓK */
+    --color-bg-main: #34495e; /* Sötétkék-szürke háttér */
+    --color-bg-sidebar: #2c3e50; /* Még sötétebb sidebar */
+    --color-text-light: #ecf0f1; /* Világos szöveg */
+    --color-text-dark: #2c3e50; /* Sötét szöveg (kártyán) */
+    --color-accent: #1abc9c; /* Türkiz */
+    --color-border: #4a627a;
+    --color-header: #34495e;
 }
 
 *, *::before, *::after {
@@ -57,8 +66,8 @@
 
 body {
     font-family: var(--font-ui);
-    background: #e0e5ec;
-    color: #333;
+    background: var(--color-bg-main);
+    color: var(--color-text-light);
     display: flex;
     height: 100vh;
     overflow: hidden;
@@ -67,19 +76,19 @@ body {
 /* --- SIDEBAR --- */
 #settings-panel {
     width: 320px;
-    background: #ffffff;
-    border-right: 1px solid #ccc;
+    background: var(--color-bg-sidebar);
+    border-right: 1px solid #000;
     display: flex;
     flex-direction: column;
     z-index: 100;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
     flex-shrink: 0;
 }
 
 #settings-panel header {
     padding: 1rem;
-    background: #f8f9fa;
-    border-bottom: 1px solid #eee;
+    background: var(--color-header);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .logo {
@@ -88,14 +97,14 @@ body {
     gap: 10px;
     font-weight: 800;
     font-size: 1.2rem;
-    color: #000;
+    color: var(--color-accent);
     margin-bottom: 0.5rem;
 }
 
 .stats-bar {
     font-size: 0.8rem;
-    color: #000;
-    background: #e9ecef;
+    color: var(--color-text-light);
+    background: rgba(0,0,0,0.2);
     padding: 5px 10px;
     border-radius: 4px;
     margin-bottom: 1rem;
@@ -103,7 +112,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--color-border);
 }
 
 .actions {
@@ -113,28 +122,28 @@ body {
 }
 
 .action-btn {
-    background: #fff;
-    border: 1px solid #ccc;
-    color: #333;
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-light);
     padding: 8px;
     border-radius: 4px;
     cursor: pointer;
-    text-align: center;
     font-size: 0.85rem;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 5px;
     font-weight: 600;
+    transition: all 0.2s ease;
 }
-.action-btn:hover { background: #f0f0f0; }
+.action-btn:hover { background: var(--color-border); }
 
 .print-btn {
-    background: #333;
+    background: var(--color-accent);
     color: #fff;
-    border-color: #333;
+    border-color: var(--color-accent);
 }
-.print-btn:hover { background: #000; }
+.print-btn:hover { background: #16a085; }
 
 .scroll-container {
     overflow-y: auto;
@@ -144,90 +153,45 @@ body {
 
 .settings-section {
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     padding-bottom: 1rem;
 }
 
 .settings-section h3 {
     font-size: 0.8rem;
     text-transform: uppercase;
-    color: #888;
+    color: #95a5a6; /* Halványabb szürke */
     margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+.control-group { display: flex; flex-direction: column; gap: 10px; }
+.sub-group { padding-left: 5px; border-left: 2px solid var(--color-border); }
 
-.sub-group {
-    padding-left: 5px;
-    border-left: 2px solid #eee;
-}
+label { font-size: 0.75rem; font-weight: 600; color: var(--color-text-light); display: flex; justify-content: space-between; }
+label.indent { padding-left: 10px; font-weight: 400; font-size: 0.7rem; }
 
-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #555;
-    display: flex;
-    justify-content: space-between;
-}
-
-label.indent {
-    padding-left: 10px;
-    font-weight: 400;
-    font-size: 0.7rem;
-}
-
-input[type="range"] {
-    width: 100%;
-    accent-color: #333;
-}
-
-.color-picker-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-input[type="color"] {
-    border: none;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    background: none;
-    padding: 0;
-}
+input[type="range"] { width: 100%; accent-color: var(--color-accent); }
+input[type="color"] { border: none; width: 24px; height: 24px; cursor: pointer; background: none; padding: 0; }
 .mini-color { width: 18px; height: 18px; }
 
 select {
     padding: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border);
     border-radius: 4px;
+    background: var(--color-bg-main);
+    color: var(--color-text-light);
 }
 
-.checkbox-container {
-    justify-content: flex-start;
-    gap: 8px;
-    cursor: pointer;
-    align-items: center;
-}
-
-.app-footer {
-    text-align: center;
-    font-size: 0.7rem;
-    color: #aaa;
-    margin-top: 1rem;
-}
+.checkbox-container { justify-content: flex-start; gap: 8px; cursor: pointer; align-items: center; }
+.app-footer { text-align: center; font-size: 0.7rem; color: #7f8c8d; margin-top: 1rem; }
 
 /* --- MAIN LAYOUT --- */
 #main-content {
     flex-grow: 1;
-    background-color: #555;
+    background-color: var(--color-bg-main);
     overflow-y: auto;
     padding: 2rem;
     display: flex;
@@ -239,23 +203,20 @@ select {
 /* --- PREVIEW AREA --- */
 #preview-area {
     display: flex;
-    gap: 40px; /* Nagyobb térköz a previewban */
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,0.1);
-    padding: 60px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    padding: 20px;
 }
 
 #preview-area .card-wrapper {
     width: var(--card-size);
     height: var(--card-size);
-    background: #fff;
+    background: var(--card-bg-color); /* A kártya marad fehér */
     box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     transform: scale(1.5); 
-    margin: 0; /* A gap kezeli a távolságot */
+    margin: 0 40px; /* Fix margó a scale miatti átfedés ellen */
     outline: none;
+    flex-shrink: 0; /* Ne zsugorodjon */
 }
 
 .preview-label {
@@ -264,22 +225,20 @@ select {
     left: 0;
     width: 100%;
     text-align: center;
-    color: #fff;
+    color: var(--color-text-light);
     font-size: 10px;
     text-transform: uppercase;
     font-weight: 600;
 }
 
 /* --- PRINT AREA --- */
-#print-area {
-    display: none;
-}
+#print-area { display: none; }
 
 /* --- KÁRTYA DESIGN --- */
 .card {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     background-color: var(--card-bg-color);
+    color: var(--color-text-dark); /* Kártyán belüli szöveg sötét */
     overflow: hidden;
     position: relative;
     border: 1px solid var(--primary-color);
@@ -289,159 +248,56 @@ select {
     box-sizing: border-box;
 }
 
-/* FRONT: Abszolút pozicionálás */
-.card.front {
-    display: block; 
-}
+.card.front { display: block; }
 
-.card.front .artist {
-    position: absolute;
-    top: var(--artist-margin);
-    left: var(--card-padding);
-    right: var(--card-padding);
-    
-    font-size: var(--font-size-artist);
-    font-weight: 600;
-    color: var(--color-artist);
-    text-transform: uppercase;
-    line-height: 1.2;
-    z-index: 10;
-}
+.card.front .artist { position: absolute; top: var(--artist-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-artist); font-weight: 600; color: var(--color-artist); text-transform: uppercase; line-height: 1.2; z-index: 10; }
+.card.front .year { position: absolute; top: 50%; left: var(--card-padding); right: var(--card-padding); transform: translateY(-50%); font-family: var(--font-heading); font-size: var(--font-size-year); font-weight: 700; color: var(--color-year); line-height: 1; z-index: 10; }
+.card.front .title { position: absolute; bottom: var(--title-margin); left: var(--card-padding); right: var(--card-padding); font-size: var(--font-size-title); font-weight: 400; font-style: italic; color: var(--color-title); line-height: 1.2; z-index: 10; }
 
-.card.front .year {
-    position: absolute;
+/* --- Codes: Alap és Forgatott Stílus --- */
+.card.front .code1, .card.front .code2 { font-family: 'Orbitron', monospace; font-size: var(--font-size-codes); color: var(--color-codes); font-weight: 700; z-index: 10; line-height: 1; position: absolute; transition: all 0.2s ease-in-out; }
+
+/* Alapértelmezett (alsó sarok) */
+.card.front .code1 { bottom: var(--code-margin); left: var(--code-margin); text-align: left; }
+.card.front .code2 { bottom: var(--code-margin); right: var(--code-margin); text-align: right; }
+
+/* Forgatott állapot (ha a body-n ott a class) */
+body.codes-rotated .card.front .code1,
+body.codes-rotated .card.front .code2 {
+    bottom: auto; /* Felülírjuk az alapot */
     top: 50%;
-    left: var(--card-padding);
-    right: var(--card-padding);
-    transform: translateY(-50%);
-    
-    font-family: var(--font-heading);
-    font-size: var(--font-size-year);
-    font-weight: 700;
-    color: var(--color-year);
-    line-height: 1;
-    z-index: 10;
+    transform: translateY(-50%) rotate(-90deg);
 }
-
-.card.front .title {
-    position: absolute;
-    bottom: var(--title-margin);
-    left: var(--card-padding);
-    right: var(--card-padding);
-    
-    font-size: var(--font-size-title);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--color-title);
-    line-height: 1.2;
-    z-index: 10;
-}
-
-/* Codes: Bottom Corners */
-.card.front .code1,
-.card.front .code2 {
-    position: absolute;
-    bottom: var(--code-margin);
-    font-family: 'Orbitron', monospace;
-    font-size: var(--font-size-codes);
-    color: var(--color-codes);
-    font-weight: 700;
-    z-index: 10;
-    line-height: 1;
-}
-
-.card.front .code1 {
-    left: var(--code-margin);
-    text-align: left;
-}
-
-.card.front .code2 {
-    right: var(--code-margin);
-    text-align: right;
-}
+body.codes-rotated .card.front .code1 { left: calc(var(--code-margin) - var(--font-size-codes) / 2); }
+body.codes-rotated .card.front .code2 { right: calc(var(--code-margin) - var(--font-size-codes) / 2); }
 
 
 /* BACK: Dizájn + QR */
-.card.back {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+.card.back { display: flex; justify-content: center; align-items: center; }
+.card.back .vinyl-bg { position: absolute; width: 90%; height: 90%; border-radius: 50%; opacity: var(--vinyl-opacity); z-index: 0; pointer-events: none; overflow: hidden; }
+.card.back .vinyl-bg svg { width: 100%; height: 100%; }
 
-.card.back .vinyl-bg {
-    position: absolute;
-    width: 90%;
-    height: 90%;
-    border-radius: 50%;
-    opacity: var(--vinyl-opacity);
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.card.back .vinyl-bg svg {
-    width: 100%;
-    height: 100%;
-}
-
-.qr-container {
-    display: var(--qr-display);
-    width: var(--qr-size);
-    height: var(--qr-size);
-    z-index: 1;
-    background: #fff;
-    justify-content: center;
-    align-items: center;
-}
-.qr-container img {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
+.qr-container { display: var(--qr-display); width: var(--qr-size); height: var(--qr-size); z-index: 1; background: #fff; justify-content: center; align-items: center; }
+.qr-container img { width: 100%; height: 100%; display: block; }
 
 /* --- PAGE CONTAINER (FOR PRINT) --- */
 .page-container {
-    background: #fff;
-    width: 210mm;
-    height: 297mm;
-    /* Margó biztosítása, hogy ne csússzon le a papírról a Grid */
+    background: #fff; width: 210mm; height: 297mm;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
     grid-template-rows: repeat(6, 1fr);
-    /* Középre igazítás + biztonsági margó */
     padding: calc( (297mm - (6 * var(--card-size)) - (5 * var(--card-gap))) / 2)
              calc( (210mm - (4 * var(--card-size)) - (3 * var(--card-gap))) / 2);
-    gap: var(--card-gap);
-    margin-bottom: 2rem;
-    position: relative;
+    gap: var(--card-gap); margin-bottom: 2rem; position: relative;
 }
 
-.card-wrapper {
-    width: var(--card-size);
-    height: var(--card-size);
-    position: relative;
-    outline: 1px dashed #eee;
-}
+.card-wrapper { width: var(--card-size); height: var(--card-size); position: relative; outline: 1px dashed #eee; }
 
 /* CROP MARKS */
-body.has-crop-marks .card-wrapper::before,
-body.has-crop-marks .card-wrapper::after {
-    content: '';
-    position: absolute;
-    background: #000;
-    pointer-events: none;
-    z-index: 100;
-}
-
-body.has-crop-marks .card-wrapper::before {
-    width: 6px; height: 0.5px; top: -3px; left: -3px;
-    box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000; 
-}
-body.has-crop-marks .card-wrapper::after {
-    width: 0.5px; height: 6px; top: -3px; left: -3px;
-    box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000;
-}
+body.has-crop-marks .card-wrapper::before, body.has-crop-marks .card-wrapper::after { content: ''; position: absolute; background: #000; pointer-events: none; z-index: 100; }
+body.has-crop-marks .card-wrapper::before { width: 6px; height: 0.5px; top: -3px; left: -3px; box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000; }
+body.has-crop-marks .card-wrapper::after { width: 0.5px; height: 6px; top: -3px; left: -3px; box-shadow: calc(var(--card-size) + 6px) 0 0 #000, 0 calc(var(--card-size) + 6px) 0 #000, calc(var(--card-size) + 6px) calc(var(--card-size) + 6px) 0 #000; }
 
 /* --- PRINT STYLES --- */
 @media print {
@@ -452,12 +308,9 @@ body.has-crop-marks .card-wrapper::after {
     #main-content { background: none; padding: 0; display: block; margin: 0; overflow: visible; }
     #print-area { display: block !important; }
     
-    .page-container {
-        box-shadow: none; margin: 0; page-break-after: always; border: none;
-    }
+    .page-container { box-shadow: none; margin: 0; page-break-after: always; border: none; }
     .card-wrapper { outline: none; margin: 0; transform: none; }
     .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     
-    body.has-crop-marks .card-wrapper::before,
-    body.has-crop-marks .card-wrapper::after { display: block; }
+    body.has-crop-marks .card-wrapper::before, body.has-crop-marks .card-wrapper::after { display: block; }
 }

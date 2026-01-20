@@ -5,7 +5,7 @@ import { renderAllPages, renderPreviewPair } from './modules/card-generator.js';
 const App = {
     data: [],
     previewIntervalId: null,
-    currentPreviewIndex: 0, // Tároljuk, mit nézünk éppen, hogy setting változásnál ne ugráljon
+    currentPreviewIndex: 0, 
 
     async init() {
         console.log("MusicStencil indítása...");
@@ -13,26 +13,24 @@ const App = {
         this.data = await loadSampleData();
         
         initializeUI(
-            () => this.handleSettingsChange(), // Callback a UI változásokra
+            () => this.handleSettingsChange(),
             (d) => this.handleDataLoaded(d), 
             this.data
         );
         
-        this.updateStats();
+        // Statisztika sávot itt már NEM frissítjük, csak fájlbetöltéskor
         this.renderPrintView();
         this.showRandomPreview();
     },
 
     handleSettingsChange() {
-        // Újrarajzolás (pl. vinyl randomness miatt kellhet)
         this.renderPrintView();
-        // A jelenlegi előnézet frissítése (ugyanazzal az index-szel)
         this.refreshCurrentPreview();
     },
 
     handleDataLoaded(newData) {
         this.data = newData;
-        this.updateStats();
+        this.updateStats(); // CSAK itt hívjuk meg
         this.renderPrintView();
         this.startPreviewCycle();
     },
@@ -56,11 +54,12 @@ const App = {
     refreshCurrentPreview() {
         if (!this.data || this.data.length === 0) return;
         const previewArea = document.getElementById('preview-area');
-        // Biztonsági ellenőrzés az indexre
         if (this.currentPreviewIndex >= this.data.length) this.currentPreviewIndex = 0;
         
         renderPreviewPair(previewArea, this.data[this.currentPreviewIndex]);
     },
+
+
 
     startPreviewCycle() {
         if (this.previewIntervalId) clearInterval(this.previewIntervalId);
