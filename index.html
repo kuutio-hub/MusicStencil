@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicStencil - Master Print v6.5.6</title>
+    <title>MusicStencil - Precision Master v6.5.8</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,6 +67,9 @@
                             <label>Keret Szín</label>
                             <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
                         </div>
+                        <div class="row wraps">
+                             <label class="checkbox-container"><input type="checkbox" id="border-front-only" checked> Keret csak elől</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,7 +77,7 @@
             <!-- TIPOGRÁFIA -->
             <div class="tab-pane" id="tab-typography">
                 <div class="settings-section">
-                    <h3>Betűk & Effektek</h3>
+                    <h3>Betűk & Globális stílus</h3>
                     <select id="font-family" data-css-var="--font-family" class="full-width">
                         <option value="'Montserrat', sans-serif">Montserrat</option>
                         <option value="'Poppins', sans-serif">Poppins</option>
@@ -103,9 +106,10 @@
                         </div>
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="bold-artist" checked> Bold</label>
-                            <select id="text-transform-artist" data-css-var="--text-transform-artist" class="mini-select">
+                            <select id="text-transform-artist" class="mini-select" data-css-var="--text-transform-artist">
                                 <option value="none">Normál</option>
-                                <option value="uppercase">Nagy</option>
+                                <option value="uppercase">ABC (Nagy)</option>
+                                <option value="capitalize">Abc (Kezdő)</option>
                             </select>
                         </div>
                     </div>
@@ -119,6 +123,11 @@
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="bold-title" checked> Bold</label>
                             <input type="number" id="max-lines" value="2" min="1" max="5" title="Max sor">
+                            <select id="text-transform-title" class="mini-select" data-css-var="--text-transform-title">
+                                <option value="none">Normál</option>
+                                <option value="uppercase">ABC (Nagy)</option>
+                                <option value="capitalize">Abc (Kezdő)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -156,7 +165,7 @@
             <!-- HÁTLAP -->
             <div class="tab-pane" id="tab-backside">
                 <div class="settings-section">
-                    <h3>Vinyl & QR Design</h3>
+                    <h3>Vinyl & QR Precision</h3>
                     <div class="control-group">
                         <div class="input-row">
                             <label>QR Logó (max 3)</label>
@@ -164,7 +173,7 @@
                         </div>
                         <div class="input-row">
                             <label>QR Méret (%)</label>
-                            <input type="number" id="qr-size-percent" value="40" min="20" max="80" step="1" data-unit="%" data-css-var="--qr-size">
+                            <input type="number" id="qr-size-percent" value="40" min="10" max="90" step="1" data-unit="%" data-css-var="--qr-size">
                         </div>
                         <div class="input-row">
                             <label>QR Stílus</label>
@@ -179,20 +188,28 @@
                             <label class="checkbox-container"><input type="checkbox" id="vinyl-variate"> Vastagság variáció</label>
                         </div>
                         <div class="input-row">
-                            <label>Barázda köz</label>
-                            <input type="number" id="vinyl-spacing" value="3" step="0.1">
+                            <label>Barázdák száma</label>
+                            <input type="number" id="vinyl-count" value="18" min="1" max="50">
                         </div>
                         <div class="input-row">
-                            <label>Barázda vastagság</label>
-                            <input type="number" id="vinyl-thickness" value="0.5" step="0.1">
+                            <label>Barázda köz (mm)</label>
+                            <input type="number" id="vinyl-spacing" value="2.5" step="0.1">
+                        </div>
+                        <div class="input-row">
+                            <label>Alap vastagság</label>
+                            <input type="number" id="vinyl-thickness" value="0.4" step="0.1">
                         </div>
                         <div class="input-row">
                             <label>Glitch / kör</label>
                             <div class="dual-input">
                                 <input type="number" id="glitch-min" value="1">
                                 <span>-</span>
-                                <input type="number" id="glitch-max" value="3">
+                                <input type="number" id="glitch-max" value="4">
                             </div>
+                        </div>
+                        <div class="input-row">
+                            <label>Glitch szélesség (%)</label>
+                            <input type="number" id="glitch-width-percent" value="10" min="1" max="40">
                         </div>
                     </div>
                 </div>
@@ -201,18 +218,18 @@
             <!-- SÚGÓ -->
             <div class="tab-pane" id="tab-help">
                 <div class="settings-section">
-                    <h3>v6.5.6 Master Guide</h3>
+                    <h3>v6.5.8 Wiki</h3>
                     <div class="help-content">
-                        <p><strong>QR Méret:</strong> Visszakerült a százalékos állítási lehetőség (20-80%).</p>
-                        <p><strong>Print Központosítás:</strong> A nyomtatási oldalak most már automatikusan középre igazodnak A4 és A3 méreten is.</p>
-                        <p><strong>Árnyékok:</strong> Az előnézetben látható Glow effektek nyomtatáskor automatikusan kikapcsolnak.</p>
-                        <p><strong>Véletlenszerű Glitch:</strong> A barázdák minden egyes kártyán máshol szakadnak meg.</p>
+                        <p><strong>QR Fix:</strong> A méret most már százalékosan skálázódik a kártyához képest.</p>
+                        <p><strong>Vinyl:</strong> Új paraméterek: barázdák száma és glitch szélessége.</p>
+                        <p><strong>Tipográfia:</strong> Az Előadó és Cím külön stílusokat kapott (Nagybetű/Kezdőnagy).</p>
+                        <p><strong>90° Forgatás:</strong> A kódok a kártya széléhez igazodnak elforgatva is.</p>
                     </div>
                 </div>
             </div>
         </div>
         <footer class="app-footer">
-            <p>&copy; MusicStencil v6.5.6</p>
+            <p>&copy; MusicStencil v6.5.8</p>
         </footer>
     </aside>
 

@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v656_settings';
+const STORAGE_KEY = 'musicstencil_v658_settings';
 
 export function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select, #settings-panel input');
@@ -30,8 +30,9 @@ export function applyAllStyles() {
 
     // Flags
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
+    document.body.classList.toggle('back-border-off', document.getElementById('border-front-only')?.checked);
 
-    // Glow - Neon Style
+    // Glow - Neon Style (Only in preview via CSS)
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
         const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.3)` : 'none';
@@ -72,8 +73,13 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         
-        const fullRedrawIds = ['paper-size', 'card-size', 'qr-style', 'qr-size-percent', 'vinyl-spacing', 'vinyl-thickness'];
-        if (fullRedrawIds.includes(e.target.id)) {
+        const redrawIds = [
+            'paper-size', 'card-size', 'qr-style', 'qr-size-percent', 
+            'vinyl-spacing', 'vinyl-thickness', 'vinyl-count', 
+            'glitch-width-percent', 'glitch-min', 'glitch-max',
+            'border-front-only', 'rotate-codes'
+        ];
+        if (redrawIds.includes(e.target.id)) {
              if (onSettingsChange) onSettingsChange(true); 
         } else {
              if (onSettingsChange) onSettingsChange(false);

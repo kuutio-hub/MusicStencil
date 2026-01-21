@@ -6,13 +6,14 @@ function generateQRCode(element, text, style, logoText) {
         if (style === 'rounded') element.classList.add('qr-style-rounded');
         if (style === 'dots') element.classList.add('qr-style-dots');
 
+        // Generate high res, then let CSS handle the scaling
         new QRCode(element, {
             text: text, 
-            width: 256, 
-            height: 256,
+            width: 400, 
+            height: 400,
             colorDark : "#000000", 
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.M
+            correctLevel : QRCode.CorrectLevel.H
         });
 
         if (logoText && logoText.trim().length > 0) {
@@ -51,14 +52,16 @@ function adjustText(element, isTitle = false) {
 }
 
 function generateVinyl() {
-    const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 3;
-    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.5;
+    const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 2.5;
+    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4;
+    const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 18;
+    const glitchWidthPercent = parseFloat(document.getElementById('glitch-width-percent')?.value) || 10;
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
-    const gMax = parseInt(document.getElementById('glitch-max')?.value) || 3;
+    const gMax = parseInt(document.getElementById('glitch-max')?.value) || 4;
     const variate = document.getElementById('vinyl-variate')?.checked;
 
     let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < grooveCount; i++) {
         const r = 48 - (i * spacing);
         if (r < 5) break;
 
@@ -69,7 +72,7 @@ function generateVinyl() {
         if (gCount === 0) {
             dash.push(circ, 0);
         } else {
-            // TELJESEN RANDOM GLITCH POZÍCIÓK
+            // FULL RANDOM POSITIONS FOR GLITCHES
             let segments = [];
             for (let g = 0; g < gCount; g++) {
                 segments.push(Math.random() * circ);
@@ -77,19 +80,20 @@ function generateVinyl() {
             segments.sort((a, b) => a - b);
             
             let lastPos = 0;
-            const gapWidth = circ * (0.05 + Math.random() * 0.08) / gCount; 
+            // The gap width is a percentage of the circumference
+            const gapWidth = circ * (glitchWidthPercent / 100) / gCount; 
             
             for (let p of segments) {
                 const drawLen = Math.max(0, p - lastPos - (gapWidth / 2));
                 dash.push(drawLen, gapWidth);
                 lastPos = p + (gapWidth / 2);
             }
-            const finalPart = circ - lastPos;
+            const finalPart = Math.max(0, circ - lastPos);
             if (finalPart > 0) dash.push(finalPart, 0);
         }
 
         const sw = variate ? (thickness * (0.6 + Math.random() * 0.8)) : thickness;
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.2 + (i*0.05)}" />`;
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.15 + (i * (0.8 / grooveCount))}" />`;
     }
     svg += `</svg>`;
     return svg;
@@ -145,7 +149,6 @@ export function renderAllPages(container, data) {
     const paper = document.getElementById('paper-size').value;
     const cardSizeMm = parseFloat(document.getElementById('card-size').value) || 46;
     
-    // Margók utáni hasznos terület
     const pW = paper === 'A3' ? 277 : 190; 
     const pH = paper === 'A3' ? 400 : 277; 
     
@@ -158,7 +161,7 @@ export function renderAllPages(container, data) {
     for (let i = 0; i < data.length; i += perPage) {
         const chunk = data.slice(i, i + perPage);
         
-        // ELŐLAP OLDAL
+        // FRONT PAGE
         const frontPage = document.createElement('div');
         frontPage.className = `page-container ${paper}`;
         frontPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
@@ -174,7 +177,7 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // HÁTLAP OLDAL
+        // BACK PAGE
         const backPage = document.createElement('div');
         backPage.className = `page-container ${paper}`;
         backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;

@@ -18,6 +18,9 @@
     --font-size-title: 10pt;
     --font-weight-title: 700;
     --font-weight-codes: 700;
+
+    --text-transform-artist: none;
+    --text-transform-title: none;
     
     --text-shadow-year: none;
     --text-shadow-artist: none;
@@ -55,10 +58,15 @@ input[type="text"] { width: 100px; }
 select.full-width { width: 100%; margin-bottom: 10px; }
 
 #main-content { flex: 1; background: radial-gradient(circle at center, #222, #000); overflow-y: auto; position: relative; }
-#preview-area { display: flex; align-items: center; justify-content: center; min-height: 100%; gap: 60px; padding: 40px; cursor: pointer; }
+
+/* PREVIEW OVERLAP FIX */
+#preview-area { 
+    display: flex; align-items: center; justify-content: center; 
+    min-height: 100%; gap: 120px; padding: 80px; cursor: pointer; 
+}
+#preview-area .card-wrapper { transform: scale(2); margin: 40px; }
 
 .card-wrapper { width: var(--card-size); height: var(--card-size); position: relative; flex-shrink: 0; }
-#preview-area .card-wrapper { transform: scale(2); }
 
 .card {
     width: 100%; height: 100%; background: var(--card-bg-color); border-radius: var(--card-radius);
@@ -66,22 +74,45 @@ select.full-width { width: 100%; margin-bottom: 10px; }
     box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 .card.front { border: 1px solid var(--primary-color); }
+body.back-border-off .card.back { border: 1px solid transparent; }
+body:not(.back-border-off) .card.back { border: 1px solid var(--primary-color); }
 
 .year { font-family: var(--font-family); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: #000; text-shadow: var(--text-shadow-year); position: absolute; z-index: 5; }
-.artist { position: absolute; top: var(--artist-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); font-variant: var(--font-variant-artist); text-shadow: var(--text-shadow-artist); padding: 0 4px; box-sizing: border-box; line-height: 1; color: #000; }
-.title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); font-variant: var(--font-variant-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1; color: #000; }
+.artist { position: absolute; top: var(--artist-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); text-shadow: var(--text-shadow-artist); padding: 0 4px; box-sizing: border-box; line-height: 1; color: #000; }
+.title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1; color: #000; }
 
-.code1, .code2 { position: absolute; bottom: var(--code-margin); font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; }
+.code1, .code2 { position: absolute; bottom: var(--code-margin); font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; transition: transform 0.2s ease; }
 .code1 { left: var(--code-side-margin); }
 .code2 { right: var(--code-side-margin); }
 
-body.codes-rotated .code1, body.codes-rotated .code2 { bottom: auto; top: 50%; transform: translateY(-50%) rotate(-90deg); }
-body.codes-rotated .code1 { left: calc(var(--code-side-margin) - 8mm); }
-body.codes-rotated .code2 { right: calc(var(--code-side-margin) - 8mm); }
+/* ROTATED CODES FIX - IMPROVED FOR V6.5.8 */
+body.codes-rotated .code1 { 
+    left: var(--code-side-margin); 
+    bottom: auto; 
+    top: 50%; 
+    transform: translateY(-50%) rotate(-90deg) translateX(-50%);
+    transform-origin: center center;
+}
+body.codes-rotated .code2 { 
+    right: var(--code-side-margin); 
+    bottom: auto; 
+    top: 50%; 
+    transform: translateY(-50%) rotate(90deg) translateX(50%);
+    transform-origin: center center;
+}
 
-.card.back { border: 1px solid transparent; }
 .vinyl-bg { position: absolute; width: 96%; height: 96%; opacity: 0.75; display: flex; align-items: center; justify-content: center; }
-.qr-container { position: absolute; width: var(--qr-size); height: var(--qr-size); background: #fff; padding: 2px; z-index: 10; display: flex; align-items: center; justify-content: center; border-radius: 2px; }
+
+/* QR SIZE PRECISION FIX */
+.qr-container { 
+    position: absolute; width: var(--qr-size); height: var(--qr-size); 
+    background: #fff; padding: 2px; z-index: 10; display: flex; 
+    align-items: center; justify-content: center; border-radius: 2px; 
+    overflow: hidden;
+}
+.qr-container canvas, .qr-container img {
+    width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block;
+}
 
 /* QR DESIGN STYLES */
 .qr-style-rounded canvas, .qr-style-rounded img { border-radius: 12%; }
@@ -97,9 +128,14 @@ body.grid-view-active #preview-area { display: none; }
     background: #fff; width: 210mm; height: 297mm; display: grid; 
     justify-content: center; align-content: start; padding: 10mm; 
     margin: 40px auto; box-sizing: border-box; page-break-after: always; 
-    box-shadow: 0 0 40px rgba(0,0,0,0.8);
 }
 .page-container.A3 { width: 297mm; height: 420mm; }
+
+/* NO SHADOW IN GRID OR PRINT */
+body.grid-view-active .card, 
+@media print {
+    .card { box-shadow: none !important; border-color: var(--primary-color) !important; }
+}
 
 @media print {
     @page { margin: 0; }
@@ -107,7 +143,5 @@ body.grid-view-active #preview-area { display: none; }
     #main-content { overflow: visible; background: none; }
     #print-area { padding: 0; background: none; }
     .page-container { margin: 0; box-shadow: none; border: none; }
-    /* TILOS ÁRNYÉK NYOMTATÁSNÁL */
     .year, .artist, .title { text-shadow: none !important; }
-    .card { box-shadow: none !important; }
 }
