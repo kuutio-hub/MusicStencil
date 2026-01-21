@@ -1,5 +1,4 @@
-const CARDS_PER_PAGE = 24;
-const COLUMNS = 4;
+const CARDS_PER_PAGE = 100; // Majd a rács kitölti
 
 function generateQRCode(element, text) {
     element.innerHTML = "";
@@ -7,7 +6,7 @@ function generateQRCode(element, text) {
     try {
         new QRCode(element, {
             text: text,
-            width: 256, // Nagyobb felbontás a tisztább képért
+            width: 256,
             height: 256,
             colorDark : "#000000",
             colorLight : "#ffffff",
@@ -19,22 +18,22 @@ function generateQRCode(element, text) {
 }
 
 /**
- * Intelligens szövegtördelés:
- * Ha a szöveg nem fér el egy sorban, megkeresi az ideális töréspontot.
- * A felhasználói kérés alapján az "upward break" logikát preferálja:
- * Az első sor legyen rövidebb/könnyebb, a második pedig tartalmasabb.
+ * Intelligens szövegtördelés (v6.4.2):
+ * Prioritás: Ha a szöveg tartalmaz már sortörést (\n vagy \r), azt használja.
+ * Különben alkalmazza az upward-break logikát.
  */
 function smartWrap(text, element) {
     if (!text) return text;
+
+    // Ha van benne manuális sortörés (Excel Alt+Enter), alakítsuk <br>-ré
+    if (text.includes('\n') || text.includes('\r')) {
+        return text.replace(/\r?\n/g, '<br>');
+    }
+
     const words = text.split(/\s+/);
     if (words.length <= 1) return text;
 
-    // Próbáljuk megmérni, hol lenne esztétikus a törés
-    // A cél: a törés utáni rész legyen a "súlyosabb"
-    let bestWrap = text;
-    let minDiff = Infinity;
-
-    // Ha nagyon hosszú a cím, az első harmadnál próbálunk törni
+    // Upward break: első rész legyen rövidebb (kb 40%)
     const splitIdx = Math.max(1, Math.floor(words.length * 0.4));
     const firstPart = words.slice(0, splitIdx).join(' ');
     const secondPart = words.slice(splitIdx).join(' ');
@@ -45,17 +44,21 @@ function smartWrap(text, element) {
 function adjustTextForOverflow(element, isTitle = false) {
     if (!element) return;
     
-    const text = element.textContent;
+    let text = element.textContent;
     const computedStyle = window.getComputedStyle(element);
     let currentFontSize = parseFloat(computedStyle.fontSize);
     const minFontSize = 4;
     
-    // Ha cím, először próbáljuk az okos tördelést
-    if (isTitle && text.length > 15 && !element.innerHTML.includes('<br>')) {
+    // Ha van benne manuális sortörés, azonnal cseréljük
+    if (text.includes('\n') || text.includes('\r')) {
+        element.innerHTML = text.replace(/\r?\n/g, '<br>');
+    } 
+    // Különben ha cím és elég hosszú, próbáljuk az okos tördelést
+    else if (isTitle && text.length > 15 && !element.innerHTML.includes('<br>')) {
         element.innerHTML = smartWrap(text, element);
     }
 
-    const maxHeight = parseFloat(computedStyle.lineHeight) * 2.2; // Max 2 sor
+    const maxHeight = parseFloat(computedStyle.lineHeight) * 2.3; 
 
     while ((element.scrollHeight > maxHeight || element.scrollWidth > element.clientWidth) && currentFontSize > minFontSize) {
         currentFontSize -= 0.5;
@@ -68,6 +71,7 @@ function generateVinylSVG() {
     const color = computedStyle.getPropertyValue('--vinyl-groove-color').trim();
     const count = parseInt(computedStyle.getPropertyValue('--vinyl-groove-count')) || 8;
     const spacing = parseFloat(computedStyle.getPropertyValue('--vinyl-spacing')) || 4;
+    const thickness = parseFloat(computedStyle.getPropertyValue('--vinyl-thickness')) || 0.5;
     
     let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
     for (let i = 0; i < count; i++) {
@@ -75,7 +79,7 @@ function generateVinylSVG() {
         if (r < 5) break;
         const dash = (Math.random() * 50 + 50);
         const gap = (Math.random() * 20 + 5);
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="0.5" stroke-dasharray="${dash} ${gap}" opacity="${0.3 + (i*0.05)}" />`;
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="${thickness}" stroke-dasharray="${dash} ${gap}" opacity="${0.3 + (i*0.05)}" />`;
     }
     svg += `</svg>`;
     return svg;
@@ -132,12 +136,32 @@ export function renderPreviewPair(container, song) {
     adjustTextForOverflow(front.querySelector('.title'), true);
 }
 
+/**
+ * Kiszámolja, hány oszlop fér el egy oldalon (v6.4.2)
+ */
+function calculateColumns() {
+    const cardSizeMm = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-size'));
+    const usableWidthMm = 190; // A4 (210) - 2x10mm margó
+    return Math.floor(usableWidthMm / cardSizeMm) || 1;
+}
+
+function calculateRows() {
+    const cardSizeMm = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-size'));
+    const usableHeightMm = 277; // A4 (297) - 2x10mm margó
+    return Math.floor(usableHeightMm / cardSizeMm) || 1;
+}
+
 export function renderAllPages(container, data) {
     container.innerHTML = '';
-    const pageCount = Math.ceil(data.length / CARDS_PER_PAGE);
+    
+    const cols = calculateColumns();
+    const rows = calculateRows();
+    const perPage = cols * rows;
+
+    const pageCount = Math.ceil(data.length / perPage);
 
     for (let i = 0; i < pageCount; i++) {
-        const chunk = data.slice(i * CARDS_PER_PAGE, (i + 1) * CARDS_PER_PAGE);
+        const chunk = data.slice(i * perPage, (i + 1) * perPage);
         
         // Front Page
         const frontPage = document.createElement('div');
@@ -153,12 +177,12 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // Back Page (Mirrored row-by-row)
+        // Back Page (Mirrored dynamically based on columns)
         const backPage = document.createElement('div');
         backPage.className = 'page-container';
-        for (let r = 0; r < chunk.length; r += COLUMNS) {
-            const row = chunk.slice(r, r + COLUMNS).reverse();
-            row.forEach(song => {
+        for (let r = 0; r < chunk.length; r += cols) {
+            const rowSlice = chunk.slice(r, r + cols).reverse();
+            rowSlice.forEach(song => {
                 const card = createCardBack(song);
                 const wrap = document.createElement('div');
                 wrap.className = 'card-wrapper';

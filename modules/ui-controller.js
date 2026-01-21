@@ -35,12 +35,24 @@ function loadSettings() {
 function updateCSSVariable(input) {
     const cssVar = input.dataset.cssVar;
     if (!cssVar) return;
-    const unit = input.dataset.unit || '';
-    document.documentElement.style.setProperty(cssVar, input.value + unit);
+
+    if (cssVar === '--text-transform-artist' || cssVar === '--text-transform-title') {
+        const target = cssVar.includes('artist') ? 'artist' : 'title';
+        if (input.value === 'small-caps') {
+            document.documentElement.style.setProperty(`--text-transform-${target}`, 'none');
+            document.documentElement.style.setProperty(`--font-variant-${target}`, 'small-caps');
+        } else {
+            document.documentElement.style.setProperty(`--text-transform-${target}`, input.value);
+            document.documentElement.style.setProperty(`--font-variant-${target}`, 'normal');
+        }
+    } else {
+        const unit = input.dataset.unit || '';
+        document.documentElement.style.setProperty(cssVar, input.value + unit);
+    }
 }
 
 function applyAllStyles() {
-    const controls = document.querySelectorAll('#settings-panel [data-css-var]');
+    const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select');
     controls.forEach(ctrl => updateCSSVariable(ctrl));
 
     // Speciális állapotok

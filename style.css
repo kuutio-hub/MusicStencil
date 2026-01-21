@@ -24,14 +24,19 @@
     --font-size-artist: 8pt;
     --color-artist: #000000;
     --font-weight-artist: normal;
+    --text-transform-artist: none;
+    --font-variant-artist: normal;
     --font-size-title: 7pt;
     --color-title: #333333;
     --font-weight-title: normal;
     --font-style-title: normal;
+    --text-transform-title: none;
+    --font-variant-title: normal;
     --qr-size: 40%;
     --qr-display: flex;
     --vinyl-opacity: 0.15;
     --vinyl-groove-color: #000000;
+    --vinyl-thickness: 0.5;
 }
 
 body {
@@ -144,8 +149,8 @@ select { width: 100%; background: #222; color: #fff; border: 1px solid #444; pad
 .card.front { border: 1px solid var(--primary-color); }
 
 .year { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); font-family: var(--font-family); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: var(--color-year); z-index: 5; }
-.artist { position: absolute; top: var(--artist-margin); left: 0; right: 0; padding: 0 var(--card-padding); font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: var(--text-transform-artist); line-height: 1.1; }
-.title { position: absolute; bottom: var(--title-margin); left: 0; right: 0; padding: 0 var(--card-padding); font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); font-style: var(--font-style-title); color: var(--color-title); text-transform: var(--text-transform-title); line-height: 1.1; }
+.artist { position: absolute; top: var(--artist-margin); left: 0; right: 0; padding: 0 var(--card-padding); font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); color: var(--color-artist); text-transform: var(--text-transform-artist); font-variant: var(--font-variant-artist); line-height: 1.1; }
+.title { position: absolute; bottom: var(--title-margin); left: 0; right: 0; padding: 0 var(--card-padding); font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); font-style: var(--font-style-title); color: var(--color-title); text-transform: var(--text-transform-title); font-variant: var(--font-variant-title); line-height: 1.1; }
 
 .code1, .code2 { position: absolute; font-family: var(--font-family); font-size: 6pt; color: #000; bottom: var(--code-margin); }
 .code1 { left: var(--code-margin); }
@@ -174,18 +179,24 @@ body.codes-rotated .code1, body.codes-rotated .code2 { top: 50%; bottom: auto; t
 body.codes-rotated .code1 { left: 0; margin-left: -5px; }
 body.codes-rotated .code2 { right: 0; margin-right: -5px; }
 
-/* PRINTING GRID RESTORED */
+/* PRINTING GRID DYNAMIC */
 #print-area { display: none; background: #fff; }
 body.grid-view-active #print-area { display: block; }
 body.grid-view-active #preview-area { display: none; }
 
 .page-container {
-    background: #fff; width: 210mm; height: 297mm; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    background: #fff; 
+    width: 210mm; 
+    height: 297mm; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
     display: grid; 
-    grid-template-columns: repeat(4, var(--card-size)); 
+    grid-template-columns: repeat(auto-fill, var(--card-size)); 
     grid-auto-rows: var(--card-size);
-    justify-content: center; align-content: start; 
-    padding: 10mm; margin: 0 auto 2rem auto;
+    justify-content: center; 
+    align-content: start; 
+    padding: 10mm; 
+    margin: 0 auto 2rem auto;
+    overflow: hidden;
 }
 
 @media print {
