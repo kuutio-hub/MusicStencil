@@ -153,37 +153,43 @@ body.grid-view-active #preview-area { display: none; }
 .page-container.A3 { width: 297mm; height: 420mm; }
 
 /* 
-   EXTRÉM SHADOW-KILL & FLAT-MODE 
-   Rácsnézetben minden effektet és mélységet eltávolítunk
+   EXTRÉM SHADOW-KILL & FLAT-MODE (Javított szintaxis)
+   Rácsnézetben minden effektet és mélységet eltávolítunk.
 */
 body.grid-view-active .card,
 body.grid-view-active .card-wrapper,
 body.grid-view-active .page-container,
-@media print {
-    .card, .page-container, .card-wrapper, .year, .artist, .title, .code1, .code2 { 
-        box-shadow: none !important; 
-        text-shadow: none !important; 
-        transition: none !important;
-        background: #fff !important; 
-    }
-    .card { 
-        border: 1px solid var(--primary-color) !important;
-    }
-    .page-container { 
-        margin: 0 auto !important; 
-        border: none !important; 
-        background: #fff !important;
-        box-shadow: none !important;
-    }
-    /* Megakadályozzuk a lebegő réteg érzetet */
-    .vinyl-bg circle {
-        filter: none !important;
-    }
+body.grid-view-active .year,
+body.grid-view-active .artist,
+body.grid-view-active .title,
+body.grid-view-active .code1,
+body.grid-view-active .code2 { 
+    box-shadow: none !important; 
+    text-shadow: none !important; 
+    filter: none !important;
+    transition: none !important;
+}
+
+body.grid-view-active .card { 
+    background: #ffffff !important;
+    border: 1px solid var(--primary-color) !important;
 }
 
 @media print {
+    body, #main-content, #print-area, .page-container, .card, .card-wrapper {
+        background: #ffffff !important;
+        box-shadow: none !important;
+        filter: none !important;
+    }
+    .year, .artist, .title, .code1, .code2 { 
+        text-shadow: none !important; 
+        color: #000000 !important;
+    }
+    .card { border: 1px solid var(--primary-color) !important; }
+    .page-container { margin: 0 auto !important; border: none !important; }
+    
     @page { margin: 0; }
     #settings-panel { display: none !important; }
-    #main-content { overflow: visible; background: #fff; }
-    #print-area { padding: 0; background: #fff; display: block !important; }
+    #main-content { overflow: visible; }
+    #print-area { display: block !important; }
 }
