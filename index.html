@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&family=Bebas+Neue&family=Cinzel:wght@700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -54,7 +54,6 @@
         
         <div class="scroll-container">
             
-            <!-- TAB: ALAPOK -->
             <div class="tab-pane active" id="tab-general">
                 <div class="settings-section">
                     <h3>Kártya Fizika</h3>
@@ -79,18 +78,18 @@
                 </div>
             </div>
 
-            <!-- TAB: BETŰK -->
             <div class="tab-pane" id="tab-typography">
                 <div class="settings-section">
                     <h3>Globális Stílus</h3>
                     <div class="control-group">
                         <select id="font-family" data-css-var="--font-family" class="full-width">
-                            <option value="'Poppins', sans-serif">Poppins</option>
-                            <option value="'Montserrat', sans-serif">Montserrat</option>
-                            <option value="'Orbitron', sans-serif">Orbitron</option>
-                            <option value="'Roboto', sans-serif">Roboto</option>
-                            <option value="'Lato', sans-serif">Lato</option>
-                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Poppins', sans-serif">Poppins (Modern)</option>
+                            <option value="'Montserrat', sans-serif">Montserrat (Classic)</option>
+                            <option value="'Bebas Neue', sans-serif">Bebas Neue (Bold)</option>
+                            <option value="'Playfair Display', serif">Playfair (Elegant)</option>
+                            <option value="'Cinzel', serif">Cinzel (Antique)</option>
+                            <option value="'Syncopate', sans-serif">Syncopate (Future)</option>
+                            <option value="'Orbitron', sans-serif">Orbitron (Sci-Fi)</option>
                         </select>
                     </div>
 
@@ -118,8 +117,8 @@
                             <select id="text-transform-artist" data-css-var="--text-transform-artist" class="mini-select">
                                 <option value="none">Normál</option>
                                 <option value="uppercase">Nagybetűs</option>
-                                <option value="capitalize">Nagy kezdőbetűs</option>
-                                <option value="small-caps">Kiskapitális</option>
+                                <option value="capitalize">Kezdőbetűs</option>
+                                <option value="small-caps">Nagykapitális</option>
                             </select>
                         </div>
                     </div>
@@ -137,15 +136,14 @@
                             <select id="text-transform-title" data-css-var="--text-transform-title" class="mini-select">
                                 <option value="none">Normál</option>
                                 <option value="uppercase">Nagybetűs</option>
-                                <option value="capitalize">Nagy kezdőbetűs</option>
-                                <option value="small-caps">Kiskapitális</option>
+                                <option value="capitalize">Kezdőbetűs</option>
+                                <option value="small-caps">Nagykapitális</option>
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB: ELHELYEZKEDÉS -->
             <div class="tab-pane" id="tab-layout">
                 <div class="settings-section">
                     <h3>Margók & Pozíció</h3>
@@ -174,7 +172,6 @@
                 </div>
             </div>
 
-             <!-- TAB: HÁTLAP -->
              <div class="tab-pane" id="tab-backside">
                 <div class="settings-section">
                     <h3>QR & Vinyl</h3>
@@ -182,62 +179,77 @@
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód</label>
                             <label class="checkbox-container"><input type="checkbox" id="vinyl-glow"> Vinyl Glow</label>
+                            <label class="checkbox-container"><input type="checkbox" id="vinyl-variate"> Változó vastagság</label>
+                        </div>
+                        <div class="input-row">
+                            <label>QR Design</label>
+                            <select id="qr-style" class="mini-select">
+                                <option value="standard">Standard</option>
+                                <option value="modern">Modern (Round)</option>
+                            </select>
                         </div>
                         <div class="input-row">
                             <label>QR Méret (%)</label>
                             <input type="number" id="qr-size" value="40" step="1" data-unit="%" data-css-var="--qr-size">
                         </div>
                         <div class="input-row">
-                            <label>Barázda vastagság</label>
-                            <input type="number" id="vinyl-thickness" value="0.5" step="0.1" data-css-var="--vinyl-thickness">
+                            <label>Glitch / kör (db)</label>
+                            <div class="dual-input">
+                                <input type="number" id="glitch-min" value="1" min="0" max="10">
+                                <span>-</span>
+                                <input type="number" id="glitch-max" value="3" min="0" max="10">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <label>Hézag méret (%)</label>
+                            <div class="dual-input">
+                                <input type="number" id="gap-min" value="15" min="1" max="90">
+                                <span>-</span>
+                                <input type="number" id="gap-max" value="45" min="1" max="90">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <label>Opacitás (0-1)</label>
+                            <input type="number" id="vinyl-opacity" value="0.75" min="0" max="1" step="0.05" data-css-var="--vinyl-opacity">
                         </div>
                         <div class="input-row">
                             <label>Barázda köz (mm)</label>
                             <input type="number" id="vinyl-spacing" value="4" step="0.5" data-css-var="--vinyl-spacing">
                         </div>
-                        <div class="input-row">
-                            <label>Glitch esély (0-1)</label>
-                            <input type="number" id="vinyl-glitch-chance" value="0.5" step="0.1" data-css-var="--vinyl-glitch-chance">
-                        </div>
-                        <div class="input-row">
-                            <label>Opacitás (0-1)</label>
-                            <input type="number" id="vinyl-opacity" value="0.15" min="0" max="1" step="0.05" data-css-var="--vinyl-opacity">
-                        </div>
-                        <div class="input-row">
-                            <label>Vinyl színe</label>
-                            <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
-                        </div>
-                        <div class="input-row">
-                            <label>Barázdák száma</label>
-                            <input type="number" id="vinyl-groove-count" value="8" step="1" data-css-var="--vinyl-groove-count">
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB: SÚGÓ -->
             <div class="tab-pane" id="tab-help">
                 <div class="settings-section">
-                    <h3>Wiki / Súgó</h3>
+                    <h3>Pro Studio Wiki</h3>
                     <div class="help-content">
-                        <h4>Excel Oszloprend:</h4>
-                        <ol>
-                            <li><strong>Előadó</strong></li>
-                            <li><strong>Dal címe</strong></li>
-                            <li><strong>Évszám</strong></li>
-                            <li><strong>URL</strong> (QR kódhoz)</li>
-                            <li><strong>Code 1</strong> (opcionális)</li>
-                            <li><strong>Code 2</strong> (opcionális)</li>
-                        </ol>
-                        <p><strong>Alt + Enter:</strong> Ha az Excelben a cím cellában kézi sortörést használsz, az alkalmazás ott fogja törni a szöveget.</p>
-                        <p><strong>Dinamikus kódok:</strong> Ha a Code oszlopokat üresen hagyod, a mezők automatikusan elrejtésre kerülnek a kártyán.</p>
+                        <h4>1. Adatimportálás (Excel)</h4>
+                        <p>A rendszer az első munkalapot (Sheet 1) olvassa be. Az első sor lehet fejléc, ha tartalmazza a következő szavakat:</p>
+                        <ul>
+                            <li><strong>Artist</strong> / Előadó</li>
+                            <li><strong>Title</strong> / Cím / Dal</li>
+                            <li><strong>Year</strong> / Évszám</li>
+                            <li><strong>URL</strong> / Link / QR</li>
+                        </ul>
+                        <p>Ha a kód oszlopokat üresen hagyod, azok nem jelennek meg.</p>
+                        
+                        <h4>2. Speciális Tipográfia</h4>
+                        <p><strong>Alt + Enter:</strong> Kézi sortörés a cellán belül. Ha használod, a rendszer ott töri el a szöveget. Ha nem használod, 66%-nál próbálkozik automatikusan.</p>
+                        <p><strong>Nagykapitális:</strong> Minden betű nagy lesz, de a szavak kezdőbetűi méretben is kiemelkednek.</p>
+
+                        <h4>3. Vinyl Glitch Engine</h4>
+                        <p>A "Glitch / kör" határozza meg, hány helyen szakad meg a barázda véletlenszerűen. A "Hézag méret" a szakadások hosszát adja meg a kerület arányában.</p>
+                        
+                        <h4>4. Nyomtatás</h4>
+                        <p>A "Nyomtatás" gomb PDF-et generál. Ügyelj rá, hogy a böngészőben a <em>"Háttérgrafika"</em> opció be legyen pipálva!</p>
                     </div>
                 </div>
             </div>
             
             <footer class="app-footer">
                 <p class="copyright">&copy; <span id="current-year"></span> MusicStencil</p>
-                <p class="version">v6.4.3</p>
+                <p class="version">v6.5.0</p>
             </footer>
         </div>
     </aside>

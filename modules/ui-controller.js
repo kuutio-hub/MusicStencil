@@ -1,11 +1,12 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v64_settings';
+const STORAGE_KEY = 'musicstencil_v65_settings';
 
 function saveSettings() {
     const settings = {};
-    const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel [type="checkbox"]');
+    const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel [type="checkbox"], #settings-panel select, #settings-panel input[type="number"]');
     controls.forEach(ctrl => {
+        if (!ctrl.id) return;
         if (ctrl.type === 'checkbox') {
             settings[ctrl.id] = ctrl.checked;
         } else {
@@ -55,12 +56,12 @@ function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select');
     controls.forEach(ctrl => updateCSSVariable(ctrl));
 
-    // Speciális állapotok
     const states = [
         { id: 'rotate-codes', class: 'codes-rotated' },
         { id: 'bold-year', var: '--font-weight-year', type: 'bold' },
         { id: 'bold-artist', var: '--font-weight-artist', type: 'bold' },
         { id: 'bold-title', var: '--font-weight-title', type: 'bold' },
+        { id: 'bold-codes', var: '--font-weight-codes', type: 'bold' },
         { id: 'italic-title', var: '--font-style-title', type: 'italic' },
         { id: 'show-qr', var: '--qr-display', type: 'flex' }
     ];
@@ -75,16 +76,16 @@ function applyAllStyles() {
         }
     });
 
-    // Glow handling
-    const glows = [
-        { id: 'glow-year', var: '--text-shadow-year', color: '--color-year' },
-        { id: 'glow-artist', var: '--text-shadow-artist', color: '--color-artist' },
-        { id: 'glow-title', var: '--text-shadow-title', color: '--color-title' }
-    ];
+    // Kód Bold speciális kezelése (ha nincs CSS var a HTML-ben)
+    const codeBold = document.getElementById('bold-codes')?.checked;
+    document.documentElement.style.setProperty('--font-weight-codes', codeBold ? 'bold' : 'normal');
+
+    // Glow
+    const glows = ['year', 'artist', 'title'];
     glows.forEach(g => {
-        const el = document.getElementById(g.id);
-        const val = el && el.checked ? `0 0 3px var(${g.color})` : 'none';
-        document.documentElement.style.setProperty(g.var, val);
+        const el = document.getElementById(`glow-${g}`);
+        const val = el && el.checked ? `0 0 3px var(--color-${g})` : 'none';
+        document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
 
     const vinylGlow = document.getElementById('vinyl-glow');
@@ -105,7 +106,6 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     loadSettings();
     applyAllStyles();
 
-    // TAB LOGIC
     const tabBtns = document.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -116,16 +116,12 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         });
     });
 
-    // SETTINGS CHANGE
     document.getElementById('settings-panel').addEventListener('input', (e) => {
-        if (e.target.dataset.cssVar || e.target.type === 'checkbox' || e.target.tagName === 'SELECT') {
-            applyAllStyles();
-            saveSettings();
-            if (onSettingsChange) onSettingsChange();
-        }
+        applyAllStyles();
+        saveSettings();
+        if (onSettingsChange) onSettingsChange();
     });
 
-    // RESET SETTINGS
     document.getElementById('reset-settings').addEventListener('click', () => {
         if (confirm("Biztosan visszaállítod az alapértelmezett beállításokat?")) {
             localStorage.removeItem(STORAGE_KEY);
@@ -133,7 +129,6 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         }
     });
 
-    // FILE UPLOAD
     document.getElementById('file-upload-button').addEventListener('change', async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -146,10 +141,9 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         }
     });
 
-    // PRINT & VIEW TOGGLE
     document.getElementById('print-button').addEventListener('click', () => {
         document.body.classList.add('grid-view-active');
-        window.print();
+        setTimeout(() => window.print(), 500);
     });
 
     document.getElementById('view-toggle-button').addEventListener('click', () => {
