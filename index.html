@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Roboto+Slab:wght@400;700&family=Playfair+Display:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Merriweather:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Nunito:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body>
+<body class="loading">
 
     <aside id="settings-panel">
         <header>
@@ -20,16 +20,21 @@
                 <i class="fa-solid fa-layer-group"></i>
                 <span>MusicStencil</span>
             </div>
-            <div class="stats-bar" id="stats-bar" style="display: none;">
-                <i class="fa-solid fa-database"></i> <span id="record-count-display">0</span> db
+            <div class="top-actions">
+                <div class="stats-bar" id="stats-bar" style="display: none;">
+                    <i class="fa-solid fa-database"></i> <span id="record-count-display">0</span>
+                </div>
+                <div class="persistance-controls">
+                    <button id="reset-settings" class="icon-btn mini" title="Alaphelyzet"><i class="fa-solid fa-rotate-left"></i></button>
+                </div>
             </div>
-            <div class="actions">
+            <div class="actions main-actions">
                 <label for="file-upload-button" class="action-btn upload-btn" title="Excel feltöltése">
-                    <i class="fa-solid fa-file-import"></i>
+                    <i class="fa-solid fa-file-import"></i> Feltöltés
                 </label>
                 <input type="file" id="file-upload-button" accept=".xls, .xlsx" style="display: none;">
                 
-                <button id="view-toggle-button" class="action-btn" title="Rácsnézet">
+                <button id="view-toggle-button" class="action-btn" title="Nézet váltása">
                     <i class="fa-solid fa-grip"></i>
                 </button>
 
@@ -38,57 +43,61 @@
                 </button>
             </div>
         </header>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="general" title="Alapok"><i class="fa-solid fa-sliders"></i></button>
+            <button class="tab-btn" data-tab="typography" title="Betűk"><i class="fa-solid fa-font"></i></button>
+            <button class="tab-btn" data-tab="layout" title="Térköz"><i class="fa-solid fa-up-down-left-right"></i></button>
+            <button class="tab-btn" data-tab="backside" title="Hátlap"><i class="fa-solid fa-compact-disc"></i></button>
+        </nav>
         
         <div class="scroll-container">
             
-            <!-- 1. ALAPOK -->
-            <div class="settings-section">
-                <h3><i class="fa-solid fa-sliders"></i> 1. Kártya Alapok</h3>
-                <div class="control-group compact">
-                    <div class="row">
-                        <label>Méret: <span id="val-card-size">46</span>mm</label>
-                        <input type="range" id="card-size" min="30" max="90" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
-                    </div>
-                    <div class="row">
-                        <label>Sarok: <span id="val-card-radius">2</span>mm</label>
-                        <input type="range" id="card-radius" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--card-radius">
-                    </div>
-                    <div class="color-picker-row mini">
-                        <label>Keret / Háttér</label>
-                        <div class="pickers">
+            <!-- TAB: ALAPOK -->
+            <div class="tab-pane active" id="tab-general">
+                <div class="settings-section">
+                    <h3>Kártya Fizika</h3>
+                    <div class="control-group">
+                        <div class="input-row">
+                            <label>Méret (mm)</label>
+                            <input type="number" id="card-size" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
+                        </div>
+                        <div class="input-row">
+                            <label>Sarok (mm)</label>
+                            <input type="number" id="card-radius" value="2" step="0.1" data-unit="mm" data-css-var="--card-radius">
+                        </div>
+                        <div class="input-row">
+                            <label>Keret Szín</label>
                             <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
+                        </div>
+                        <div class="input-row">
+                            <label>Háttér Szín</label>
                             <input type="color" id="card-bg-color" value="#ffffff" data-css-var="--card-bg-color">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. TIPOGRÁFIA -->
-            <div class="settings-section">
-                <h3><i class="fa-solid fa-font"></i> 2. Tipográfia</h3>
-                <div class="control-group compact">
-                     <label>Globális Betűtípus</label>
-                     <select id="font-family" data-css-var="--font-family" class="full-width">
-                        <option value="'Poppins', sans-serif">Poppins</option>
-                        <option value="'Montserrat', sans-serif">Montserrat</option>
-                        <option value="'Orbitron', sans-serif">Orbitron</option>
-                        <option value="'Roboto', sans-serif">Roboto</option>
-                        <option value="'Lato', sans-serif">Lato</option>
-                        <option value="'Roboto Slab', serif">Roboto Slab</option>
-                        <option value="'Playfair Display', serif">Playfair Display</option>
-                        <option value="'Merriweather', serif">Merriweather</option>
-                        <option value="'Oswald', sans-serif">Oswald</option>
-                        <option value="'Raleway', sans-serif">Raleway</option>
-                        <option value="'Nunito', sans-serif">Nunito</option>
-                        <option value="'Source Code Pro', monospace">Source Code Pro</option>
-                        <option value="Arial, sans-serif">Arial</option>
-                    </select>
+            <!-- TAB: BETŰK -->
+            <div class="tab-pane" id="tab-typography">
+                <div class="settings-section">
+                    <h3>Globális Stílus</h3>
+                    <div class="control-group">
+                        <select id="font-family" data-css-var="--font-family" class="full-width">
+                            <option value="'Poppins', sans-serif">Poppins</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Orbitron', sans-serif">Orbitron</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Lato', sans-serif">Lato</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                        </select>
+                    </div>
 
                     <div class="sub-group">
                         <label class="sub-label">Évszám (Közép)</label>
-                        <div class="row">
-                            <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
-                            <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
+                        <div class="input-row">
+                            <input type="number" id="font-size-year-input" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
+                            <input type="color" value="#000000" data-css-var="--color-year">
                         </div>
                         <div class="row wraps">
                              <label class="checkbox-container"><input type="checkbox" id="bold-year" checked> Bold</label>
@@ -98,9 +107,9 @@
 
                     <div class="sub-group">
                         <label class="sub-label">Előadó (Fent)</label>
-                        <div class="row">
-                            <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
-                            <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
+                        <div class="input-row">
+                            <input type="number" id="font-size-artist-input" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
+                            <input type="color" value="#000000" data-css-var="--color-artist">
                         </div>
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="bold-artist"> Bold</label>
@@ -108,95 +117,100 @@
                             <select id="text-transform-artist" data-css-var="--text-transform-artist" class="mini-select">
                                 <option value="none">Normál</option>
                                 <option value="uppercase">ABC</option>
-                                <option value="capitalize">Abc</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="sub-group">
                         <label class="sub-label">Cím (Lent)</label>
-                        <div class="row">
-                            <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
-                            <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
+                        <div class="input-row">
+                            <input type="number" id="font-size-title-input" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
+                            <input type="color" value="#333333" data-css-var="--color-title">
                         </div>
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="bold-title"> Bold</label>
+                            <label class="checkbox-container"><input type="checkbox" id="italic-title"> Dőlt</label>
                             <label class="checkbox-container"><input type="checkbox" id="glow-title"> Glow</label>
                             <select id="text-transform-title" data-css-var="--text-transform-title" class="mini-select">
                                 <option value="none">Normál</option>
                                 <option value="uppercase">ABC</option>
-                                <option value="capitalize">Abc</option>
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. ELRENDEZÉS -->
-            <div class="settings-section">
-                <h3><i class="fa-solid fa-up-down-left-right"></i> 3. Elhelyezkedés</h3>
-                <div class="control-group compact">
-                    <div class="row">
-                        <label>Belső Margó: <span id="val-card-padding">4</span>px</label>
-                        <input type="range" id="card-padding" min="0" max="20" value="4" step="1" data-unit="px" data-css-var="--card-padding">
-                    </div>
-                    <div class="row">
-                        <label>Előadó margó: <span id="val-artist-margin">4</span>mm</label>
-                        <input type="range" id="artist-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
-                    </div>
-                    <div class="row">
-                        <label>Cím margó: <span id="val-title-margin">5</span>mm</label>
-                        <input type="range" id="title-margin" min="0" max="20" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
-                    </div>
-                    <div class="row">
-                        <label>Kód margó: <span id="val-code-margin">2</span>mm</label>
-                        <input type="range" id="code-margin" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
-                    </div>
-                    <div class="row wraps">
-                        <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Bold</label>
-                        <label class="checkbox-container"><input type="checkbox" id="rotate-codes"> 90° forgatás</label>
+            <!-- TAB: ELHELYEZKEDÉS -->
+            <div class="tab-pane" id="tab-layout">
+                <div class="settings-section">
+                    <h3>Margók & Pozíció</h3>
+                    <div class="control-group">
+                        <div class="input-row">
+                            <label>Belső padding (px)</label>
+                            <input type="number" id="card-padding" value="4" step="1" data-unit="px" data-css-var="--card-padding">
+                        </div>
+                        <div class="input-row">
+                            <label>Előadó margó (mm)</label>
+                            <input type="number" id="artist-margin" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
+                        </div>
+                        <div class="input-row">
+                            <label>Cím margó (mm)</label>
+                            <input type="number" id="title-margin" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
+                        </div>
+                        <div class="input-row">
+                            <label>Kód margó (mm)</label>
+                            <input type="number" id="code-margin" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
+                        </div>
+                        <div class="row wraps">
+                            <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Bold</label>
+                            <label class="checkbox-container"><input type="checkbox" id="rotate-codes"> 90° forgatás</label>
+                        </div>
                     </div>
                 </div>
             </div>
 
-             <!-- 4. HÁTLAP -->
-             <div class="settings-section">
-                <h3><i class="fa-solid fa-compact-disc"></i> 4. Hátlap & Vinyl</h3>
-                <div class="control-group compact">
-                    <div class="row wraps">
-                        <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód</label>
-                        <label class="checkbox-container"><input type="checkbox" id="vinyl-glow"> Vinyl Glow</label>
-                    </div>
-                    <div class="row">
-                        <label>QR Méret: <span id="val-qr-size">40</span>%</label>
-                        <input type="range" id="qr-size" min="10" max="90" value="40" step="1" data-unit="%" data-css-var="--qr-size">
-                    </div>
-                
-                    <div class="color-picker-row mini">
-                        <label>Vinyl szín / Opacitás</label>
-                        <div class="pickers">
-                             <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
-                             <input type="range" id="vinyl-opacity" min="0" max="1" value="0.15" step="0.05" data-unit="" data-css-var="--vinyl-opacity" style="width: 50px;">
+             <!-- TAB: HÁTLAP -->
+             <div class="tab-pane" id="tab-backside">
+                <div class="settings-section">
+                    <h3>QR & Vinyl</h3>
+                    <div class="control-group">
+                        <div class="row wraps">
+                            <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód</label>
+                            <label class="checkbox-container"><input type="checkbox" id="vinyl-glow"> Vinyl Glow</label>
                         </div>
-                    </div>
-
-                    <div class="sub-group">
-                         <label>Barázdák: <span id="val-vinyl-groove-count">8</span> | Táv: <span id="val-vinyl-spacing">4</span></label>
-                         <input type="range" id="vinyl-groove-count" min="3" max="20" value="8" step="1" data-css-var="--vinyl-groove-count">
-                         <input type="range" id="vinyl-spacing" min="1" max="10" value="4" step="0.5" data-css-var="--vinyl-spacing">
+                        <div class="input-row">
+                            <label>QR Méret (%)</label>
+                            <input type="number" id="qr-size" value="40" step="1" data-unit="%" data-css-var="--qr-size">
+                        </div>
+                        <div class="input-row">
+                            <label>Opacitás (0-1)</label>
+                            <input type="number" id="vinyl-opacity" value="0.15" min="0" max="1" step="0.05" data-css-var="--vinyl-opacity">
+                        </div>
+                        <div class="input-row">
+                            <label>Vinyl színe</label>
+                            <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
+                        </div>
+                        <div class="input-row">
+                            <label>Barázdák száma</label>
+                            <input type="number" id="vinyl-groove-count" value="8" step="1" data-css-var="--vinyl-groove-count">
+                        </div>
+                        <div class="input-row">
+                            <label>Barázda köz (mm)</label>
+                            <input type="number" id="vinyl-spacing" value="4" step="0.5" data-css-var="--vinyl-spacing">
+                        </div>
                     </div>
                 </div>
             </div>
             
             <footer class="app-footer">
-                MusicStencil v6.3.2
+                MusicStencil v6.4.0
             </footer>
         </div>
     </aside>
 
     <main id="main-content">
         <div id="preview-area">
-             <div class="preview-placeholder">Adatok betöltése...</div>
+             <div class="preview-placeholder">Indítás...</div>
         </div>
         <div id="print-area"></div>
     </main>
