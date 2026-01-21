@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v651_settings';
+const STORAGE_KEY = 'musicstencil_v652_settings';
 
 function saveSettings() {
     const settings = {};
@@ -56,7 +56,7 @@ function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select');
     controls.forEach(ctrl => updateCSSVariable(ctrl));
 
-    // Bold states
+    // Bold states - explicit value for preview
     const boldStates = [
         { id: 'bold-year', var: '--font-weight-year', weightId: 'weight-year' },
         { id: 'bold-artist', var: '--font-weight-artist', weightId: 'weight-artist' },
@@ -67,19 +67,25 @@ function applyAllStyles() {
     boldStates.forEach(s => {
         const chk = document.getElementById(s.id);
         const weightInput = s.weightId ? document.getElementById(s.weightId) : null;
-        const val = chk && chk.checked ? (weightInput ? weightInput.value : '700') : 'normal';
+        const val = chk && chk.checked ? (weightInput ? weightInput.value : '700') : '400';
         document.documentElement.style.setProperty(s.var, val);
     });
 
     // Special flags
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
 
-    // Glow
+    // Glow - NEON style fix
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
-        const val = chk && chk.checked ? `0 0 4px rgba(0,0,0,0.5)` : 'none';
+        // Használjuk a betű színét a derengéshez, de egy kis átlátszósággal
+        const color = getComputedStyle(document.documentElement).getPropertyValue(`--color-${g}`).trim() || '#1DB954';
+        const val = chk && chk.checked ? `0 0 8px ${color}, 0 0 15px ${color}88` : 'none';
         document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
+    
+    // Vinyl Spacing adjustment
+    const vSpacing = document.getElementById('vinyl-spacing')?.value || 3;
+    document.documentElement.style.setProperty('--vinyl-spacing', vSpacing);
 }
 
 export function initializeUI(onSettingsChange, onDataLoaded) {
@@ -101,7 +107,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     });
 
     document.getElementById('reset-settings').addEventListener('click', () => {
-        if (confirm("Alaphelyzetbe állítás?")) {
+        if (confirm("Minden beállítást visszaállítasz alaphelyzetbe?")) {
             localStorage.removeItem(STORAGE_KEY);
             location.reload();
         }
@@ -118,7 +124,8 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
 
     document.getElementById('print-button').addEventListener('click', () => {
         document.body.classList.add('grid-view-active');
-        setTimeout(() => window.print(), 300);
+        // Várjunk egy kicsit, hogy a grid renderelődhessen
+        setTimeout(() => window.print(), 500);
     });
 
     document.body.classList.remove('loading');

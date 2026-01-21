@@ -24,20 +24,22 @@ function adjustTextForOverflow(element, isTitle = false) {
     const computedStyle = window.getComputedStyle(element);
     let fontSize = parseFloat(computedStyle.fontSize);
     
-    // Alt+Enter replacement
+    // Alt+Enter handling
     if (element.textContent.includes('\n') || element.textContent.includes('\r')) {
         element.innerHTML = element.textContent.replace(/\r?\n/g, '<br>');
     } else if (isTitle && element.textContent.length > 15 && !element.innerHTML.includes('<br>')) {
+        // Smart Break at ~66%
         const words = element.textContent.split(' ');
         if (words.length > 2) {
-            const splitAt = Math.floor(words.length * 0.6);
+            const splitAt = Math.floor(words.length * 0.66);
             element.innerHTML = words.slice(0, splitAt).join(' ') + '<br>' + words.slice(splitAt).join(' ');
         }
     }
 
-    const lineHeight = parseFloat(computedStyle.lineHeight);
-    const maxHeight = lineHeight * (maxLines + 0.3);
+    const lineHeight = parseFloat(computedStyle.lineHeight) || fontSize * 1.2;
+    const maxHeight = lineHeight * (maxLines + 0.1);
 
+    // Shrink font until it fits maxLines
     while ((element.scrollHeight > maxHeight || element.scrollWidth > element.clientWidth) && fontSize > 4) {
         fontSize -= 0.5;
         element.style.fontSize = fontSize + 'px';
@@ -45,7 +47,7 @@ function adjustTextForOverflow(element, isTitle = false) {
 }
 
 function generateVinylSVG() {
-    const color = getComputedStyle(document.documentElement).getPropertyValue('--vinyl-groove-color').trim();
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--vinyl-groove-color').trim() || '#000000';
     const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 3;
     const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.5;
     const variate = document.getElementById('vinyl-variate')?.checked;
@@ -53,24 +55,28 @@ function generateVinylSVG() {
     const gMax = parseInt(document.getElementById('glitch-max')?.value) || 3;
 
     let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
-    for (let i = 0; i < 12; i++) {
-        const r = 46 - (i * spacing);
-        if (r < 4) break;
+    for (let i = 0; i < 15; i++) {
+        const r = 47 - (i * spacing);
+        if (r < 5) break;
         
+        // Randomly decide number of glitches for this circle
         const glitchCount = Math.floor(Math.random() * (gMax - gMin + 1)) + gMin;
         const dashArray = [];
+        
         if (glitchCount === 0) {
             dashArray.push(1000, 0);
         } else {
             const circ = 2 * Math.PI * r;
+            // Distribute glitches somewhat evenly
+            const segment = circ / glitchCount;
             for (let g = 0; g < glitchCount; g++) {
-                const gap = circ * (0.1 + Math.random() * 0.2) / glitchCount;
-                dashArray.push((circ / glitchCount) - gap, gap);
+                const gapLen = segment * (0.15 + Math.random() * 0.25);
+                dashArray.push(segment - gapLen, gapLen);
             }
         }
 
-        const sw = variate ? (thickness * (0.6 + Math.random() * 0.8)) : thickness;
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-dasharray="${dashArray.join(' ')}" opacity="${0.4 + (i*0.05)}" />`;
+        const sw = variate ? (thickness * (0.7 + Math.random() * 0.6)) : thickness;
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-dasharray="${dashArray.join(' ')}" opacity="${0.3 + (i*0.04)}" />`;
     }
     svg += `</svg>`;
     return svg;
@@ -85,6 +91,7 @@ function createCard(song, isBack = false) {
         const qrBox = card.querySelector('.qr-container');
         const style = document.getElementById('qr-style').value;
         const logo = document.getElementById('qr-logo-text').value;
+        // Kisebb timeout a QR generáláshoz
         setTimeout(() => generateQRCode(qrBox, song.qr_data, style, logo), 50);
     } else {
         card.innerHTML = `
@@ -117,14 +124,19 @@ export function renderAllPages(container, data) {
     container.innerHTML = '';
     const paper = document.getElementById('paper-size').value;
     const cardSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-size'));
+    
+    // Margók figyelembe vétele (A4/A3)
     const pW = paper === 'A3' ? 277 : 190;
     const pH = paper === 'A3' ? 400 : 277;
+    
     const cols = Math.floor(pW / cardSize);
     const rows = Math.floor(pH / cardSize);
     const perPage = cols * rows;
 
     for (let i = 0; i < data.length; i += perPage) {
         const chunk = data.slice(i, i + perPage);
+        
+        // ELŐLAP OLDAL
         const frontPage = document.createElement('div');
         frontPage.className = `page-container ${paper}`;
         chunk.forEach(song => {
@@ -138,9 +150,11 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
+        // HÁTLAP OLDAL (Tükrözve a kétoldalas nyomtatáshoz)
         const backPage = document.createElement('div');
         backPage.className = `page-container ${paper}`;
         for (let r = 0; r < chunk.length; r += cols) {
+            // Soronként megfordítjuk a sorrendet
             chunk.slice(r, r + cols).reverse().forEach(song => {
                 const wrap = document.createElement('div');
                 wrap.className = 'card-wrapper';
