@@ -2,7 +2,6 @@ function generateQRCode(element, text, style, logoText) {
     element.innerHTML = "";
     if (!text) return;
     try {
-        // Alkalmazzuk a design stílust
         element.className = "qr-container";
         if (style === 'rounded') element.classList.add('qr-style-rounded');
         if (style === 'dots') element.classList.add('qr-style-dots');
@@ -53,6 +52,7 @@ function adjustText(element, isTitle = false) {
 
 function generateVinyl() {
     const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 3;
+    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.5;
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
     const gMax = parseInt(document.getElementById('glitch-max')?.value) || 3;
     const variate = document.getElementById('vinyl-variate')?.checked;
@@ -69,27 +69,26 @@ function generateVinyl() {
         if (gCount === 0) {
             dash.push(circ, 0);
         } else {
-            // TELJESEN RANDOM GLITCH POZÍCIÓK - MINDEN KÖR EGYEDI
-            let positions = [];
+            // TELJESEN RANDOM GLITCH POZÍCIÓK
+            let segments = [];
             for (let g = 0; g < gCount; g++) {
-                positions.push(Math.random() * circ);
+                segments.push(Math.random() * circ);
             }
-            positions.sort((a, b) => a - b);
+            segments.sort((a, b) => a - b);
             
-            let currentPos = 0;
-            const gapWidth = circ * (0.05 + Math.random() * 0.1) / gCount; 
+            let lastPos = 0;
+            const gapWidth = circ * (0.05 + Math.random() * 0.08) / gCount; 
             
-            for (let p of positions) {
-                const drawLen = Math.max(0, p - currentPos - (gapWidth/2));
+            for (let p of segments) {
+                const drawLen = Math.max(0, p - lastPos - (gapWidth / 2));
                 dash.push(drawLen, gapWidth);
-                currentPos = p + (gapWidth/2);
+                lastPos = p + (gapWidth / 2);
             }
-            
-            const lastPart = circ - currentPos;
-            if (lastPart > 0) dash.push(lastPart, 0);
+            const finalPart = circ - lastPos;
+            if (finalPart > 0) dash.push(finalPart, 0);
         }
 
-        const sw = variate ? (0.4 + Math.random() * 0.4) : 0.5;
+        const sw = variate ? (thickness * (0.6 + Math.random() * 0.8)) : thickness;
         svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.2 + (i*0.05)}" />`;
     }
     svg += `</svg>`;
@@ -146,6 +145,7 @@ export function renderAllPages(container, data) {
     const paper = document.getElementById('paper-size').value;
     const cardSizeMm = parseFloat(document.getElementById('card-size').value) || 46;
     
+    // Margók utáni hasznos terület
     const pW = paper === 'A3' ? 277 : 190; 
     const pH = paper === 'A3' ? 400 : 277; 
     
@@ -155,7 +155,6 @@ export function renderAllPages(container, data) {
 
     if (cols < 1) return;
 
-    // VÉGIGMEGYÜNK AZ ÖSSZES ADATON
     for (let i = 0; i < data.length; i += perPage) {
         const chunk = data.slice(i, i + perPage);
         
@@ -175,14 +174,13 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // HÁTLAP OLDAL (Tükrözve a kétoldalas nyomtatáshoz)
+        // HÁTLAP OLDAL
         const backPage = document.createElement('div');
         backPage.className = `page-container ${paper}`;
         backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
         
         for (let r = 0; r < chunk.length; r += cols) {
             const rowSongs = chunk.slice(r, r + cols);
-            // Vízszintes tükrözés a soron belül
             rowSongs.reverse().forEach(song => {
                 const wrap = document.createElement('div');
                 wrap.className = 'card-wrapper';

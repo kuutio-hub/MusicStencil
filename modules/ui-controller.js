@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v655_settings';
+const STORAGE_KEY = 'musicstencil_v656_settings';
 
 export function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select, #settings-panel input');
@@ -9,13 +9,8 @@ export function applyAllStyles() {
         const cssVar = ctrl.dataset.cssVar;
         if (!cssVar) return;
 
-        if (cssVar.includes('text-transform')) {
-            const target = cssVar.includes('artist') ? 'artist' : 'title';
-            document.documentElement.style.setProperty(`--text-transform-${target}`, ctrl.value);
-        } else {
-            const unit = ctrl.dataset.unit || '';
-            document.documentElement.style.setProperty(cssVar, ctrl.value + unit);
-        }
+        const unit = ctrl.dataset.unit || '';
+        document.documentElement.style.setProperty(cssVar, ctrl.value + unit);
     });
 
     // Bold states
@@ -36,10 +31,10 @@ export function applyAllStyles() {
     // Flags
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
 
-    // Glow - Neon Style (Csak előnézetben aktív a CSS media query miatt)
+    // Glow - Neon Style
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
-        const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.4)` : 'none';
+        const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.3)` : 'none';
         document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
 }
@@ -77,8 +72,8 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         
-        // Ha papírméret vagy kártyaméret változik, teljes rács újrarajzolás kell
-        if (e.target.id === 'paper-size' || e.target.id === 'card-size' || e.target.id === 'qr-style') {
+        const fullRedrawIds = ['paper-size', 'card-size', 'qr-style', 'qr-size-percent', 'vinyl-spacing', 'vinyl-thickness'];
+        if (fullRedrawIds.includes(e.target.id)) {
              if (onSettingsChange) onSettingsChange(true); 
         } else {
              if (onSettingsChange) onSettingsChange(false);
@@ -100,7 +95,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     };
 
     document.getElementById('reset-settings').onclick = () => {
-        if (confirm("Alaphelyzetbe állítás?")) {
+        if (confirm("Minden beállítást alaphelyzetbe állítasz?")) {
             localStorage.removeItem(STORAGE_KEY);
             location.reload();
         }
