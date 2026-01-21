@@ -1,132 +1,118 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v652_settings';
+const STORAGE_KEY = 'musicstencil_v653_settings';
 
-function saveSettings() {
-    const settings = {};
-    const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel [type="checkbox"], #settings-panel select, #settings-panel input[type="number"], #settings-panel input[type="text"]');
+export function applyAllStyles() {
+    const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select, #settings-panel input');
+    
     controls.forEach(ctrl => {
-        if (!ctrl.id) return;
-        if (ctrl.type === 'checkbox') {
-            settings[ctrl.id] = ctrl.checked;
+        const cssVar = ctrl.dataset.cssVar;
+        if (!cssVar) return;
+
+        if (cssVar.includes('text-transform')) {
+            const target = cssVar.includes('artist') ? 'artist' : 'title';
+            if (ctrl.value === 'small-caps') {
+                document.documentElement.style.setProperty(`--text-transform-${target}`, 'none');
+                document.documentElement.style.setProperty(`--font-variant-${target}`, 'small-caps');
+            } else {
+                document.documentElement.style.setProperty(`--text-transform-${target}`, ctrl.value);
+                document.documentElement.style.setProperty(`--font-variant-${target}`, 'normal');
+            }
         } else {
-            settings[ctrl.id] = ctrl.value;
+            const unit = ctrl.dataset.unit || '';
+            document.documentElement.style.setProperty(cssVar, ctrl.value + unit);
         }
     });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-}
 
-function loadSettings() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
-    try {
-        const settings = JSON.parse(saved);
-        Object.entries(settings).forEach(([id, value]) => {
-            const ctrl = document.getElementById(id);
-            if (!ctrl) return;
-            if (ctrl.type === 'checkbox') {
-                ctrl.checked = value;
-            } else {
-                ctrl.value = value;
-            }
-        });
-    } catch (e) { console.error("Settings load error", e); }
-}
-
-function updateCSSVariable(input) {
-    const cssVar = input.dataset.cssVar;
-    if (!cssVar) return;
-
-    if (cssVar.includes('text-transform')) {
-        const target = cssVar.includes('artist') ? 'artist' : 'title';
-        if (input.value === 'small-caps') {
-            document.documentElement.style.setProperty(`--text-transform-${target}`, 'none');
-            document.documentElement.style.setProperty(`--font-variant-${target}`, 'small-caps');
-        } else {
-            document.documentElement.style.setProperty(`--text-transform-${target}`, input.value);
-            document.documentElement.style.setProperty(`--font-variant-${target}`, 'normal');
-        }
-    } else {
-        const unit = input.dataset.unit || '';
-        document.documentElement.style.setProperty(cssVar, input.value + unit);
-    }
-}
-
-function applyAllStyles() {
-    const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select');
-    controls.forEach(ctrl => updateCSSVariable(ctrl));
-
-    // Bold states - explicit value for preview
-    const boldStates = [
+    // Bold states
+    const boldConfigs = [
         { id: 'bold-year', var: '--font-weight-year', weightId: 'weight-year' },
         { id: 'bold-artist', var: '--font-weight-artist', weightId: 'weight-artist' },
         { id: 'bold-title', var: '--font-weight-title', weightId: 'weight-title' },
         { id: 'bold-codes', var: '--font-weight-codes' }
     ];
 
-    boldStates.forEach(s => {
-        const chk = document.getElementById(s.id);
-        const weightInput = s.weightId ? document.getElementById(s.weightId) : null;
+    boldConfigs.forEach(conf => {
+        const chk = document.getElementById(conf.id);
+        const weightInput = conf.weightId ? document.getElementById(conf.weightId) : null;
         const val = chk && chk.checked ? (weightInput ? weightInput.value : '700') : '400';
-        document.documentElement.style.setProperty(s.var, val);
+        document.documentElement.style.setProperty(conf.var, val);
     });
 
-    // Special flags
+    // Flags
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
 
-    // Glow - NEON style fix
+    // Glow - Neon Style
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
-        // Használjuk a betű színét a derengéshez, de egy kis átlátszósággal
-        const color = getComputedStyle(document.documentElement).getPropertyValue(`--color-${g}`).trim() || '#1DB954';
-        const val = chk && chk.checked ? `0 0 8px ${color}, 0 0 15px ${color}88` : 'none';
+        const color = getComputedStyle(document.documentElement).getPropertyValue(`--color-${g}`).trim() || '#000000';
+        const val = chk && chk.checked ? `0 0 8px ${color}` : 'none';
         document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
-    
-    // Vinyl Spacing adjustment
-    const vSpacing = document.getElementById('vinyl-spacing')?.value || 3;
-    document.documentElement.style.setProperty('--vinyl-spacing', vSpacing);
 }
 
 export function initializeUI(onSettingsChange, onDataLoaded) {
-    loadSettings();
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            const settings = JSON.parse(saved);
+            Object.entries(settings).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = value;
+                    else el.value = value;
+                }
+            });
+        } catch (e) { console.error("Load error", e); }
+    }
+
     applyAllStyles();
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             document.querySelectorAll('.tab-pane, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
             btn.classList.add('active');
-        });
+        };
     });
 
-    document.getElementById('settings-panel').addEventListener('input', () => {
+    document.getElementById('settings-panel').oninput = () => {
         applyAllStyles();
-        saveSettings();
+        const settings = {};
+        document.querySelectorAll('#settings-panel input, #settings-panel select').forEach(el => {
+            if (el.id) settings[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         if (onSettingsChange) onSettingsChange();
-    });
+    };
 
-    document.getElementById('reset-settings').addEventListener('click', () => {
-        if (confirm("Minden beállítást visszaállítasz alaphelyzetbe?")) {
+    document.getElementById('file-upload-button').onchange = async (e) => {
+        const data = await parseXLS(e.target.files[0]);
+        if (data) onDataLoaded(data);
+    };
+
+    document.getElementById('view-toggle-button').onclick = () => {
+        document.body.classList.toggle('grid-view-active');
+    };
+
+    document.getElementById('print-button').onclick = () => {
+        document.body.classList.add('grid-view-active');
+        setTimeout(() => window.print(), 500);
+    };
+
+    document.getElementById('reset-settings').onclick = () => {
+        if (confirm("Alaphelyzetbe állítás?")) {
             localStorage.removeItem(STORAGE_KEY);
             location.reload();
         }
-    });
-
-    document.getElementById('file-upload-button').addEventListener('change', async (e) => {
-        const data = await parseXLS(e.target.files[0]);
-        if (data) onDataLoaded(data);
-    });
-
-    document.getElementById('view-toggle-button').addEventListener('click', () => {
-        document.body.classList.toggle('grid-view-active');
-    });
-
-    document.getElementById('print-button').addEventListener('click', () => {
-        document.body.classList.add('grid-view-active');
-        // Várjunk egy kicsit, hogy a grid renderelődhessen
-        setTimeout(() => window.print(), 500);
-    });
+    };
 
     document.body.classList.remove('loading');
+}
+
+export function updateRecordCount(count) {
+    const el = document.getElementById('record-count-display');
+    const bar = document.getElementById('stats-bar');
+    if (el) el.textContent = count;
+    if (bar) bar.style.display = 'flex';
 }
