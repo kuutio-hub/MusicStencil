@@ -57,8 +57,8 @@ function generateVinyl() {
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
     const gMax = parseInt(document.getElementById('glitch-max')?.value) || 4;
     
-    const glitchWidthMin = parseFloat(document.getElementById('glitch-width-min')?.value) || 5;
-    const glitchWidthMax = parseFloat(document.getElementById('glitch-width-max')?.value) || 15;
+    const gWidthMin = parseFloat(document.getElementById('glitch-width-min')?.value) || 5;
+    const gWidthMax = parseFloat(document.getElementById('glitch-width-max')?.value) || 15;
     
     const variate = document.getElementById('vinyl-variate')?.checked;
 
@@ -82,8 +82,8 @@ function generateVinyl() {
             
             let lastPos = 0;
             for (let p of segments) {
-                // Tartomány alapú véletlen szélesség minden glitch-nél
-                const randomWidthPercent = Math.random() * (glitchWidthMax - glitchWidthMin) + glitchWidthMin;
+                // Tól-ig tartomány sorsolása minden egyes glitch-hez külön-külön
+                const randomWidthPercent = Math.random() * (gWidthMax - gWidthMin) + gWidthMin;
                 const gapWidth = circ * (randomWidthPercent / 100) / gCount; 
                 
                 const drawLen = Math.max(0, p - lastPos - (gapWidth / 2));
@@ -162,7 +162,7 @@ export function renderAllPages(container, data) {
     for (let i = 0; i < data.length; i += perPage) {
         const chunk = data.slice(i, i + perPage);
         
-        // ELŐLAP
+        // ELŐLAPOK
         const frontPage = document.createElement('div');
         frontPage.className = `page-container ${paper}`;
         frontPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
@@ -178,7 +178,7 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // HÁTLAP (Tükrözött sorrend)
+        // HÁTLAPOK
         const backPage = document.createElement('div');
         backPage.className = `page-container ${paper}`;
         backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;

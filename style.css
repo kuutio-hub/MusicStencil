@@ -114,7 +114,7 @@ body:not(.back-border-off) .card.back { border: 1px solid var(--primary-color); 
 .code1 { left: var(--code-side-margin); }
 .code2 { right: var(--code-side-margin); }
 
-/* FORGATOTT KÓDOK - EGY IRÁNYBÓL OLVASHATÓ (JOBBRÓL) */
+/* FORGATOTT KÓDOK - JOBBRÓL OLVASHATÓ */
 body.codes-rotated .code1 { 
     left: var(--code-side-margin); bottom: auto; top: 50%; 
     transform: translateY(-50%) rotate(-90deg) translateX(-50%);
@@ -130,7 +130,7 @@ body.codes-rotated .code2 {
 
 .qr-container { 
     position: absolute; width: var(--qr-size); height: var(--qr-size); 
-    background: #fff; padding: 2px; z-index: 10; display: flex; 
+    background: #fff; padding: 0; z-index: 10; display: flex; 
     align-items: center; justify-content: center; border-radius: 0; 
     overflow: hidden; pointer-events: none;
 }
@@ -152,23 +152,38 @@ body.grid-view-active #preview-area { display: none; }
 }
 .page-container.A3 { width: 297mm; height: 420mm; }
 
-/* TELJES ÁRNYÉKMENTESÍTÉS RÁCSNÉZETBEN ÉS NYOMTATÁSKOR */
-body.grid-view-active .card, 
-body.grid-view-active .page-container,
+/* 
+   EXTRÉM SHADOW-KILL & FLAT-MODE 
+   Rácsnézetben minden effektet és mélységet eltávolítunk
+*/
+body.grid-view-active .card,
 body.grid-view-active .card-wrapper,
+body.grid-view-active .page-container,
 @media print {
-    .card, .page-container, .card-wrapper, .year, .artist, .title { 
+    .card, .page-container, .card-wrapper, .year, .artist, .title, .code1, .code2 { 
         box-shadow: none !important; 
         text-shadow: none !important; 
+        transition: none !important;
         background: #fff !important; 
     }
-    .card { border: 1px solid var(--primary-color) !important; }
-    .page-container { margin: 0 auto !important; border: none !important; }
+    .card { 
+        border: 1px solid var(--primary-color) !important;
+    }
+    .page-container { 
+        margin: 0 auto !important; 
+        border: none !important; 
+        background: #fff !important;
+        box-shadow: none !important;
+    }
+    /* Megakadályozzuk a lebegő réteg érzetet */
+    .vinyl-bg circle {
+        filter: none !important;
+    }
 }
 
 @media print {
     @page { margin: 0; }
     #settings-panel { display: none !important; }
-    #main-content { overflow: visible; background: none; }
-    #print-area { padding: 0; background: none; display: block !important; }
+    #main-content { overflow: visible; background: #fff; }
+    #print-area { padding: 0; background: #fff; display: block !important; }
 }
