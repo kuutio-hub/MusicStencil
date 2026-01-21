@@ -2,11 +2,20 @@ function generateQRCode(element, text, style, logoText) {
     element.innerHTML = "";
     if (!text) return;
     try {
+        // Alkalmazzuk a design stílust
+        element.className = "qr-container";
+        if (style === 'rounded') element.classList.add('qr-style-rounded');
+        if (style === 'dots') element.classList.add('qr-style-dots');
+
         new QRCode(element, {
-            text: text, width: 256, height: 256,
-            colorDark : "#000000", colorLight : "#ffffff",
+            text: text, 
+            width: 256, 
+            height: 256,
+            colorDark : "#000000", 
+            colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.M
         });
+
         if (logoText && logoText.trim().length > 0) {
             const logo = document.createElement('div');
             logo.className = 'qr-logo-overlay';
@@ -60,27 +69,24 @@ function generateVinyl() {
         if (gCount === 0) {
             dash.push(circ, 0);
         } else {
-            // TELJESEN RANDOM GLITCH POZÍCIÓK
+            // TELJESEN RANDOM GLITCH POZÍCIÓK - MINDEN KÖR EGYEDI
             let positions = [];
             for (let g = 0; g < gCount; g++) {
                 positions.push(Math.random() * circ);
             }
             positions.sort((a, b) => a - b);
             
-            let lastPos = 0;
-            const gapWidth = circ * (0.05 + Math.random() * 0.1) / gCount; // Dinamikus réshossz
+            let currentPos = 0;
+            const gapWidth = circ * (0.05 + Math.random() * 0.1) / gCount; 
             
             for (let p of positions) {
-                const dashLen = p - lastPos - (gapWidth / 2);
-                if (dashLen > 0) {
-                    dash.push(dashLen, gapLen);
-                } else {
-                    dash.push(0, gapLen);
-                }
-                lastPos = p + (gapWidth / 2);
+                const drawLen = Math.max(0, p - currentPos - (gapWidth/2));
+                dash.push(drawLen, gapWidth);
+                currentPos = p + (gapWidth/2);
             }
-            // Záró szakasz
-            if (lastPos < circ) dash.push(circ - lastPos, 0);
+            
+            const lastPart = circ - currentPos;
+            if (lastPart > 0) dash.push(lastPart, 0);
         }
 
         const sw = variate ? (0.4 + Math.random() * 0.4) : 0.5;
@@ -99,8 +105,10 @@ function createCard(song, isBack = false) {
         const qrBox = card.querySelector('.qr-container');
         const logo = document.getElementById('qr-logo-text')?.value;
         const showQr = document.getElementById('show-qr')?.checked;
+        const qrStyle = document.getElementById('qr-style')?.value || 'standard';
+        
         if (showQr) {
-            setTimeout(() => generateQRCode(qrBox, song.qr_data, 'std', logo), 50);
+            setTimeout(() => generateQRCode(qrBox, song.qr_data, qrStyle, logo), 50);
         } else {
             qrBox.style.display = 'none';
         }
@@ -133,26 +141,25 @@ export function renderPreviewPair(container, song) {
 }
 
 export function renderAllPages(container, data) {
-    if (!container || !data) return;
+    if (!container || !data || data.length === 0) return;
     container.innerHTML = '';
     const paper = document.getElementById('paper-size').value;
-    
-    // FIX MM ALAPÚ SZÁMÍTÁS
     const cardSizeMm = parseFloat(document.getElementById('card-size').value) || 46;
     
-    const pW = paper === 'A3' ? 277 : 190; // Hasznos szélesség margók után
-    const pH = paper === 'A3' ? 400 : 277; // Hasznos magasság margók után
+    const pW = paper === 'A3' ? 277 : 190; 
+    const pH = paper === 'A3' ? 400 : 277; 
     
     const cols = Math.floor(pW / cardSizeMm);
     const rows = Math.floor(pH / cardSizeMm);
     const perPage = cols * rows;
 
-    if (cols < 1) return; // Hiba esetén ne akadjunk el
+    if (cols < 1) return;
 
+    // VÉGIGMEGYÜNK AZ ÖSSZES ADATON
     for (let i = 0; i < data.length; i += perPage) {
         const chunk = data.slice(i, i + perPage);
         
-        // FRONT PAGE
+        // ELŐLAP OLDAL
         const frontPage = document.createElement('div');
         frontPage.className = `page-container ${paper}`;
         frontPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
@@ -168,13 +175,14 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // BACK PAGE (Mirrored for double-sided print)
+        // HÁTLAP OLDAL (Tükrözve a kétoldalas nyomtatáshoz)
         const backPage = document.createElement('div');
         backPage.className = `page-container ${paper}`;
         backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
         
         for (let r = 0; r < chunk.length; r += cols) {
             const rowSongs = chunk.slice(r, r + cols);
+            // Vízszintes tükrözés a soron belül
             rowSongs.reverse().forEach(song => {
                 const wrap = document.createElement('div');
                 wrap.className = 'card-wrapper';

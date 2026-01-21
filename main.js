@@ -2,15 +2,6 @@ import { initializeUI, updateRecordCount } from './modules/ui-controller.js';
 import { loadSampleData } from './modules/data-handler.js';
 import { renderAllPages, renderPreviewPair } from './modules/card-generator.js';
 
-const showError = (message, error) => {
-    console.error(message, error);
-    const previewArea = document.getElementById('preview-area');
-    if (previewArea) {
-        const errorMessage = `<strong>Hiba!</strong><br>${message}<br><small>${error?.message || ''}</small>`;
-        previewArea.innerHTML = `<div style="color: #f44; padding: 20px; text-align: center;">${errorMessage}</div>`;
-    }
-};
-
 const App = {
     data: [],
     previewIntervalId: null,
@@ -18,12 +9,10 @@ const App = {
 
     async init() {
         try {
-            console.log("MusicStencil v6.5.4 indítása...");
-
             this.data = await loadSampleData();
             
             initializeUI(
-                () => this.handleSettingsChange(),
+                (fullReload) => this.handleSettingsChange(fullReload),
                 (d) => this.handleDataLoaded(d)
             );
             
@@ -32,20 +21,20 @@ const App = {
                 this.renderPrintView();
                 this.startPreviewCycle();
                 
-                // KATTINTÁSRA KÖVETKEZŐ ELŐNÉZET
                 document.getElementById('preview-area').addEventListener('click', () => {
                     this.showNextPreview();
                     this.resetCycle();
                 });
             }
-
         } catch (error) {
-            showError("Hiba az inicializáláskor:", error);
+            console.error("Init error:", error);
         }
     },
 
-    handleSettingsChange() {
-        this.renderPrintView();
+    handleSettingsChange(fullReload = false) {
+        if (fullReload) {
+            this.renderPrintView();
+        }
         this.refreshCurrentPreview();
     },
 
@@ -82,7 +71,6 @@ const App = {
     },
 
     resetCycle() {
-        if (this.previewIntervalId) clearInterval(this.previewIntervalId);
         this.startPreviewCycle();
     },
 

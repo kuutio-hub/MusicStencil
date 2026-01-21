@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v653_settings';
+const STORAGE_KEY = 'musicstencil_v655_settings';
 
 export function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select, #settings-panel input');
@@ -11,13 +11,7 @@ export function applyAllStyles() {
 
         if (cssVar.includes('text-transform')) {
             const target = cssVar.includes('artist') ? 'artist' : 'title';
-            if (ctrl.value === 'small-caps') {
-                document.documentElement.style.setProperty(`--text-transform-${target}`, 'none');
-                document.documentElement.style.setProperty(`--font-variant-${target}`, 'small-caps');
-            } else {
-                document.documentElement.style.setProperty(`--text-transform-${target}`, ctrl.value);
-                document.documentElement.style.setProperty(`--font-variant-${target}`, 'normal');
-            }
+            document.documentElement.style.setProperty(`--text-transform-${target}`, ctrl.value);
         } else {
             const unit = ctrl.dataset.unit || '';
             document.documentElement.style.setProperty(cssVar, ctrl.value + unit);
@@ -42,11 +36,10 @@ export function applyAllStyles() {
     // Flags
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
 
-    // Glow - Neon Style
+    // Glow - Neon Style (Csak előnézetben aktív a CSS media query miatt)
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
-        const color = getComputedStyle(document.documentElement).getPropertyValue(`--color-${g}`).trim() || '#000000';
-        const val = chk && chk.checked ? `0 0 8px ${color}` : 'none';
+        const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.4)` : 'none';
         document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
 }
@@ -76,14 +69,20 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         };
     });
 
-    document.getElementById('settings-panel').oninput = () => {
+    document.getElementById('settings-panel').oninput = (e) => {
         applyAllStyles();
         const settings = {};
         document.querySelectorAll('#settings-panel input, #settings-panel select').forEach(el => {
             if (el.id) settings[el.id] = el.type === 'checkbox' ? el.checked : el.value;
         });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-        if (onSettingsChange) onSettingsChange();
+        
+        // Ha papírméret vagy kártyaméret változik, teljes rács újrarajzolás kell
+        if (e.target.id === 'paper-size' || e.target.id === 'card-size' || e.target.id === 'qr-style') {
+             if (onSettingsChange) onSettingsChange(true); 
+        } else {
+             if (onSettingsChange) onSettingsChange(false);
+        }
     };
 
     document.getElementById('file-upload-button').onchange = async (e) => {
