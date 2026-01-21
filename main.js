@@ -29,6 +29,10 @@ const App = {
         try {
             console.log("MusicStencil indítása...");
 
+            // Dinamikus évszám beállítása
+            const yearEl = document.getElementById('current-year');
+            if (yearEl) yearEl.textContent = new Date().getFullYear();
+
             this.data = await loadSampleData();
             
             initializeUI(
