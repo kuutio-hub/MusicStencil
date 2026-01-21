@@ -21,11 +21,11 @@
                 <span>MusicStencil</span>
             </div>
             <div class="stats-bar" id="stats-bar" style="display: none;">
-                <i class="fa-solid fa-database"></i> <span id="record-count-display">0</span> db kártya
+                <i class="fa-solid fa-database"></i> <span id="record-count-display">0</span> db
             </div>
             <div class="actions">
                 <label for="file-upload-button" class="action-btn upload-btn" title="Excel feltöltése">
-                    <i class="fa-solid fa-file-import"></i> Feltöltés
+                    <i class="fa-solid fa-file-import"></i>
                 </label>
                 <input type="file" id="file-upload-button" accept=".xls, .xlsx" style="display: none;">
                 
@@ -41,40 +41,34 @@
         
         <div class="scroll-container">
             
+            <!-- 1. ALAPOK -->
             <div class="settings-section">
-                <h3><i class="fa-solid fa-ruler-combined"></i> Kártya Méretek (Négyzet)</h3>
-                <div class="control-group">
-                    <label>Méret: <span id="val-card-size">46</span>mm</label>
-                    <input type="range" id="card-size" min="30" max="90" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
-                    
-                    <label>Sarokkerekítés: <span id="val-card-radius">2</span>mm</label>
-                    <input type="range" id="card-radius" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--card-radius">
-
-                    <label>Belső Margó (Padding): <span id="val-card-padding">4</span>px</label>
-                    <input type="range" id="card-padding" min="0" max="20" value="4" step="1" data-unit="px" data-css-var="--card-padding">
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <h3><i class="fa-solid fa-palette"></i> Színek (Nyomtatás)</h3>
-                <div class="control-group">
-                    <div class="color-picker-row">
-                        <label>Keret Szín</label>
-                        <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
+                <h3><i class="fa-solid fa-sliders"></i> 1. Kártya Alapok</h3>
+                <div class="control-group compact">
+                    <div class="row">
+                        <label>Méret: <span id="val-card-size">46</span>mm</label>
+                        <input type="range" id="card-size" min="30" max="90" value="46" step="0.5" data-unit="mm" data-css-var="--card-size">
                     </div>
-                    <div class="color-picker-row">
-                        <label>Háttérszín</label>
-                        <input type="color" id="card-bg-color" value="#ffffff" data-css-var="--card-bg-color">
+                    <div class="row">
+                        <label>Sarok: <span id="val-card-radius">2</span>mm</label>
+                        <input type="range" id="card-radius" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--card-radius">
+                    </div>
+                    <div class="color-picker-row mini">
+                        <label>Keret / Háttér</label>
+                        <div class="pickers">
+                            <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
+                            <input type="color" id="card-bg-color" value="#ffffff" data-css-var="--card-bg-color">
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- 2. TIPOGRÁFIA -->
             <div class="settings-section">
-                <h3><i class="fa-solid fa-font"></i> Előlap (Szöveg)</h3>
-                <div class="control-group">
-                    <!-- Betűtípus -->
-                     <label>Betűtípus</label>
-                     <select id="font-family" data-css-var="--font-family">
+                <h3><i class="fa-solid fa-font"></i> 2. Tipográfia</h3>
+                <div class="control-group compact">
+                     <label>Globális Betűtípus</label>
+                     <select id="font-family" data-css-var="--font-family" class="full-width">
                         <option value="'Poppins', sans-serif">Poppins</option>
                         <option value="'Montserrat', sans-serif">Montserrat</option>
                         <option value="'Orbitron', sans-serif">Orbitron</option>
@@ -88,145 +82,114 @@
                         <option value="'Nunito', sans-serif">Nunito</option>
                         <option value="'Source Code Pro', monospace">Source Code Pro</option>
                         <option value="Arial, sans-serif">Arial</option>
-                        <option value="'Times New Roman', serif">Times New Roman</option>
-                        <option value="'Courier New', monospace">Courier New</option>
                     </select>
-                    
-                    <!-- Évszám (Közép) -->
+
                     <div class="sub-group">
                         <label class="sub-label">Évszám (Közép)</label>
-                        <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
-                        <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
-                         <label class="checkbox-container indent">
-                            <input type="checkbox" id="bold-year" checked>
-                            Félkövér
-                        </label>
-                         <label class="checkbox-container indent">
-                            <input type="checkbox" id="glow-year">
-                            Szöveg Fény (Glow)
-                        </label>
+                        <div class="row">
+                            <input type="range" min="8" max="60" value="24" step="1" data-unit="pt" data-css-var="--font-size-year">
+                            <input type="color" value="#000000" data-css-var="--color-year" class="mini-color">
+                        </div>
+                        <div class="row wraps">
+                             <label class="checkbox-container"><input type="checkbox" id="bold-year" checked> Bold</label>
+                             <label class="checkbox-container"><input type="checkbox" id="glow-year"> Glow</label>
+                        </div>
                     </div>
 
-                    <!-- Előadó (Fent) -->
                     <div class="sub-group">
                         <label class="sub-label">Előadó (Fent)</label>
-                        <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
-                        <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
-                        <label class="checkbox-container indent">
-                            <input type="checkbox" id="bold-artist">
-                            Félkövér
-                        </label>
-                        <label class="checkbox-container indent">
-                            <input type="checkbox" id="glow-artist">
-                            Szöveg Fény (Glow)
-                        </label>
-                        <select id="text-transform-artist" data-css-var="--text-transform-artist" class="indent">
-                            <option value="none">Normál</option>
-                            <option value="uppercase">CSUPA NAGYBETŰS</option>
-                            <option value="lowercase">csupa kisbetűs</option>
-                            <option value="capitalize">Nagy Kezdőbetűs</option>
-                        </select>
+                        <div class="row">
+                            <input type="range" min="4" max="30" value="8" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
+                            <input type="color" value="#000000" data-css-var="--color-artist" class="mini-color">
+                        </div>
+                        <div class="row wraps">
+                            <label class="checkbox-container"><input type="checkbox" id="bold-artist"> Bold</label>
+                            <label class="checkbox-container"><input type="checkbox" id="glow-artist"> Glow</label>
+                            <select id="text-transform-artist" data-css-var="--text-transform-artist" class="mini-select">
+                                <option value="none">Normál</option>
+                                <option value="uppercase">ABC</option>
+                                <option value="capitalize">Abc</option>
+                            </select>
+                        </div>
                     </div>
-                    <label class="indent">Távolság fentről: <span id="val-artist-margin">4</span>mm</label>
-                    <input type="range" id="artist-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
 
-                    <!-- Cím (Lent) -->
                     <div class="sub-group">
-                        <label class="sub-label">Dal Címe (Lent)</label>
-                        <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
-                        <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
-                        <label class="checkbox-container indent">
-                            <input type="checkbox" id="bold-title">
-                            Félkövér
-                        </label>
-                        <label class="checkbox-container indent">
-                            <input type="checkbox" id="glow-title">
-                            Szöveg Fény (Glow)
-                        </label>
-                        <select id="text-transform-title" data-css-var="--text-transform-title" class="indent">
-                            <option value="none">Normál</option>
-                            <option value="uppercase">CSUPA NAGYBETŰS</option>
-                            <option value="lowercase">csupa kisbetűs</option>
-                            <option value="capitalize">Nagy Kezdőbetűs</option>
-                        </select>
+                        <label class="sub-label">Cím (Lent)</label>
+                        <div class="row">
+                            <input type="range" min="4" max="30" value="7" step="0.5" data-unit="pt" data-css-var="--font-size-title">
+                            <input type="color" value="#333333" data-css-var="--color-title" class="mini-color">
+                        </div>
+                        <div class="row wraps">
+                            <label class="checkbox-container"><input type="checkbox" id="bold-title"> Bold</label>
+                            <label class="checkbox-container"><input type="checkbox" id="glow-title"> Glow</label>
+                            <select id="text-transform-title" data-css-var="--text-transform-title" class="mini-select">
+                                <option value="none">Normál</option>
+                                <option value="uppercase">ABC</option>
+                                <option value="capitalize">Abc</option>
+                            </select>
+                        </div>
                     </div>
-                    <label class="indent">Távolság lentről: <span id="val-title-margin">5</span>mm</label>
-                    <input type="range" id="title-margin" min="0" max="20" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
-
-                    <!-- Code1 & Code2 -->
-                    <div class="sub-group">
-                        <label class="sub-label">Code 1 & 2</label>
-                        <input type="range" min="4" max="14" value="6" step="0.5" data-unit="pt" data-css-var="--font-size-codes">
-                        <input type="color" value="#000000" data-css-var="--color-codes" class="mini-color">
-                        <label class="checkbox-container indent">
-                            <input type="checkbox" id="bold-codes">
-                            Félkövér
-                        </label>
-                    </div>
-                    <label class="indent">Code távolság (szél/alj): <span id="val-code-margin">2</span>mm</label>
-                    <input type="range" id="code-margin" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="rotate-codes">
-                        Kódok forgatása (90°)
-                    </label>
                 </div>
             </div>
 
+            <!-- 3. ELRENDEZÉS -->
+            <div class="settings-section">
+                <h3><i class="fa-solid fa-up-down-left-right"></i> 3. Elhelyezkedés</h3>
+                <div class="control-group compact">
+                    <div class="row">
+                        <label>Belső Margó: <span id="val-card-padding">4</span>px</label>
+                        <input type="range" id="card-padding" min="0" max="20" value="4" step="1" data-unit="px" data-css-var="--card-padding">
+                    </div>
+                    <div class="row">
+                        <label>Előadó margó: <span id="val-artist-margin">4</span>mm</label>
+                        <input type="range" id="artist-margin" min="0" max="20" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
+                    </div>
+                    <div class="row">
+                        <label>Cím margó: <span id="val-title-margin">5</span>mm</label>
+                        <input type="range" id="title-margin" min="0" max="20" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
+                    </div>
+                    <div class="row">
+                        <label>Kód margó: <span id="val-code-margin">2</span>mm</label>
+                        <input type="range" id="code-margin" min="0" max="10" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
+                    </div>
+                    <div class="row wraps">
+                        <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Bold</label>
+                        <label class="checkbox-container"><input type="checkbox" id="rotate-codes"> 90° forgatás</label>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 4. HÁTLAP -->
              <div class="settings-section">
-                <h3><i class="fa-solid fa-compact-disc"></i> Hátlap (QR & Vinyl)</h3>
-                <div class="control-group">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="show-qr" checked>
-                        QR Kód megjelenítése
-                    </label>
-                    <label>QR Méret: <span id="val-qr-size">40</span>%</label>
-                    <input type="range" id="qr-size" min="10" max="90" value="40" step="1" data-unit="%" data-css-var="--qr-size">
+                <h3><i class="fa-solid fa-compact-disc"></i> 4. Hátlap & Vinyl</h3>
+                <div class="control-group compact">
+                    <div class="row wraps">
+                        <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód</label>
+                        <label class="checkbox-container"><input type="checkbox" id="vinyl-glow"> Vinyl Glow</label>
+                    </div>
+                    <div class="row">
+                        <label>QR Méret: <span id="val-qr-size">40</span>%</label>
+                        <input type="range" id="qr-size" min="10" max="90" value="40" step="1" data-unit="%" data-css-var="--qr-size">
+                    </div>
                 
-                    <label>Lemez Opacitás: <span id="val-vinyl-opacity">0.15</span></label>
-                    <input type="range" id="vinyl-opacity" min="0" max="1" value="0.15" step="0.05" data-unit="" data-css-var="--vinyl-opacity">
-                    
-                    <div class="color-picker-row">
-                        <label>Lemez Színe</label>
-                        <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
+                    <div class="color-picker-row mini">
+                        <label>Vinyl szín / Opacitás</label>
+                        <div class="pickers">
+                             <input type="color" value="#000000" data-css-var="--vinyl-groove-color">
+                             <input type="range" id="vinyl-opacity" min="0" max="1" value="0.15" step="0.05" data-unit="" data-css-var="--vinyl-opacity" style="width: 50px;">
+                        </div>
                     </div>
 
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="vinyl-glow">
-                        Lemez Fény (Glow)
-                    </label>
-
-                    <!-- Glitch & Vinyl Controls -->
                     <div class="sub-group">
-                         <label class="sub-label">Lemez Paraméterek</label>
-
-                         <label class="indent">Körök száma: <span id="val-vinyl-groove-count">8</span></label>
+                         <label>Barázdák: <span id="val-vinyl-groove-count">8</span> | Táv: <span id="val-vinyl-spacing">4</span></label>
                          <input type="range" id="vinyl-groove-count" min="3" max="20" value="8" step="1" data-css-var="--vinyl-groove-count">
-                         
-                         <label class="indent">Eltolás szélétől: <span id="val-vinyl-offset">2</span></label>
-                         <input type="range" id="vinyl-offset" min="0" max="10" value="2" step="0.5" data-css-var="--vinyl-offset">
-                         
-                         <label class="indent">Körök távolsága: <span id="val-vinyl-spacing">4</span></label>
                          <input type="range" id="vinyl-spacing" min="1" max="10" value="4" step="0.5" data-css-var="--vinyl-spacing">
                     </div>
-
-                    <div class="sub-group">
-                         <label class="sub-label">Glitch Paraméterek</label>
-                         
-                         <label class="indent">Szekciók száma: <span id="val-vinyl-sections">3</span></label>
-                         <input type="range" id="vinyl-sections" min="2" max="20" value="3" step="1" data-unit="" data-css-var="--vinyl-sections">
-                         
-                         <label class="indent">Hézag Min %: <span id="val-vinyl-gap-min">10</span>%</label>
-                         <input type="range" id="vinyl-gap-min" min="0" max="50" value="10" step="5" data-unit="%" data-css-var="--vinyl-gap-min">
-                         
-                         <label class="indent">Hézag Max %: <span id="val-vinyl-gap-max">40</span>%</label>
-                         <input type="range" id="vinyl-gap-max" min="0" max="90" value="40" step="5" data-unit="%" data-css-var="--vinyl-gap-max">
-                    </div>
-
                 </div>
             </div>
             
             <footer class="app-footer">
-                MusicStencil v6.2.0
+                MusicStencil v6.3.2
             </footer>
         </div>
     </aside>
