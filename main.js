@@ -6,19 +6,10 @@ const showError = (message, error) => {
     console.error(message, error);
     const previewArea = document.getElementById('preview-area');
     if (previewArea) {
-        const errorMessage = `<strong>Hiba történt!</strong><br><br>${message}<br><br>Részletek: ${error ? error.stack : 'N/A'}`;
-        previewArea.innerHTML = `<div class="preview-placeholder error">${errorMessage}</div>`;
+        const errorMessage = `<strong>Hiba!</strong><br>${message}<br><small>${error?.message || ''}</small>`;
+        previewArea.innerHTML = `<div style="color: #f44; padding: 20px; text-align: center;">${errorMessage}</div>`;
     }
 };
-
-window.addEventListener('unhandledrejection', event => {
-  showError('Kezeletlen Promise hiba:', event.reason);
-});
-
-window.addEventListener('error', event => {
-  showError('Kezeletlen hiba:', event.error);
-});
-
 
 const App = {
     data: [],
@@ -27,11 +18,7 @@ const App = {
 
     async init() {
         try {
-            console.log("MusicStencil indítása...");
-
-            // Dinamikus évszám beállítása
-            const yearEl = document.getElementById('current-year');
-            if (yearEl) yearEl.textContent = new Date().getFullYear();
+            console.log("MusicStencil v6.5.4 indítása...");
 
             this.data = await loadSampleData();
             
@@ -41,14 +28,19 @@ const App = {
             );
             
             if (this.data && this.data.length > 0) {
+                this.updateStats();
                 this.renderPrintView();
                 this.startPreviewCycle();
-            } else {
-                 showError("Nem sikerült betölteni a minta adatokat.", "Az adatforrás üresnek tűnik.");
+                
+                // KATTINTÁSRA KÖVETKEZŐ ELŐNÉZET
+                document.getElementById('preview-area').addEventListener('click', () => {
+                    this.showNextPreview();
+                    this.resetCycle();
+                });
             }
 
         } catch (error) {
-            showError("Végzetes hiba az App.init során:", error);
+            showError("Hiba az inicializáláskor:", error);
         }
     },
 
@@ -58,14 +50,13 @@ const App = {
     },
 
     handleDataLoaded(newData) {
-        if (!newData || newData.length === 0) {
-            showError("A feltöltött fájl üres vagy hibás formátumú.", "Nincsenek feldolgozható adatok.");
-            return;
-        }
+        if (!newData || newData.length === 0) return;
         this.data = newData;
         this.updateStats();
         this.renderPrintView();
-        this.startPreviewCycle();
+        this.currentPreviewIndex = 0;
+        this.refreshCurrentPreview();
+        this.resetCycle();
     },
 
     updateStats() {
@@ -78,35 +69,32 @@ const App = {
         renderAllPages(printArea, this.data);
     },
 
-    showRandomPreview() {
+    showNextPreview() {
         if (!this.data || this.data.length === 0) return;
-        this.currentPreviewIndex = Math.floor(Math.random() * this.data.length);
+        this.currentPreviewIndex = (this.currentPreviewIndex + 1) % this.data.length;
         this.refreshCurrentPreview();
     },
 
     refreshCurrentPreview() {
         if (!this.data || this.data.length === 0) return;
         const previewArea = document.getElementById('preview-area');
-        if (this.currentPreviewIndex >= this.data.length) this.currentPreviewIndex = 0;
-        
         renderPreviewPair(previewArea, this.data[this.currentPreviewIndex]);
+    },
+
+    resetCycle() {
+        if (this.previewIntervalId) clearInterval(this.previewIntervalId);
+        this.startPreviewCycle();
     },
 
     startPreviewCycle() {
         if (this.previewIntervalId) clearInterval(this.previewIntervalId);
-        
-        this.showRandomPreview();
-
+        this.refreshCurrentPreview();
         this.previewIntervalId = setInterval(() => {
-            this.showRandomPreview();
-        }, 15000); 
+            this.showNextPreview();
+        }, 8000); 
     }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    try {
-        App.init();
-    } catch(error) {
-        showError('Kritikus hiba az alkalmazás indítása során:', error);
-    }
+    App.init();
 });

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicStencil - Ultimate v6.5.3</title>
+    <title>MusicStencil - Precision Pro v6.5.4</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;700;900&family=Orbitron:wght@400;700;900&family=Roboto+Condensed:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@700;900&family=Bebas+Neue&family=Cinzel:wght@700;900&family=Syncopate:wght@700&family=Poppins:wght@100;400;700;900&family=Special+Elite&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;700;800;900&family=Orbitron:wght@400;700;900&family=Roboto+Condensed:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@700;900&family=Bebas+Neue&family=Cinzel:wght@700;900&family=Syncopate:wght@700&family=Poppins:wght@100;400;700;900&family=Special+Elite&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -29,7 +29,7 @@
             <div class="actions main-actions">
                 <label for="file-upload-button" class="action-btn upload-btn"><i class="fa-solid fa-file-import"></i> XLS</label>
                 <input type="file" id="file-upload-button" accept=".xls, .xlsx" style="display: none;">
-                <button id="view-toggle-button" class="action-btn"><i class="fa-solid fa-grip"></i></button>
+                <button id="view-toggle-button" class="action-btn" title="Rácsnézet ki/be"><i class="fa-solid fa-grip"></i></button>
                 <button id="print-button" class="action-btn print-btn"><i class="fa-solid fa-print"></i> PRINT</button>
             </div>
         </header>
@@ -51,8 +51,8 @@
                         <div class="input-row">
                             <label>Papír Méret</label>
                             <select id="paper-size">
-                                <option value="A4">A4 (Standard)</option>
-                                <option value="A3">A3 (Nagy)</option>
+                                <option value="A4">A4 (210x297)</option>
+                                <option value="A3">A3 (297x420)</option>
                             </select>
                         </div>
                         <div class="input-row">
@@ -76,13 +76,11 @@
                 <div class="settings-section">
                     <h3>Betűtípus</h3>
                     <select id="font-family" data-css-var="--font-family" class="full-width">
-                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Montserrat', sans-serif">Montserrat Classic</option>
                         <option value="'Poppins', sans-serif">Poppins</option>
                         <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
                         <option value="'Oswald', sans-serif">Oswald</option>
                         <option value="'Playfair Display', serif">Playfair</option>
-                        <option value="'Cinzel', serif">Cinzel</option>
-                        <option value="'Special Elite', cursive">Typewriter</option>
                         <option value="'Syncopate', sans-serif">Syncopate</option>
                     </select>
 
@@ -109,7 +107,6 @@
                             <select id="text-transform-artist" data-css-var="--text-transform-artist" class="mini-select">
                                 <option value="none">Normál</option>
                                 <option value="uppercase">Nagybetűs</option>
-                                <option value="small-caps">Nagykapitális</option>
                             </select>
                         </div>
                     </div>
@@ -123,11 +120,6 @@
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="bold-title" checked> Bold</label>
                             <input type="number" id="max-lines" value="2" min="1" max="5" title="Max sor">
-                            <select id="text-transform-title" data-css-var="--text-transform-title" class="mini-select">
-                                <option value="none">Normál</option>
-                                <option value="uppercase">Nagybetűs</option>
-                                <option value="small-caps">Nagykapitális</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -147,11 +139,11 @@
                             <input type="number" id="title-margin" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
                         </div>
                         <div class="input-row">
-                            <label>Alul (mm)</label>
+                            <label>Kód alul (mm)</label>
                             <input type="number" id="code-margin" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
                         </div>
                         <div class="input-row">
-                            <label>Oldalt (mm)</label>
+                            <label>Kód oldalt (mm)</label>
                             <input type="number" id="code-side-margin" value="2" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
                         </div>
                         <div class="row wraps">
@@ -169,18 +161,11 @@
                     <div class="control-group">
                         <div class="input-row">
                             <label>QR Logó (max 3)</label>
-                            <input type="text" id="qr-logo-text" value="" maxlength="3" placeholder="Pl: MJ">
+                            <input type="text" id="qr-logo-text" value="" maxlength="3" placeholder="ABC">
                         </div>
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód</label>
                             <label class="checkbox-container"><input type="checkbox" id="vinyl-variate"> Vastagság variáció</label>
-                        </div>
-                        <div class="input-row">
-                            <label>QR Design</label>
-                            <select id="qr-style">
-                                <option value="standard">Standard</option>
-                                <option value="modern">Lekerekített</option>
-                            </select>
                         </div>
                         <div class="input-row">
                             <label>Barázda köz</label>
@@ -203,16 +188,15 @@
                 <div class="settings-section">
                     <h3>Pro Studio Wiki</h3>
                     <div class="help-content">
-                        <h4>Főbb jellemzők:</h4>
-                        <p><strong>Okos fejléc:</strong> Az Excel első sorában keresi az 'Artist', 'Title', 'Year' szavakat. Ha megvannak, átugorja a fejlécet.</p>
-                        <p><strong>Glitch:</strong> Minden körre annyi megszakítást tesz, amennyi a csúszkán be van állítva.</p>
-                        <p><strong>Mérethelyesség:</strong> Nyomtatáskor A4 vagy A3 papíron a kártyák pontosan a megadott (pl. 46mm) méretben jelennek meg.</p>
+                        <p><strong>Mérethelyesség:</strong> A rácsnézet számításakor most már közvetlenül a milliméter értékeket használjuk, így a kártyák száma oszloponként pontos lesz.</p>
+                        <p><strong>Random Glitch:</strong> A barázdák megszakításai teljesen véletlenszerű pozícióba kerülnek minden körön.</p>
+                        <p><strong>Okos Tördelés:</strong> A címeknél 15 karakter felett a rendszer megpróbálja két sorba törni a szöveget az esztétikusabb megjelenésért.</p>
                     </div>
                 </div>
             </div>
         </div>
         <footer class="app-footer">
-            <p>&copy; MusicStencil v6.5.3</p>
+            <p>&copy; MusicStencil v6.5.4</p>
         </footer>
     </aside>
 
