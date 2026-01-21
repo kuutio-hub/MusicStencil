@@ -6,6 +6,7 @@ const App = {
     data: [],
     previewIntervalId: null,
     currentPreviewIndex: 0, 
+    isExternalDataLoaded: false,
 
     async init() {
         try {
@@ -17,7 +18,7 @@ const App = {
             );
             
             if (this.data && this.data.length > 0) {
-                this.updateStats();
+                this.updateStats(); // Initially might show visibility:hidden or 0
                 this.renderPrintView();
                 this.startPreviewCycle();
                 
@@ -41,6 +42,7 @@ const App = {
     handleDataLoaded(newData) {
         if (!newData || newData.length === 0) return;
         this.data = newData;
+        this.isExternalDataLoaded = true;
         this.updateStats();
         this.renderPrintView();
         this.currentPreviewIndex = 0;
@@ -49,7 +51,7 @@ const App = {
     },
 
     updateStats() {
-        updateRecordCount(this.data.length);
+        updateRecordCount(this.data.length, this.isExternalDataLoaded);
     },
 
     renderPrintView() {

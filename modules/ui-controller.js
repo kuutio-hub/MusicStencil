@@ -74,9 +74,9 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         
         const redrawIds = [
-            'paper-size', 'card-size', 'qr-style', 'qr-size-percent', 
+            'paper-size', 'card-size', 'qr-size-percent', 
             'vinyl-spacing', 'vinyl-thickness', 'vinyl-count', 
-            'glitch-width-percent', 'glitch-min', 'glitch-max',
+            'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
             'border-front-only', 'rotate-codes'
         ];
         if (redrawIds.includes(e.target.id)) {
@@ -110,9 +110,11 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     document.body.classList.remove('loading');
 }
 
-export function updateRecordCount(count) {
+export function updateRecordCount(count, isVisible) {
     const el = document.getElementById('record-count-display');
     const bar = document.getElementById('stats-bar');
     if (el) el.textContent = count;
-    if (bar) bar.style.display = 'flex';
+    if (bar) {
+        bar.style.visibility = isVisible ? 'visible' : 'hidden';
+    }
 }

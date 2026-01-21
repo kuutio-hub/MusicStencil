@@ -1,12 +1,10 @@
-function generateQRCode(element, text, style, logoText) {
+function generateQRCode(element, text, logoText) {
     element.innerHTML = "";
     if (!text) return;
     try {
         element.className = "qr-container";
-        if (style === 'rounded') element.classList.add('qr-style-rounded');
-        if (style === 'dots') element.classList.add('qr-style-dots');
 
-        // Generate high res, then let CSS handle the scaling
+        // Fix standard high res QR
         new QRCode(element, {
             text: text, 
             width: 400, 
@@ -37,7 +35,7 @@ function adjustText(element, isTitle = false) {
     } else if (isTitle && text.length > 15 && !element.innerHTML.includes('<br>')) {
         const words = text.split(' ');
         if (words.length > 2) {
-            const splitAt = Math.floor(words.length * 0.66);
+            const splitAt = Math.ceil(words.length * 0.5);
             element.innerHTML = words.slice(0, splitAt).join(' ') + '<br>' + words.slice(splitAt).join(' ');
         }
     }
@@ -55,9 +53,13 @@ function generateVinyl() {
     const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 2.5;
     const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4;
     const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 18;
-    const glitchWidthPercent = parseFloat(document.getElementById('glitch-width-percent')?.value) || 10;
+    
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
     const gMax = parseInt(document.getElementById('glitch-max')?.value) || 4;
+    
+    const glitchWidthMin = parseFloat(document.getElementById('glitch-width-min')?.value) || 5;
+    const glitchWidthMax = parseFloat(document.getElementById('glitch-width-max')?.value) || 15;
+    
     const variate = document.getElementById('vinyl-variate')?.checked;
 
     let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
@@ -72,7 +74,6 @@ function generateVinyl() {
         if (gCount === 0) {
             dash.push(circ, 0);
         } else {
-            // FULL RANDOM POSITIONS FOR GLITCHES
             let segments = [];
             for (let g = 0; g < gCount; g++) {
                 segments.push(Math.random() * circ);
@@ -80,10 +81,11 @@ function generateVinyl() {
             segments.sort((a, b) => a - b);
             
             let lastPos = 0;
-            // The gap width is a percentage of the circumference
-            const gapWidth = circ * (glitchWidthPercent / 100) / gCount; 
-            
             for (let p of segments) {
+                // Tartomány alapú véletlen szélesség minden glitch-nél
+                const randomWidthPercent = Math.random() * (glitchWidthMax - glitchWidthMin) + glitchWidthMin;
+                const gapWidth = circ * (randomWidthPercent / 100) / gCount; 
+                
                 const drawLen = Math.max(0, p - lastPos - (gapWidth / 2));
                 dash.push(drawLen, gapWidth);
                 lastPos = p + (gapWidth / 2);
@@ -93,7 +95,7 @@ function generateVinyl() {
         }
 
         const sw = variate ? (thickness * (0.6 + Math.random() * 0.8)) : thickness;
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.15 + (i * (0.8 / grooveCount))}" />`;
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.12 + (i * (0.8 / grooveCount))}" />`;
     }
     svg += `</svg>`;
     return svg;
@@ -108,10 +110,9 @@ function createCard(song, isBack = false) {
         const qrBox = card.querySelector('.qr-container');
         const logo = document.getElementById('qr-logo-text')?.value;
         const showQr = document.getElementById('show-qr')?.checked;
-        const qrStyle = document.getElementById('qr-style')?.value || 'standard';
         
         if (showQr) {
-            setTimeout(() => generateQRCode(qrBox, song.qr_data, qrStyle, logo), 50);
+            setTimeout(() => generateQRCode(qrBox, song.qr_data, logo), 10);
         } else {
             qrBox.style.display = 'none';
         }
@@ -161,7 +162,7 @@ export function renderAllPages(container, data) {
     for (let i = 0; i < data.length; i += perPage) {
         const chunk = data.slice(i, i + perPage);
         
-        // FRONT PAGE
+        // ELŐLAP
         const frontPage = document.createElement('div');
         frontPage.className = `page-container ${paper}`;
         frontPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
@@ -177,7 +178,7 @@ export function renderAllPages(container, data) {
         });
         container.appendChild(frontPage);
 
-        // BACK PAGE
+        // HÁTLAP (Tükrözött sorrend)
         const backPage = document.createElement('div');
         backPage.className = `page-container ${paper}`;
         backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
