@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v140_settings';
+const STORAGE_KEY = 'musicstencil_v150_settings';
 
 // Helper to convert HEX to RGBA
 function hexToRgba(hex, alphaPercent) {
@@ -59,6 +59,16 @@ export function applyAllStyles() {
             document.documentElement.style.setProperty(`--text-shadow-${type}`, 'none');
         }
     });
+
+    // QR GLOW LOGIC
+    const qrGlowActive = document.getElementById('glow-qr')?.checked;
+    if (qrGlowActive) {
+        const color = document.getElementById('glow-qr-color').value;
+        const blur = document.getElementById('glow-qr-blur').value;
+        document.documentElement.style.setProperty('--qr-box-shadow', `0 0 ${blur}px ${color}`);
+    } else {
+        document.documentElement.style.setProperty('--qr-box-shadow', 'none');
+    }
 
     // Code Positioning
     const codePos = document.getElementById('code-position')?.value || 'center';
@@ -191,8 +201,10 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         const redrawIds = [
             'paper-size', 'card-size', 'qr-size-percent', 'page-padding',
             'vinyl-spacing', 'vinyl-count', 'vinyl-variate', 'vinyl-thickness', 'vinyl-opacity',
+            'vinyl-color', 'vinyl-neon', 'vinyl-neon-blur',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
             'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr', 'qr-border-width', 'qr-border-color',
+            'glow-qr', 'glow-qr-color', 'glow-qr-blur',
             'code-position', 
             'token-main-text', 'token-sub-text',
             'token-glow-active', 'token-glow-color', 'token-glow-size',

@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v1.4.0 - Universal Glow & Organic Vinyl. Fixed text-shadow rendering, added glow options for all text fields, implemented non-linear random vinyl glitching logic.",
+  "description": "MusicStencil v1.5.0 - Neon Vinyl & QR Glow. Added color picker for vinyl grooves, Neon mode with random HSL colors and adjustable glow, plus box-shadow glow options for QR codes.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v1.4.0"
+  "name": "MusicStencil v1.5.0"
 }

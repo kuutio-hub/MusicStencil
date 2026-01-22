@@ -60,6 +60,11 @@ function generateVinyl() {
     const opacityPercent = parseFloat(document.getElementById('vinyl-opacity')?.value) || 100;
     const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 12;
     
+    // NEW SETTINGS
+    const baseColor = document.getElementById('vinyl-color')?.value || '#000000';
+    const isNeon = document.getElementById('vinyl-neon')?.checked;
+    const neonBlur = document.getElementById('vinyl-neon-blur')?.value || 5;
+
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
     const gMax = parseInt(document.getElementById('glitch-max')?.value) || 2;
     
@@ -125,10 +130,6 @@ function generateVinyl() {
                 let currentPos = 0; // relative to 0 degrees (0 length)
                 
                 // Calculate dash array based on sorted cuts
-                // DashArray is: Draw, Gap, Draw, Gap...
-                // We need to convert angles to lengths on circumference starting from an arbitrary 0 point
-                // Actually, stroke-dasharray starts drawing at 3 o'clock usually.
-                // We can just simulate the gaps.
                 
                 // Let's normalize angles to length positions on the circle (0 to circ)
                 let cutSegments = cuts.map(c => {
@@ -136,58 +137,6 @@ function generateVinyl() {
                     return { start: startPos, end: startPos + c.arc };
                 });
 
-                // Calculate segments between cuts
-                // We need to rotate the stroke so the first "Draw" starts correctly.
-                // Simpler: Just define gaps.
-                
-                // Let's assume we start drawing at 0.
-                // If first cut is at 10, we draw 10, then gap of cut width.
-                let lastEnd = 0;
-                
-                // Handle wrapping?
-                // Simplest way for dasharray: calculate lengths between cuts.
-                // However, the rotation is handled by SVG transform usually or we just need correct sequence.
-                
-                // Let's start the dasharray from the END of the last cut (conceptually) to handle wrapping simply,
-                // OR just rotate the circle element to align with the first non-cut area.
-                
-                // We will shift everything so the first draw happens at 0.
-                // Find a safe "Draw" spot.
-                
-                // Actually, let's keep it simple: 
-                // dashArray = [draw1, gap1, draw2, gap2...]
-                // Distance from Cut N end to Cut N+1 start = Draw.
-                // Length of Cut N+1 = Gap.
-                
-                for (let k = 0; k < cutSegments.length; k++) {
-                    let current = cutSegments[k];
-                    let next = cutSegments[(k + 1) % cutSegments.length];
-                    
-                    // Gap (Glitch) width
-                    let gap = current.end - current.start;
-                    
-                    // Draw width (distance to next cut)
-                    let draw = 0;
-                    if (k === cutSegments.length - 1) {
-                        // Last segment wrapping to first
-                        draw = (circ - current.end) + next.start;
-                    } else {
-                        draw = next.start - current.end;
-                    }
-                    
-                    // We need to add (Draw, Gap).
-                    // BUT stroke-dasharray starts with DRAW.
-                    // So we need to shift our perspective to start drawing AFTER a gap.
-                    // This is handled by stroke-dashoffset usually.
-                    
-                    // Let's just construct [Draw, Gap]...
-                    // and rotate the element so that "Draw" corresponds to the space after current cut.
-                }
-
-                // SIMPLIFIED ARRAY BUILDER
-                // Start from 0. Find first cut. Draw = cut.start - 0. Gap = cut.len.
-                // Next cut...
-                
                 let lastP = 0;
                 let dashAccumulator = [];
                 
@@ -225,7 +174,15 @@ function generateVinyl() {
         // Random rotation for the whole ring to break visual alignment further
         const rot = Math.random() * 360;
 
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dashArray.join(' ')}" opacity="${op}" transform="rotate(${rot} 50 50)" />`;
+        // NEON LOGIC
+        let strokeColor = baseColor;
+        let styleStr = '';
+        if (isNeon) {
+            strokeColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            styleStr = `style="filter: drop-shadow(0 0 ${neonBlur}px ${strokeColor});"`;
+        }
+
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${strokeColor}" stroke-width="${sw}" stroke-dasharray="${dashArray.join(' ')}" opacity="${op}" transform="rotate(${rot} 50 50)" ${styleStr} />`;
     }
     svg += `</svg>`;
     return svg;

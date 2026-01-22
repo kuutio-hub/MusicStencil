@@ -36,6 +36,7 @@
     --qr-size: 40%;
     --qr-border-width: 3px;
     --qr-border-color: #ffffff;
+    --qr-box-shadow: none; /* NEW QR GLOW */
 }
 
 @keyframes spin {
@@ -255,6 +256,7 @@ body.code-pos-corner .code2 {
     align-items: center; justify-content: center; border-radius: 0; 
     overflow: hidden; pointer-events: none;
     border: var(--qr-border-width) solid var(--qr-border-color);
+    box-shadow: var(--qr-box-shadow); /* Applied here */
 }
 .qr-container canvas, .qr-container img { width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block; }
 
@@ -303,6 +305,9 @@ body.grid-view-active .card { background: #ffffff !important; transition: none !
         background-color: #000000 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;
         border: 1px solid #000 !important; box-shadow: none !important;
     }
+
+    /* REMOVE QR BOX SHADOW ON PRINT */
+    .qr-container { box-shadow: none !important; }
 
     .page-container { margin: 0 auto !important; border: none !important; }
     @page { margin: 0; }

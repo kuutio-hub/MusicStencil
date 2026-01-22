@@ -318,6 +318,29 @@
                             <label>Vastagság (px)</label>
                             <input type="number" id="vinyl-thickness" value="0.5" step="0.1" min="0.1" max="5">
                         </div>
+                        
+                        <!-- NEW: VINYL COLOR & NEON -->
+                        <div class="input-row">
+                            <label>Barázda Szín</label>
+                            <input type="color" id="vinyl-color" value="#000000">
+                        </div>
+
+                        <!-- PROGRESSIVE MENU: NEON -->
+                        <div class="expandable-group">
+                            <div class="input-row">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="vinyl-neon" data-toggle-target="vinyl-neon-settings"> 
+                                    Neon Mód (Random)
+                                </label>
+                            </div>
+                            <div id="vinyl-neon-settings" class="sub-panel hidden">
+                                <div class="input-row">
+                                    <label>Izzás (Glow)</label>
+                                    <input type="number" id="vinyl-neon-blur" value="5" min="0" max="20" step="1">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="input-row">
                             <label>Opacitás (%)</label>
                             <input type="number" id="vinyl-opacity" value="50" min="0" max="100" step="5">
@@ -369,6 +392,22 @@
                                         <label>Keret Szín</label>
                                         <input type="color" id="qr-border-color" value="#ffffff" data-css-var="--qr-border-color">
                                     </div>
+
+                                    <!-- NEW: QR GLOW -->
+                                    <div class="row" style="margin-top:10px; margin-bottom:5px;">
+                                        <label class="checkbox-container mini"><input type="checkbox" id="glow-qr" data-toggle-target="glow-settings-qr"> Glow (Izzás)</label>
+                                    </div>
+                                    <div id="glow-settings-qr" class="sub-panel hidden" style="border-left-color: #555; background:#000;">
+                                        <div class="input-row">
+                                            <label>Glow Szín</label>
+                                            <input type="color" id="glow-qr-color" value="#888888">
+                                        </div>
+                                        <div class="input-row">
+                                            <label>Elmosás (px)</label>
+                                            <input type="number" id="glow-qr-blur" value="10" min="0" max="50" step="1">
+                                        </div>
+                                    </div>
+
                                     <div class="input-row">
                                         <label>Logó (max 3)</label>
                                         <input type="text" id="qr-logo-text" value="" maxlength="3" placeholder="ABC">
@@ -392,13 +431,14 @@
                     <div class="help-content">
                         <p><strong>Zoom:</strong> Kattints egy kártyára a nagyításhoz!</p>
                         <p><strong>Glow:</strong> Jelöld be a Glow opciót a részletes beállítások (szín, elmosás) megjelenítéséhez.</p>
+                        <p><strong>Neon Mód:</strong> Kapcsold be a Vinyl beállításoknál a véletlenszerű neon színekhez.</p>
                         <p><strong>Automatikus Margók:</strong> Ha egy oldal nem telik be, a tartalom függőlegesen középre igazodik.</p>
                     </div>
                 </div>
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v1.4.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v1.5.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 
