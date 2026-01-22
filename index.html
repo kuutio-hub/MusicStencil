@@ -159,7 +159,7 @@
                     <h3>Tipográfia</h3>
                     <select id="font-family" data-css-var="--font-family" class="full-width" style="margin-bottom:15px;">
                         <option value="'Montserrat', sans-serif">Montserrat</option>
-                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Poppins', sans-serif" selected>Poppins</option>
                         <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
                         <option value="'Special Elite', cursive">Typewriter</option>
                         <option value="'Syncopate', sans-serif">Syncopate</option>
@@ -227,38 +227,52 @@
                 </div>
             </div>
 
-            <!-- LAYOUT -->
+            <!-- LAYOUT RESTRUCTURED -->
             <div class="tab-pane" id="tab-layout">
                 <div class="settings-section">
-                    <h3>Margók & Kódok</h3>
-                    <div class="control-group">
-                        <div class="music-only-option">
-                            <div class="input-row">
-                                <label>Felső margó (mm)</label>
-                                <input type="number" id="artist-margin" value="3" step="0.5" data-unit="mm" data-css-var="--artist-margin">
-                            </div>
-                            <div class="input-row">
-                                <label>Alsó margó (mm)</label>
-                                <input type="number" id="title-margin" value="3" step="0.5" data-unit="mm" data-css-var="--title-margin">
-                            </div>
-                            <div class="input-row">
-                                <label>Kód Pozíció</label>
-                                <select id="code-position" class="full-width" style="margin-bottom:0;">
-                                    <option value="center" selected>Közép (-1mm)</option>
-                                    <option value="corner">Sarok (+2mm)</option>
-                                </select>
-                            </div>
-                            <div class="input-row">
-                                <label>Kód eltolás (mm)</label>
-                                <input type="number" id="code-side-margin" value="-1" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
-                            </div>
-                            <div class="row wraps">
-                                <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Vastag</label>
+                    
+                    <div class="music-only-option">
+                        <!-- SECTION 1: MARGINS -->
+                        <div class="layout-group">
+                            <div class="group-header">Margók (pt)</div>
+                            <div class="control-group">
+                                <div class="input-row">
+                                    <label>Felső margó</label>
+                                    <input type="number" id="artist-margin" value="9" step="1" data-unit="pt" data-css-var="--artist-margin">
+                                </div>
+                                <div class="input-row">
+                                    <label>Alsó margó</label>
+                                    <input type="number" id="title-margin" value="9" step="1" data-unit="pt" data-css-var="--title-margin">
+                                </div>
                             </div>
                         </div>
-                        <div class="token-only-msg" style="display:none; color: #888; font-size: 0.8rem; font-style: italic;">
-                            Zseton módban a szöveg automatikusan középre igazodik.
+
+                        <hr class="divider">
+
+                        <!-- SECTION 2: CODES -->
+                        <div class="layout-group">
+                            <div class="group-header">Kód Elhelyezés</div>
+                            <div class="control-group">
+                                <div class="input-row">
+                                    <label>Pozíció</label>
+                                    <select id="code-position" class="full-width" style="margin-bottom:0;">
+                                        <option value="center" selected>Közép</option>
+                                        <option value="corner">Sarok</option>
+                                    </select>
+                                </div>
+                                <div class="input-row">
+                                    <label>Eltolás (pt)</label>
+                                    <input type="number" id="code-side-margin" value="-3" step="1" data-unit="pt" data-css-var="--code-side-margin">
+                                </div>
+                                <div class="row wraps">
+                                    <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Vastag</label>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <div class="token-only-msg" style="display:none; color: #888; font-size: 0.8rem; font-style: italic;">
+                        Zseton módban a szöveg automatikusan középre igazodik.
                     </div>
                 </div>
             </div>
@@ -360,7 +374,7 @@
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v1.2.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v1.3.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 

@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v1.2.0 - Version Reset & Progressive UI. Normalized versioning. Implemented expanding menus for cleaner UI, advanced text glow settings (color/blur), and auto-orientation logic.",
+  "description": "MusicStencil v1.3.0 - Unified Units & Layout Redesign. Internal metrics converted to points (pt), Layout tab reorganized for better UX, default font set to Poppins.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v1.2.0"
+  "name": "MusicStencil v1.3.0"
 }

@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v120_settings';
+const STORAGE_KEY = 'musicstencil_v130_settings';
 
 // Helper to convert HEX to RGBA
 function hexToRgba(hex, alphaPercent) {
@@ -107,7 +107,7 @@ function updateModeVisibility() {
     
     // Hide music-only fields in typography/layout
     document.querySelectorAll('.music-only-option').forEach(el => {
-        el.style.display = isToken ? 'none' : (el.classList.contains('typo-item') ? 'block' : 'flex');
+        el.style.display = isToken ? 'none' : (el.classList.contains('typo-item') || el.classList.contains('layout-group') ? 'block' : 'flex');
     });
 
     document.querySelectorAll('.token-only-msg').forEach(el => {
@@ -149,13 +149,13 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     applyAllStyles();
     updateModeVisibility();
 
-    // Code Position Change Logic (Auto Margins)
+    // Code Position Change Logic (Auto Margins in PT)
     document.getElementById('code-position').addEventListener('change', (e) => {
         const marginInput = document.getElementById('code-side-margin');
         if (e.target.value === 'center') {
-            marginInput.value = -1;
+            marginInput.value = -3; // approx -1mm
         } else {
-            marginInput.value = 2;
+            marginInput.value = 6;  // approx 2mm
         }
         applyAllStyles();
         if (onSettingsChange) onSettingsChange(true);

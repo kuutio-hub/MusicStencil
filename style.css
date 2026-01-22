@@ -2,9 +2,9 @@
     --card-size: 46mm;
     --card-radius: 2mm;
     --card-padding: 4px;
-    --artist-margin: 3mm;
-    --title-margin: 3mm;
-    --code-side-margin: -1mm; /* Default for center */
+    --artist-margin: 9pt; /* Converted from 3mm approx */
+    --title-margin: 9pt;  /* Converted from 3mm approx */
+    --code-side-margin: -3pt; /* Converted from -1mm approx */
     --page-padding: 10mm;
     
     --primary-color: #000000;
@@ -14,7 +14,7 @@
     --card-bg-color: #ffffff;
     --spotify-green: #1DB954;
     
-    --font-family: 'Montserrat', sans-serif;
+    --font-family: 'Poppins', sans-serif;
     --font-size-year: 30pt;
     --font-weight-year: 800;
     --font-size-artist: 12pt;
@@ -99,6 +99,10 @@ body {
 .control-group { display: flex; flex-direction: column; gap: 14px; }
 .input-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .input-row label { font-size: 0.8rem; color: #bbb; flex: 1; }
+
+/* LAYOUT GROUPS (New) */
+.layout-group { margin-bottom: 20px; }
+.group-header { font-size: 0.7rem; color: #666; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
 
 /* PROGRESSIVE UI (SUB-PANELS) */
 .sub-panel {
