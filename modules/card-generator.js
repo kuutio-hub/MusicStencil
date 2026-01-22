@@ -56,7 +56,7 @@ function adjustText(element, isTitle = false) {
 
 function generateVinyl() {
     const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 2.5;
-    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4; // Mostantól nincs külön input, de kód szinten marad
+    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4;
     const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 12;
     
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
@@ -81,7 +81,6 @@ function generateVinyl() {
         if (gCount === 0) {
             dash.push(circ, 0);
         } else {
-            // Intelligens offset: próbálunk olyan elforgatást adni, ami távol van az előzőtől
             let shift = Math.random() * circ;
             if (Math.abs(shift - lastRandomShift) < (circ * 0.1)) {
                  shift = (shift + (circ * 0.3)) % circ;
@@ -90,7 +89,6 @@ function generateVinyl() {
 
             let segments = [];
             for (let g = 0; g < gCount; g++) {
-                // Hozzáadjuk a shiftet a véletlen pozíciókhoz
                 segments.push((Math.random() * circ + shift) % circ);
             }
             segments.sort((a, b) => a - b);
@@ -115,6 +113,7 @@ function generateVinyl() {
     return svg;
 }
 
+// MUSIC CARD CREATOR
 function createCard(song, isBack = false) {
     const card = document.createElement('div');
     card.className = `card ${isBack ? 'back' : 'front'}`;
@@ -142,39 +141,72 @@ function createCard(song, isBack = false) {
     return card;
 }
 
+// TOKEN CARD CREATOR
+function createTokenCard(config) {
+    const card = document.createElement('div');
+    card.className = `card token`;
+    // Vinyl bg + Centered Text
+    card.innerHTML = `
+        <div class="vinyl-bg">${generateVinyl()}</div>
+        <div class="token-content">
+            <div class="token-main">${config.mainText}</div>
+            ${config.subText ? `<div class="token-sub">${config.subText}</div>` : ''}
+        </div>
+    `;
+    return card;
+}
+
+
 export function renderPreviewPair(container, song) {
-    if (!container || !song) return;
+    if (!container) return;
+    const isTokenMode = document.getElementById('mode-token')?.checked;
     container.innerHTML = '';
-    [false, true].forEach(isBack => {
-        const wrap = document.createElement('div');
-        wrap.className = 'card-wrapper';
-        const card = createCard(song, isBack);
-        wrap.appendChild(card);
-        container.appendChild(wrap);
-        if (!isBack) {
-            adjustText(card.querySelector('.artist'));
-            adjustText(card.querySelector('.title'), true);
+
+    if (isTokenMode) {
+        // TOKEN MODE: Preview shows Front and Back (Identical)
+        const config = {
+            mainText: document.getElementById('token-main-text').value || "TOKEN",
+            subText: document.getElementById('token-sub-text').value || ""
+        };
+        
+        // Show 2 identical cards
+        for(let i=0; i<2; i++) {
+             const wrap = document.createElement('div');
+             wrap.className = 'card-wrapper';
+             const card = createTokenCard(config);
+             wrap.appendChild(card);
+             container.appendChild(wrap);
+             adjustText(card.querySelector('.token-main'));
+             adjustText(card.querySelector('.token-sub'));
         }
-    });
+
+    } else {
+        // MUSIC MODE: Front and Back
+        if (!song) return;
+        [false, true].forEach(isBack => {
+            const wrap = document.createElement('div');
+            wrap.className = 'card-wrapper';
+            const card = createCard(song, isBack);
+            wrap.appendChild(card);
+            container.appendChild(wrap);
+            if (!isBack) {
+                adjustText(card.querySelector('.artist'));
+                adjustText(card.querySelector('.title'), true);
+            }
+        });
+    }
 }
 
 export function renderAllPages(container, data) {
-    if (!container || !data || data.length === 0) return;
+    if (!container) return;
+    const isTokenMode = document.getElementById('mode-token')?.checked;
+    
+    // Safety check for Music Mode
+    if (!isTokenMode && (!data || data.length === 0)) return;
+
     container.innerHTML = '';
     const paper = document.getElementById('paper-size').value;
     const cardSizeMm = parseFloat(document.getElementById('card-size').value) || 46;
-    const isPrinting = window.matchMedia('print').matches; // Ez JS-ben nem mindig reaktív, de a logika: 
-    // Grid View-ban (képernyőn) limitálunk. 
-    // Mivel a nyomtatást külön gomb indítja, ott majd felülbíráljuk, 
-    // de egyelőre a képernyős megjelenítéshez feltételezünk egy limitet, 
-    // kivéve ha a hívó expliciten jelzi a teljes renderelést.
-    // A main.js-ben a 'print-button' kezeli a teljes renderelést.
-    
-    // De itt egyszerűsítünk: Ha a container ID-je 'print-area' ÉS NEM nyomtatunk épp,
-    // akkor limitáljuk. Viszont a main.js meghívja a renderelést.
-    // Megoldás: Adunk egy paramétert a függvénynek vagy a main.js-ben szűrünk.
-    // Itt a legbiztosabb: Ha a body nem 'printing' állapotú (amit majd a main.js rak rá),
-    // akkor vágjuk az adatot. De a 'grid-view-active' alatt látni akarjuk a mintát.
     
     const pW = paper === 'A3' ? 277 : 190; 
     const pH = paper === 'A3' ? 400 : 277; 
@@ -185,46 +217,73 @@ export function renderAllPages(container, data) {
 
     if (cols < 1) return;
 
-    // LIMIT LOGIKA: Ha a body-n nincs 'is-printing' osztály, akkor csak 1 lapnyi adatot dolgozunk fel.
-    // (Azaz 1 front + 1 back page)
-    let processData = data;
-    if (!document.body.classList.contains('is-printing')) {
-        processData = data.slice(0, perPage); 
-    }
+    if (isTokenMode) {
+        // TOKEN MODE GENERATION: Fill 1 page (Front) + 1 page (Back/Duplicate)
+        // User requested "teli oldal". We generate 1 full page.
+        // Actually, for tokens, front and back are same. 
+        // We'll generate a pair of pages (Front Page, Back Page) where both are full of tokens.
+        
+        const tokenConfig = {
+            mainText: document.getElementById('token-main-text').value || "TOKEN",
+            subText: document.getElementById('token-sub-text').value || ""
+        };
 
-    for (let i = 0; i < processData.length; i += perPage) {
-        const chunk = processData.slice(i, i + perPage);
+        const page = document.createElement('div');
+        page.className = `page-container ${paper}`;
+        page.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
         
-        // ELŐLAPOK
-        const frontPage = document.createElement('div');
-        frontPage.className = `page-container ${paper}`;
-        frontPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
-        
-        chunk.forEach(song => {
-            const wrap = document.createElement('div');
-            wrap.className = 'card-wrapper';
-            const card = createCard(song);
-            wrap.appendChild(card);
-            frontPage.appendChild(wrap);
-            adjustText(card.querySelector('.artist'));
-            adjustText(card.querySelector('.title'), true);
-        });
-        container.appendChild(frontPage);
+        for(let i=0; i<perPage; i++) {
+             const wrap = document.createElement('div');
+             wrap.className = 'card-wrapper';
+             const card = createTokenCard(tokenConfig);
+             wrap.appendChild(card);
+             page.appendChild(wrap);
+             adjustText(card.querySelector('.token-main'));
+             adjustText(card.querySelector('.token-sub'));
+        }
+        container.appendChild(page);
 
-        // HÁTLAPOK
-        const backPage = document.createElement('div');
-        backPage.className = `page-container ${paper}`;
-        backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
-        
-        for (let r = 0; r < chunk.length; r += cols) {
-            const rowSongs = chunk.slice(r, r + cols);
-            rowSongs.reverse().forEach(song => {
+    } else {
+        // MUSIC MODE GENERATION (Existing Logic)
+        let processData = data;
+        if (!document.body.classList.contains('is-printing')) {
+            processData = data.slice(0, perPage); 
+        }
+
+        for (let i = 0; i < processData.length; i += perPage) {
+            const chunk = processData.slice(i, i + perPage);
+            
+            // FRONT
+            const frontPage = document.createElement('div');
+            frontPage.className = `page-container ${paper}`;
+            frontPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
+            
+            chunk.forEach(song => {
                 const wrap = document.createElement('div');
                 wrap.className = 'card-wrapper';
-                wrap.appendChild(createCard(song, true));
-                backPage.appendChild(wrap);
+                const card = createCard(song);
+                wrap.appendChild(card);
+                frontPage.appendChild(wrap);
+                adjustText(card.querySelector('.artist'));
+                adjustText(card.querySelector('.title'), true);
             });
+            container.appendChild(frontPage);
+
+            // BACK
+            const backPage = document.createElement('div');
+            backPage.className = `page-container ${paper}`;
+            backPage.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
+            
+            for (let r = 0; r < chunk.length; r += cols) {
+                const rowSongs = chunk.slice(r, r + cols);
+                rowSongs.reverse().forEach(song => {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'card-wrapper';
+                    wrap.appendChild(createCard(song, true));
+                    backPage.appendChild(wrap);
+                });
+            }
+            container.appendChild(backPage);
         }
-        container.appendChild(backPage);
     }
 }

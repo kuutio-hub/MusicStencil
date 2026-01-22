@@ -44,11 +44,28 @@ body {
 #settings-panel header { padding: 25px 20px; border-bottom: 1px solid #222; background: #000; }
 .logo { font-weight: 900; font-size: 1.4rem; color: var(--spotify-green); display: flex; align-items: center; gap: 12px; margin-bottom: 20px; letter-spacing: -0.5px; }
 
+/* MODE SWITCHER */
+.mode-switcher-container {
+    display: flex; background: #1a1a1a; border-radius: 6px; padding: 4px; margin-bottom: 15px; border: 1px solid #333;
+}
+.mode-option { flex: 1; position: relative; }
+.mode-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+.mode-option label {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; padding: 8px 0; font-size: 0.8rem; font-weight: 700;
+    color: #666; cursor: pointer; border-radius: 4px; transition: all 0.2s;
+}
+.mode-option input:checked + label {
+    background: var(--spotify-green); color: #000;
+}
+
 .top-actions { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
 .stats-bar { font-size: 0.75rem; color: #aaa; background: #1a1a1a; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
 .stats-bar i { color: var(--spotify-green); }
 
 .actions.main-actions { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 8px; }
+.mode-specific-actions { display: contents; } /* Allows grid to work on children */
+
 .action-btn { 
     background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 5px; border-radius: 6px; 
     cursor: pointer; font-size: 0.7rem; font-weight: 700; text-align: center; display: flex; 
@@ -106,7 +123,7 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 #preview-area { 
     display: flex; align-items: center; justify-content: center; 
     min-height: 100%; 
-    gap: 0; /* Szoros illeszkedés */
+    gap: 0; 
     padding: 40px; cursor: zoom-in; 
     flex-wrap: wrap; 
 }
@@ -114,10 +131,19 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 #preview-area .card-wrapper { 
     width: var(--card-size); height: var(--card-size); 
     transform: scale(2); /* Alap nagyítás */
-    margin: 30px; /* Hely a scale miatt */
+    
+    /* FIX: Hogy ne másszanak egymásra, a marginnak kompenzálnia kell a scale-t */
+    /* A scale 2 azt jelenti, hogy 100% extra hely kell mindkét oldalon 50-50%-ban */
+    /* Biztonsági okból 60%-ot használunk */
+    margin: calc(var(--card-size) * 0.6); 
+    
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#preview-area.zoomed .card-wrapper { transform: scale(3.5); margin: 60px; }
+#preview-area.zoomed .card-wrapper { 
+    transform: scale(3.5); 
+    /* Zoomoláskor még nagyobb hely kell */
+    margin: calc(var(--card-size) * 1.5);
+}
 
 /* Card alapok */
 .card-wrapper { width: var(--card-size); height: var(--card-size); position: relative; flex-shrink: 0; }
@@ -127,6 +153,39 @@ select.full-width { width: 100%; margin-bottom: 15px; }
     border: 1px solid var(--primary-color);
 }
 
+/* TOKEN STYLE */
+.card.token .token-content {
+    position: absolute;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    text-align: center;
+}
+
+.token-main {
+    font-family: var(--font-family);
+    font-size: var(--font-size-year);
+    font-weight: var(--font-weight-year);
+    color: #000;
+    text-shadow: var(--text-shadow-year);
+    line-height: 1.1;
+    margin-bottom: 5px;
+}
+
+.token-sub {
+    font-family: var(--font-family);
+    font-size: var(--font-size-artist);
+    font-weight: var(--font-weight-artist);
+    text-transform: var(--text-transform-artist);
+    color: #000;
+    text-shadow: var(--text-shadow-artist);
+    line-height: 1.1;
+}
+
 /* 4-WAY BORDER LOGIC */
 body.border-mode-front .card.back,
 body.border-mode-back .card.front,
@@ -134,7 +193,7 @@ body.border-mode-none .card {
     border-color: transparent !important;
 }
 
-/* TEXT ELEMENTS */
+/* TEXT ELEMENTS (Music Mode) */
 .year { font-family: var(--font-family); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: #000; text-shadow: var(--text-shadow-year); position: absolute; z-index: 5; pointer-events: none; }
 .artist { position: absolute; top: var(--artist-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); text-shadow: var(--text-shadow-artist); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 .title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
@@ -211,14 +270,14 @@ body.grid-view-active #preview-area { display: none; }
    Ez mostantól érvényes a sima Preview-ra is (#preview-area), 
    nem csak a Grid View-ra, a felhasználó kérésére.
 */
-.card, .card-wrapper, .page-container, .year, .artist, .title, .code1, .code2 { 
+.card, .card-wrapper, .page-container, .year, .artist, .title, .code1, .code2, .token-main, .token-sub { 
     box-shadow: none !important; 
     text-shadow: none !important; 
     filter: none !important;
 }
 
 /* Extra override a glow-hoz, ha valahol bekapcsolva maradna */
-.year, .artist, .title { text-shadow: none !important; }
+.year, .artist, .title, .token-main, .token-sub { text-shadow: none !important; }
 
 /* Grid View specifikus */
 body.grid-view-active .card { 
@@ -232,7 +291,7 @@ body.grid-view-active .card {
         box-shadow: none !important;
         filter: none !important;
     }
-    .year, .artist, .title, .code1, .code2 { 
+    .year, .artist, .title, .code1, .code2, .token-main, .token-sub { 
         text-shadow: none !important; 
         color: #000000 !important;
     }

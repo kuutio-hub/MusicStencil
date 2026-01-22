@@ -17,8 +17,11 @@ const App = {
                 (d) => this.handleDataLoaded(d)
             );
             
-            if (this.data && this.data.length > 0) {
-                this.updateStats(); // Initially might show visibility:hidden or 0
+            // Check initial mode
+            const isToken = document.getElementById('mode-token')?.checked;
+            
+            if (isToken || (this.data && this.data.length > 0)) {
+                this.updateStats(); 
                 this.renderPrintView();
                 this.startPreviewCycle();
                 
@@ -51,23 +54,37 @@ const App = {
     },
 
     updateStats() {
-        updateRecordCount(this.data.length, this.isExternalDataLoaded);
+        // In token mode, stats are irrelevant or just "Full Page"
+        const isToken = document.getElementById('mode-token')?.checked;
+        if (isToken) {
+             // Maybe hide stats or show something else? For now just keep last music stats or 0
+        } else {
+             updateRecordCount(this.data.length, this.isExternalDataLoaded);
+        }
     },
 
     renderPrintView() {
-        if (!this.data || this.data.length === 0) return;
+        const isToken = document.getElementById('mode-token')?.checked;
+        if (!isToken && (!this.data || this.data.length === 0)) return;
+        
         const printArea = document.getElementById('print-area');
         renderAllPages(printArea, this.data);
     },
 
     showNextPreview() {
-        if (!this.data || this.data.length === 0) return;
-        this.currentPreviewIndex = (this.currentPreviewIndex + 1) % this.data.length;
+        const isToken = document.getElementById('mode-token')?.checked;
+        if (!isToken && (!this.data || this.data.length === 0)) return;
+        
+        if (!isToken) {
+            this.currentPreviewIndex = (this.currentPreviewIndex + 1) % this.data.length;
+        }
         this.refreshCurrentPreview();
     },
 
     refreshCurrentPreview() {
-        if (!this.data || this.data.length === 0) return;
+        const isToken = document.getElementById('mode-token')?.checked;
+        if (!isToken && (!this.data || this.data.length === 0)) return;
+        
         const previewArea = document.getElementById('preview-area');
         renderPreviewPair(previewArea, this.data[this.currentPreviewIndex]);
     },

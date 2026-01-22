@@ -44,6 +44,32 @@ export function applyAllStyles() {
     });
 }
 
+function updateModeVisibility() {
+    const isToken = document.getElementById('mode-token').checked;
+    
+    // Music vs Token specific elements
+    document.getElementById('music-actions').style.display = isToken ? 'none' : 'contents';
+    document.getElementById('token-settings-group').style.display = isToken ? 'block' : 'none';
+    
+    // Hide music-only fields in typography/layout
+    document.querySelectorAll('.music-only-option').forEach(el => {
+        el.style.display = isToken ? 'none' : (el.classList.contains('typo-tools') ? 'flex' : 'block');
+    });
+
+    document.querySelectorAll('.token-only-msg').forEach(el => {
+        el.style.display = isToken ? 'block' : 'none';
+    });
+
+    // Update body class for styling if needed
+    if (isToken) {
+        document.body.classList.remove('app-mode-music');
+        document.body.classList.add('app-mode-token');
+    } else {
+        document.body.classList.remove('app-mode-token');
+        document.body.classList.add('app-mode-music');
+    }
+}
+
 export function initializeUI(onSettingsChange, onDataLoaded) {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -52,14 +78,30 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             Object.entries(settings).forEach(([id, value]) => {
                 const el = document.getElementById(id);
                 if (el) {
-                    if (el.type === 'checkbox') el.checked = value;
-                    else el.value = value;
+                    if (el.type === 'radio' && el.name === 'app-mode') {
+                        // Skip radios here, handle separately or ensure id matches
+                        if(el.id === 'mode-music' && value === 'music') el.checked = true;
+                        if(el.id === 'mode-token' && value === 'token') el.checked = true;
+                    } else if (el.type === 'checkbox') {
+                        el.checked = value;
+                    } else {
+                        el.value = value;
+                    }
                 }
             });
         } catch (e) { console.error("Load error", e); }
     }
 
     applyAllStyles();
+    updateModeVisibility();
+
+    // Mode Switcher Listeners
+    document.querySelectorAll('input[name="app-mode"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            updateModeVisibility();
+            if (onSettingsChange) onSettingsChange(true);
+        });
+    });
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.onclick = () => {
@@ -71,9 +113,17 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
 
     document.getElementById('settings-panel').oninput = (e) => {
         applyAllStyles();
+        
+        // Save Settings
         const settings = {};
         document.querySelectorAll('#settings-panel input, #settings-panel select').forEach(el => {
-            if (el.id) settings[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+             if (el.id) {
+                 if(el.type === 'radio') {
+                     if(el.checked) settings['app-mode-val'] = el.value; // Helper
+                 } else {
+                     settings[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+                 }
+             }
         });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         
@@ -81,9 +131,10 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'paper-size', 'card-size', 'qr-size-percent', 'page-padding',
             'vinyl-spacing', 'vinyl-count', 'vinyl-variate',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
-            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr'
+            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr',
+            'token-main-text', 'token-sub-text' // Token triggers
         ];
-        if (redrawIds.includes(e.target.id)) {
+        if (redrawIds.includes(e.target.id) || e.target.type === 'radio') {
              if (onSettingsChange) onSettingsChange(true); 
         } else {
              if (onSettingsChange) onSettingsChange(false);
@@ -98,25 +149,21 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     document.getElementById('view-toggle-button').onclick = () => {
         document.body.classList.toggle('grid-view-active');
         document.body.classList.remove('is-printing');
-        // Trigger resize event to force redraw check if needed
         window.dispatchEvent(new Event('resize'));
-        // Force redraw to apply limit
         if (onSettingsChange) onSettingsChange(true);
     };
 
     document.getElementById('print-button').onclick = () => {
         document.body.classList.add('grid-view-active');
-        document.body.classList.add('is-printing'); // Jelző a teljes rendereléshez
+        document.body.classList.add('is-printing'); 
         
-        // Render full data
         if (onSettingsChange) onSettingsChange(true);
 
         setTimeout(() => {
             window.print();
-            // Cleanup after print dialog closes (approximate)
             setTimeout(() => {
                 document.body.classList.remove('is-printing');
-                if (onSettingsChange) onSettingsChange(true); // Vissza a limitált nézethez
+                if (onSettingsChange) onSettingsChange(true); 
             }, 1000);
         }, 800);
     };
