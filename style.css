@@ -100,22 +100,43 @@ body {
 .input-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .input-row label { font-size: 0.8rem; color: #bbb; flex: 1; }
 
-/* COMPACT TYPO GRID CLEANUP */
-.typo-grid { display: grid; grid-template-columns: 1fr 60px 100px; gap: 10px; align-items: center; }
-.typo-header { font-size: 0.6rem; color: #666; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
-.typo-label { font-size: 0.75rem; color: #ccc; }
-.tiny-input { width: 100% !important; padding: 4px !important; text-align: center; }
-.tiny-select { width: 100% !important; padding: 4px !important; font-size: 0.7rem !important; }
+/* PROGRESSIVE UI (SUB-PANELS) */
+.sub-panel {
+    background: #111;
+    border-left: 2px solid #333;
+    padding: 10px 10px 10px 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: slideDown 0.2s ease-out;
+}
+.sub-panel.hidden { display: none; }
 
-/* Improved Typo Tools */
-.typo-tools { display: flex; gap: 8px; justify-content: space-between; align-items: center; width: 100%; }
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* TYPOGRAPHY LIST (New Layout) */
+.typo-list { display: flex; flex-direction: column; gap: 15px; }
+.typo-item { background: #111; border-radius: 4px; padding: 10px; border: 1px solid #222; }
+.typo-main-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+.typo-label { font-size: 0.75rem; color: #ccc; font-weight: 700; width: 60px; }
+.typo-options { display: flex; gap: 10px; align-items: center; }
+
+.tiny-input { width: 40px !important; padding: 4px !important; text-align: center; }
+.tiny-select { width: 50px !important; padding: 4px !important; font-size: 0.7rem !important; }
+
 .checkbox-container.mini {
-    display: flex; align-items: center; gap: 4px; cursor: pointer; color: #888; font-size: 0.7rem; font-weight: 600;
+    display: flex; align-items: center; gap: 4px; cursor: pointer; color: #888; font-size: 0.7rem; font-weight: 600; white-space: nowrap;
 }
 .checkbox-container.mini input { margin: 0; }
 .checkbox-container.mini:hover { color: #fff; }
-.checkbox-container.mini input:checked + span, /* If wrapped in span */
 .checkbox-container.mini input:checked { accent-color: var(--spotify-green); }
+.checkbox-container.mini input:checked + span { color: var(--spotify-green); }
 
 .dual-input { display: flex; align-items: center; gap: 5px; }
 .dual-input span { font-size: 0.7rem; color: #555; }

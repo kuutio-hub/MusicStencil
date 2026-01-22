@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v659_settings';
+const STORAGE_KEY = 'musicstencil_v120_settings';
 
 // Helper to convert HEX to RGBA
 function hexToRgba(hex, alphaPercent) {
@@ -48,6 +48,23 @@ export function applyAllStyles() {
         document.documentElement.style.setProperty(conf.var, val);
     });
 
+    // GLOW LOGIC (Advanced) - Year
+    const yearGlowActive = document.getElementById('glow-year')?.checked;
+    if (yearGlowActive) {
+        const color = document.getElementById('glow-year-color').value;
+        const blur = document.getElementById('glow-year-blur').value;
+        // Construct text-shadow: h v blur color
+        document.documentElement.style.setProperty('--text-shadow-year', `0 0 ${blur}px ${color}`);
+    } else {
+        document.documentElement.style.setProperty('--text-shadow-year', 'none');
+    }
+
+    // GLOW LOGIC (Legacy/Basic) - Artist & Title (Uses default fallback logic for now, or none)
+    // Currently only Year has advanced controls in UI
+    document.documentElement.style.setProperty('--text-shadow-artist', 'none');
+    document.documentElement.style.setProperty('--text-shadow-title', 'none');
+
+
     // Code Positioning
     const codePos = document.getElementById('code-position')?.value || 'center';
     document.body.classList.remove('code-pos-center', 'code-pos-corner');
@@ -58,22 +75,27 @@ export function applyAllStyles() {
     document.body.classList.remove('border-mode-both', 'border-mode-front', 'border-mode-back', 'border-mode-none');
     document.body.classList.add(`border-mode-${borderMode}`);
 
-    // Glow (Music Cards)
-    ['year', 'artist', 'title'].forEach(g => {
-        const chk = document.getElementById(`glow-${g}`);
-        const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.3)` : 'none';
-        document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
-    });
-
     // Token Glow (Solid Stroke Effect)
     const tokenGlowActive = document.getElementById('token-glow-active')?.checked;
-    const tokenGlowSize = document.getElementById('token-glow-size')?.value || 0;
     
     if (!tokenGlowActive) {
         document.documentElement.style.setProperty('--token-glow-size', '0px');
     } else {
         // Just enforce what the input says (unit is handled by data-unit in general loop above)
     }
+
+    // Toggle Visibility Logic
+    document.querySelectorAll('[data-toggle-target]').forEach(toggle => {
+        const targetId = toggle.dataset.toggleTarget;
+        const target = document.getElementById(targetId);
+        if (target) {
+            if (toggle.checked) {
+                target.classList.remove('hidden');
+            } else {
+                target.classList.add('hidden');
+            }
+        }
+    });
 }
 
 function updateModeVisibility() {
@@ -85,7 +107,7 @@ function updateModeVisibility() {
     
     // Hide music-only fields in typography/layout
     document.querySelectorAll('.music-only-option').forEach(el => {
-        el.style.display = isToken ? 'none' : (el.classList.contains('typo-tools') ? 'flex' : 'block');
+        el.style.display = isToken ? 'none' : (el.classList.contains('typo-item') ? 'block' : 'flex');
     });
 
     document.querySelectorAll('.token-only-msg').forEach(el => {
@@ -178,7 +200,8 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr', 'qr-border-width', 'qr-border-color',
             'code-position', 
             'token-main-text', 'token-sub-text',
-            'token-glow-active', 'token-glow-color', 'token-glow-size' 
+            'token-glow-active', 'token-glow-color', 'token-glow-size',
+            'glow-year', 'glow-year-color', 'glow-year-blur'
         ];
         if (redrawIds.includes(e.target.id) || e.target.type === 'radio') {
              if (onSettingsChange) onSettingsChange(true); 

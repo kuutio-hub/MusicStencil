@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v6.10.0 - Auto Code Rotation & Print Fixes. Resolved phantom print pages, streamlined typography UI, and automated code orientation/margins.",
+  "description": "MusicStencil v1.2.0 - Version Reset & Progressive UI. Normalized versioning. Implemented expanding menus for cleaner UI, advanced text glow settings (color/blur), and auto-orientation logic.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v6.10.0"
+  "name": "MusicStencil v1.2.0"
 }
