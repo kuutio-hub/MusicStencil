@@ -48,9 +48,6 @@ export function applyAllStyles() {
         document.documentElement.style.setProperty(conf.var, val);
     });
 
-    // Flags & Modes
-    document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
-    
     // Code Positioning
     const codePos = document.getElementById('code-position')?.value || 'center';
     document.body.classList.remove('code-pos-center', 'code-pos-corner');
@@ -130,6 +127,18 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     applyAllStyles();
     updateModeVisibility();
 
+    // Code Position Change Logic (Auto Margins)
+    document.getElementById('code-position').addEventListener('change', (e) => {
+        const marginInput = document.getElementById('code-side-margin');
+        if (e.target.value === 'center') {
+            marginInput.value = -1;
+        } else {
+            marginInput.value = 2;
+        }
+        applyAllStyles();
+        if (onSettingsChange) onSettingsChange(true);
+    });
+
     // Mode Switcher Listeners
     document.querySelectorAll('input[name="app-mode"]').forEach(radio => {
         radio.addEventListener('change', () => {
@@ -167,7 +176,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'vinyl-spacing', 'vinyl-count', 'vinyl-variate', 'vinyl-thickness', 'vinyl-opacity',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
             'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr', 'qr-border-width', 'qr-border-color',
-            'code-position', // Trigger redraw for class changes? No, applyAllStyles handles it, redraw not needed usually but safe to do
+            'code-position', 
             'token-main-text', 'token-sub-text',
             'token-glow-active', 'token-glow-color', 'token-glow-size' 
         ];
@@ -206,7 +215,6 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     };
 
     const previewArea = document.getElementById('preview-area');
-    // Removed old zoomed logic here, moved to main.js
 
     document.getElementById('reset-settings').onclick = () => {
         if (confirm("Minden beállítást alaphelyzetbe állítasz?")) {

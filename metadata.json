@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v6.9.0 - Individual Zoom & Code Positioning. Click-to-zoom specific cards, corner alignment for codes, and white QR borders.",
+  "description": "MusicStencil v6.10.0 - Auto Code Rotation & Print Fixes. Resolved phantom print pages, streamlined typography UI, and automated code orientation/margins.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v6.9.0"
+  "name": "MusicStencil v6.10.0"
 }

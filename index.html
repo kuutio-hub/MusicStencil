@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <!-- TYPOGRAPHY COMPACT -->
+            <!-- TYPOGRAPHY REORGANIZED -->
             <div class="tab-pane" id="tab-typography">
                 <div class="settings-section">
                     <h3>Tipográfia</h3>
@@ -165,8 +165,8 @@
                         <div class="typo-label">Év / Fő</div>
                         <div><input type="number" id="font-size-year-input" value="30" class="tiny-input" data-unit="pt" data-css-var="--font-size-year"></div>
                         <div class="typo-tools">
-                            <label title="Vastag"><input type="checkbox" id="bold-year" checked> <b>B</b></label>
-                            <label title="Glow"><input type="checkbox" id="glow-year"> <i class="fa-regular fa-sun"></i></label>
+                            <label class="checkbox-container mini"><input type="checkbox" id="bold-year" checked> Bold</label>
+                            <label class="checkbox-container mini"><input type="checkbox" id="glow-year"> Glow</label>
                             <input type="hidden" id="weight-year" value="800">
                         </div>
 
@@ -174,7 +174,7 @@
                         <div class="typo-label">Előadó / Al</div>
                         <div><input type="number" id="font-size-artist-input" value="12" class="tiny-input" step="0.5" data-unit="pt" data-css-var="--font-size-artist"></div>
                         <div class="typo-tools">
-                            <label title="Vastag"><input type="checkbox" id="bold-artist" checked> <b>B</b></label>
+                            <label class="checkbox-container mini"><input type="checkbox" id="bold-artist" checked> Bold</label>
                             <select id="text-transform-artist" class="tiny-select" data-css-var="--text-transform-artist">
                                 <option value="none">Aa</option>
                                 <option value="uppercase">AA</option>
@@ -186,7 +186,7 @@
                         <div class="typo-label music-only-option">Cím</div>
                         <div class="music-only-option"><input type="number" id="font-size-title-input" value="10" class="tiny-input" step="0.5" data-unit="pt" data-css-var="--font-size-title"></div>
                         <div class="typo-tools music-only-option">
-                            <label title="Vastag"><input type="checkbox" id="bold-title" checked> <b>B</b></label>
+                            <label class="checkbox-container mini"><input type="checkbox" id="bold-title" checked> Bold</label>
                             <select id="text-transform-title" class="tiny-select" data-css-var="--text-transform-title">
                                 <option value="none">Aa</option>
                                 <option value="uppercase">AA</option>
@@ -214,17 +214,16 @@
                             <div class="input-row">
                                 <label>Kód Pozíció</label>
                                 <select id="code-position" class="full-width" style="margin-bottom:0;">
-                                    <option value="center" selected>Közép</option>
-                                    <option value="corner">Sarok</option>
+                                    <option value="center" selected>Közép (-1mm)</option>
+                                    <option value="corner">Sarok (+2mm)</option>
                                 </select>
                             </div>
                             <div class="input-row">
-                                <label>Kód margó (mm)</label>
-                                <input type="number" id="code-side-margin" value="0" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
+                                <label>Kód eltolás (mm)</label>
+                                <input type="number" id="code-side-margin" value="-1" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
                             </div>
                             <div class="row wraps">
                                 <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Vastag</label>
-                                <label class="checkbox-container"><input type="checkbox" id="rotate-codes" checked> 90° forgatás</label>
                             </div>
                         </div>
                         <div class="token-only-msg" style="display:none; color: #888; font-size: 0.8rem; font-style: italic;">
@@ -322,7 +321,7 @@
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v6.9.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v6.10.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 

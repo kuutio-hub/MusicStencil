@@ -4,7 +4,7 @@
     --card-padding: 4px;
     --artist-margin: 3mm;
     --title-margin: 3mm;
-    --code-side-margin: 0mm;
+    --code-side-margin: -1mm; /* Default for center */
     --page-padding: 10mm;
     
     --primary-color: #000000;
@@ -100,17 +100,22 @@ body {
 .input-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .input-row label { font-size: 0.8rem; color: #bbb; flex: 1; }
 
-/* COMPACT TYPO GRID */
-.typo-grid { display: grid; grid-template-columns: 1fr 60px 80px; gap: 10px; align-items: center; }
+/* COMPACT TYPO GRID CLEANUP */
+.typo-grid { display: grid; grid-template-columns: 1fr 60px 100px; gap: 10px; align-items: center; }
 .typo-header { font-size: 0.6rem; color: #666; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
 .typo-label { font-size: 0.75rem; color: #ccc; }
 .tiny-input { width: 100% !important; padding: 4px !important; text-align: center; }
 .tiny-select { width: 100% !important; padding: 4px !important; font-size: 0.7rem !important; }
-.typo-tools { display: flex; gap: 8px; justify-content: flex-end; }
-.typo-tools label { display: flex; align-items: center; gap: 4px; cursor: pointer; color: #888; font-size: 0.8rem; }
-.typo-tools input[type="checkbox"] { width: auto !important; margin: 0; }
-.typo-tools label:hover { color: #fff; }
-.typo-tools input:checked + b, .typo-tools input:checked + i { color: var(--spotify-green); }
+
+/* Improved Typo Tools */
+.typo-tools { display: flex; gap: 8px; justify-content: space-between; align-items: center; width: 100%; }
+.checkbox-container.mini {
+    display: flex; align-items: center; gap: 4px; cursor: pointer; color: #888; font-size: 0.7rem; font-weight: 600;
+}
+.checkbox-container.mini input { margin: 0; }
+.checkbox-container.mini:hover { color: #fff; }
+.checkbox-container.mini input:checked + span, /* If wrapped in span */
+.checkbox-container.mini input:checked { accent-color: var(--spotify-green); }
 
 .dual-input { display: flex; align-items: center; gap: 5px; }
 .dual-input span { font-size: 0.7rem; color: #555; }
@@ -209,61 +214,40 @@ body.border-mode-none .card {
 .artist { position: absolute; top: var(--artist-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); text-shadow: var(--text-shadow-artist); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 .title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 
-/* CODES POSITIONING */
+/* CODES POSITIONING - AUTOMATIC ROTATION */
 .code1, .code2 { 
     position: absolute; 
     font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; 
 }
 
-/* POSITION: CENTER (Default) */
-body.code-pos-center .code1, body.code-pos-center .code2 {
-    top: 50%;
-    transform: translateY(-50%);
-}
-body.code-pos-center .code1 { left: var(--code-side-margin); }
-body.code-pos-center .code2 { right: var(--code-side-margin); }
-
-/* POSITION: CORNER */
-body.code-pos-corner .code1, body.code-pos-corner .code2 {
-    top: auto;
-    bottom: var(--code-side-margin);
-    transform: none;
-}
-body.code-pos-corner .code1 { left: var(--code-side-margin); }
-body.code-pos-corner .code2 { right: var(--code-side-margin); }
-
-
-/* ROTATED CODES + CENTER */
-body.code-pos-center.codes-rotated .code1 { 
-    left: var(--code-side-margin); right: auto; top: 50%; bottom: auto;
+/* POSITION: CENTER -> Always Rotated -90deg */
+body.code-pos-center .code1 {
+    top: 50%; bottom: auto;
+    left: var(--code-side-margin); right: auto;
     transform: translateY(-50%) rotate(-90deg);
     transform-origin: center center;
     text-align: center;
 }
-body.code-pos-center.codes-rotated .code2 { 
-    right: var(--code-side-margin); left: auto; top: 50%; bottom: auto;
-    transform: translateY(-50%) rotate(-90deg); 
+body.code-pos-center .code2 {
+    top: 50%; bottom: auto;
+    right: var(--code-side-margin); left: auto;
+    transform: translateY(-50%) rotate(-90deg);
     transform-origin: center center;
     text-align: center;
 }
 
-/* ROTATED CODES + CORNER */
-/* When rotated in corner, we still want them near the vertical edges, but shifted down to the "corner" */
-body.code-pos-corner.codes-rotated .code1 { 
-    left: var(--code-side-margin); 
-    bottom: var(--code-side-margin); 
-    top: auto;
-    transform: rotate(-90deg);
-    transform-origin: center center;
-    text-align: center;
+/* POSITION: CORNER -> Always Horizontal (0deg) */
+body.code-pos-corner .code1 {
+    top: auto; bottom: var(--code-side-margin);
+    left: var(--code-side-margin); right: auto;
+    transform: none;
+    text-align: left;
 }
-body.code-pos-corner.codes-rotated .code2 { 
-    right: var(--code-side-margin); 
-    bottom: var(--code-side-margin);
-    top: auto;
-    transform: rotate(-90deg);
-    transform-origin: center center;
-    text-align: center;
+body.code-pos-corner .code2 {
+    top: auto; bottom: var(--code-side-margin);
+    right: var(--code-side-margin); left: auto;
+    transform: none;
+    text-align: right;
 }
 
 .vinyl-bg { position: absolute; width: 98%; height: 98%; opacity: 0.8; display: flex; align-items: center; justify-content: center; pointer-events: none; }
@@ -304,6 +288,13 @@ body.grid-view-active #preview-area { display: none; }
     margin: 40px auto; box-sizing: border-box; page-break-after: always; 
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
+
+/* FIX GHOST PAGE: Remove break from last page */
+.page-container:last-child {
+    page-break-after: auto;
+    margin-bottom: 0;
+}
+
 .page-container.A3 { width: 297mm; height: 420mm; }
 
 .card, .card-wrapper, .page-container, .year, .artist, .title, .code1, .code2, .token-main, .token-sub { 
