@@ -69,49 +69,163 @@ function generateVinyl() {
     const variate = document.getElementById('vinyl-variate')?.checked;
 
     let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
-    let lastRandomShift = 0;
 
     for (let i = 0; i < grooveCount; i++) {
         const r = 48 - (i * spacing);
         if (r < 5) break;
 
-        const gCount = Math.floor(Math.random() * (gMax - gMin + 1)) + gMin;
         const circ = 2 * Math.PI * r;
-        const dash = [];
+        const gCount = Math.floor(Math.random() * (gMax - gMin + 1)) + gMin;
+        
+        let dashArray = [];
         
         if (gCount === 0) {
-            dash.push(circ, 0);
+            dashArray.push(circ, 0);
         } else {
-            let shift = Math.random() * circ;
-            if (Math.abs(shift - lastRandomShift) < (circ * 0.1)) {
-                 shift = (shift + (circ * 0.3)) % circ;
-            }
-            lastRandomShift = shift;
-
-            let segments = [];
-            for (let g = 0; g < gCount; g++) {
-                segments.push((Math.random() * circ + shift) % circ);
-            }
-            segments.sort((a, b) => a - b);
+            // ORGANIC GLITCH LOGIC: Random Angles
+            let cuts = [];
             
-            let lastPos = 0;
-            for (let p of segments) {
-                const randomWidthPercent = Math.random() * (gWidthMax - gWidthMin) + gWidthMin;
-                const gapWidth = circ * (randomWidthPercent / 100) / gCount; 
+            // Try to place glitches randomly
+            for (let g = 0; g < gCount * 2; g++) { // Try more times than needed (dart throwing)
+                if (cuts.length >= gCount) break;
+
+                const angle = Math.random() * 360; // Start angle in degrees
+                // Convert percentage width to degrees
+                const widthPercent = Math.random() * (gWidthMax - gWidthMin) + gWidthMin; 
+                const arcLength = (widthPercent / 100) * circ;
+                const angleSpan = (arcLength / circ) * 360;
+
+                // Check collision with existing cuts + random buffer
+                const buffer = 15 + Math.random() * 45; // Minimum 15 deg buffer, up to 60 deg
                 
-                const drawLen = Math.max(0, p - lastPos - (gapWidth / 2));
-                dash.push(drawLen, gapWidth);
-                lastPos = p + (gapWidth / 2);
+                let overlap = false;
+                for (let c of cuts) {
+                    // Simple radial overlap check handling 0-360 wrap
+                    let diff = Math.abs(c.angle - angle);
+                    if (diff > 180) diff = 360 - diff;
+                    
+                    if (diff < (c.span/2 + angleSpan/2 + buffer)) {
+                        overlap = true;
+                        break;
+                    }
+                }
+
+                if (!overlap) {
+                    cuts.push({ angle, span: angleSpan, arc: arcLength });
+                }
             }
-            const finalPart = Math.max(0, circ - lastPos);
-            if (finalPart > 0) dash.push(finalPart, 0);
+
+            // If no valid cuts found (unlikely but possible), full circle
+            if (cuts.length === 0) {
+                dashArray.push(circ, 0);
+            } else {
+                // Sort by angle to draw sequentially
+                cuts.sort((a, b) => a.angle - b.angle);
+
+                let currentPos = 0; // relative to 0 degrees (0 length)
+                
+                // Calculate dash array based on sorted cuts
+                // DashArray is: Draw, Gap, Draw, Gap...
+                // We need to convert angles to lengths on circumference starting from an arbitrary 0 point
+                // Actually, stroke-dasharray starts drawing at 3 o'clock usually.
+                // We can just simulate the gaps.
+                
+                // Let's normalize angles to length positions on the circle (0 to circ)
+                let cutSegments = cuts.map(c => {
+                    let startPos = (c.angle / 360) * circ;
+                    return { start: startPos, end: startPos + c.arc };
+                });
+
+                // Calculate segments between cuts
+                // We need to rotate the stroke so the first "Draw" starts correctly.
+                // Simpler: Just define gaps.
+                
+                // Let's assume we start drawing at 0.
+                // If first cut is at 10, we draw 10, then gap of cut width.
+                let lastEnd = 0;
+                
+                // Handle wrapping?
+                // Simplest way for dasharray: calculate lengths between cuts.
+                // However, the rotation is handled by SVG transform usually or we just need correct sequence.
+                
+                // Let's start the dasharray from the END of the last cut (conceptually) to handle wrapping simply,
+                // OR just rotate the circle element to align with the first non-cut area.
+                
+                // We will shift everything so the first draw happens at 0.
+                // Find a safe "Draw" spot.
+                
+                // Actually, let's keep it simple: 
+                // dashArray = [draw1, gap1, draw2, gap2...]
+                // Distance from Cut N end to Cut N+1 start = Draw.
+                // Length of Cut N+1 = Gap.
+                
+                for (let k = 0; k < cutSegments.length; k++) {
+                    let current = cutSegments[k];
+                    let next = cutSegments[(k + 1) % cutSegments.length];
+                    
+                    // Gap (Glitch) width
+                    let gap = current.end - current.start;
+                    
+                    // Draw width (distance to next cut)
+                    let draw = 0;
+                    if (k === cutSegments.length - 1) {
+                        // Last segment wrapping to first
+                        draw = (circ - current.end) + next.start;
+                    } else {
+                        draw = next.start - current.end;
+                    }
+                    
+                    // We need to add (Draw, Gap).
+                    // BUT stroke-dasharray starts with DRAW.
+                    // So we need to shift our perspective to start drawing AFTER a gap.
+                    // This is handled by stroke-dashoffset usually.
+                    
+                    // Let's just construct [Draw, Gap]...
+                    // and rotate the element so that "Draw" corresponds to the space after current cut.
+                }
+
+                // SIMPLIFIED ARRAY BUILDER
+                // Start from 0. Find first cut. Draw = cut.start - 0. Gap = cut.len.
+                // Next cut...
+                
+                let lastP = 0;
+                let dashAccumulator = [];
+                
+                cutSegments.forEach(cut => {
+                     let drawLen = cut.start - lastP;
+                     // If random angle generation caused overlap (shouldn't), clamp
+                     if(drawLen < 0) drawLen = 0; 
+                     
+                     let gapLen = cut.end - cut.start;
+                     
+                     dashAccumulator.push(drawLen); // Draw line
+                     dashAccumulator.push(gapLen);  // Gap (glitch)
+                     
+                     lastP = cut.end;
+                });
+                
+                // Close the loop
+                let finalDraw = circ - lastP;
+                if(finalDraw > 0) {
+                    // Combine final draw with first draw if array isn't empty
+                    if(dashAccumulator.length > 0) {
+                        dashAccumulator[0] += finalDraw;
+                    } else {
+                        dashAccumulator.push(finalDraw, 0);
+                    }
+                }
+                
+                dashArray = dashAccumulator;
+            }
         }
 
         const sw = variate ? (baseThickness * (0.6 + Math.random() * 0.8)) : baseThickness;
         const op = (opacityPercent / 100) * (0.12 + (i * (0.8 / grooveCount))); 
-        // Base opacity calculation * user opacity multiplier
+        
+        // Random rotation for the whole ring to break visual alignment further
+        const rot = Math.random() * 360;
 
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${op}" />`;
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dashArray.join(' ')}" opacity="${op}" transform="rotate(${rot} 50 50)" />`;
     }
     svg += `</svg>`;
     return svg;

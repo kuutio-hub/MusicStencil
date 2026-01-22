@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v130_settings';
+const STORAGE_KEY = 'musicstencil_v140_settings';
 
 // Helper to convert HEX to RGBA
 function hexToRgba(hex, alphaPercent) {
@@ -48,22 +48,17 @@ export function applyAllStyles() {
         document.documentElement.style.setProperty(conf.var, val);
     });
 
-    // GLOW LOGIC (Advanced) - Year
-    const yearGlowActive = document.getElementById('glow-year')?.checked;
-    if (yearGlowActive) {
-        const color = document.getElementById('glow-year-color').value;
-        const blur = document.getElementById('glow-year-blur').value;
-        // Construct text-shadow: h v blur color
-        document.documentElement.style.setProperty('--text-shadow-year', `0 0 ${blur}px ${color}`);
-    } else {
-        document.documentElement.style.setProperty('--text-shadow-year', 'none');
-    }
-
-    // GLOW LOGIC (Legacy/Basic) - Artist & Title (Uses default fallback logic for now, or none)
-    // Currently only Year has advanced controls in UI
-    document.documentElement.style.setProperty('--text-shadow-artist', 'none');
-    document.documentElement.style.setProperty('--text-shadow-title', 'none');
-
+    // UNIVERSAL GLOW LOGIC (Year, Artist, Title)
+    ['year', 'artist', 'title'].forEach(type => {
+        const glowActive = document.getElementById(`glow-${type}`)?.checked;
+        if (glowActive) {
+            const color = document.getElementById(`glow-${type}-color`).value;
+            const blur = document.getElementById(`glow-${type}-blur`).value;
+            document.documentElement.style.setProperty(`--text-shadow-${type}`, `0 0 ${blur}px ${color}`);
+        } else {
+            document.documentElement.style.setProperty(`--text-shadow-${type}`, 'none');
+        }
+    });
 
     // Code Positioning
     const codePos = document.getElementById('code-position')?.value || 'center';
@@ -201,7 +196,9 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'code-position', 
             'token-main-text', 'token-sub-text',
             'token-glow-active', 'token-glow-color', 'token-glow-size',
-            'glow-year', 'glow-year-color', 'glow-year-blur'
+            'glow-year', 'glow-year-color', 'glow-year-blur',
+            'glow-artist', 'glow-artist-color', 'glow-artist-blur',
+            'glow-title', 'glow-title-color', 'glow-title-blur'
         ];
         if (redrawIds.includes(e.target.id) || e.target.type === 'radio') {
              if (onSettingsChange) onSettingsChange(true); 

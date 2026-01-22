@@ -198,11 +198,23 @@
                                 <input type="number" id="font-size-artist-input" value="12" class="tiny-input" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
                                 <div class="typo-options">
                                     <label class="checkbox-container mini"><input type="checkbox" id="bold-artist" checked> Bold</label>
+                                    <label class="checkbox-container mini"><input type="checkbox" id="glow-artist" data-toggle-target="glow-settings-artist"> Glow</label>
                                     <select id="text-transform-artist" class="tiny-select" data-css-var="--text-transform-artist">
                                         <option value="none">Aa</option>
                                         <option value="uppercase">AA</option>
                                     </select>
                                     <input type="hidden" id="weight-artist" value="700">
+                                </div>
+                            </div>
+                             <!-- EXPANDING: ARTIST GLOW -->
+                             <div id="glow-settings-artist" class="sub-panel hidden">
+                                <div class="input-row">
+                                    <label>Glow Szín</label>
+                                    <input type="color" id="glow-artist-color" value="#888888">
+                                </div>
+                                <div class="input-row">
+                                    <label>Elmosás (px)</label>
+                                    <input type="number" id="glow-artist-blur" value="5" min="0" max="20" step="1">
                                 </div>
                             </div>
                         </div>
@@ -214,11 +226,23 @@
                                 <input type="number" id="font-size-title-input" value="10" class="tiny-input" step="0.5" data-unit="pt" data-css-var="--font-size-title">
                                 <div class="typo-options">
                                     <label class="checkbox-container mini"><input type="checkbox" id="bold-title" checked> Bold</label>
+                                    <label class="checkbox-container mini"><input type="checkbox" id="glow-title" data-toggle-target="glow-settings-title"> Glow</label>
                                     <select id="text-transform-title" class="tiny-select" data-css-var="--text-transform-title">
                                         <option value="none">Aa</option>
                                         <option value="uppercase">AA</option>
                                     </select>
                                     <input type="hidden" id="weight-title" value="700">
+                                </div>
+                            </div>
+                            <!-- EXPANDING: TITLE GLOW -->
+                            <div id="glow-settings-title" class="sub-panel hidden">
+                                <div class="input-row">
+                                    <label>Glow Szín</label>
+                                    <input type="color" id="glow-title-color" value="#888888">
+                                </div>
+                                <div class="input-row">
+                                    <label>Elmosás (px)</label>
+                                    <input type="number" id="glow-title-blur" value="5" min="0" max="20" step="1">
                                 </div>
                             </div>
                         </div>
@@ -374,7 +398,7 @@
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v1.3.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v1.4.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 

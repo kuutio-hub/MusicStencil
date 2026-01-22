@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v1.3.0 - Unified Units & Layout Redesign. Internal metrics converted to points (pt), Layout tab reorganized for better UX, default font set to Poppins.",
+  "description": "MusicStencil v1.4.0 - Universal Glow & Organic Vinyl. Fixed text-shadow rendering, added glow options for all text fields, implemented non-linear random vinyl glitching logic.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v1.3.0"
+  "name": "MusicStencil v1.4.0"
 }
