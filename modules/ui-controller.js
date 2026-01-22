@@ -36,12 +36,31 @@ export function applyAllStyles() {
     document.body.classList.remove('border-mode-both', 'border-mode-front', 'border-mode-back', 'border-mode-none');
     document.body.classList.add(`border-mode-${borderMode}`);
 
-    // Glow
+    // Glow (Music Cards)
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
         const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.3)` : 'none';
         document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
+
+    // Token Glow (Halo)
+    const tokenGlowActive = document.getElementById('token-glow-active')?.checked;
+    const tokenGlowColor = document.getElementById('token-glow-color')?.value || '#ffffff';
+    const tokenGlowSize = document.getElementById('token-glow-size')?.value || 4;
+    
+    if (tokenGlowActive) {
+        // Create a stroke effect using multiple text-shadows
+        const s = tokenGlowSize;
+        const c = tokenGlowColor;
+        // 8-direction shadow for better coverage
+        const shadow = `
+            ${s}px ${s}px 0 ${c}, -${s}px ${s}px 0 ${c}, ${s}px -${s}px 0 ${c}, -${s}px -${s}px 0 ${c},
+            ${s}px 0 0 ${c}, -${s}px 0 0 ${c}, 0 ${s}px 0 ${c}, 0 -${s}px 0 ${c}
+        `;
+        document.documentElement.style.setProperty('--token-glow-effect', shadow);
+    } else {
+        document.documentElement.style.setProperty('--token-glow-effect', 'none');
+    }
 }
 
 function updateModeVisibility() {
@@ -132,7 +151,8 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'vinyl-spacing', 'vinyl-count', 'vinyl-variate',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
             'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr',
-            'token-main-text', 'token-sub-text' // Token triggers
+            'token-main-text', 'token-sub-text',
+            'token-glow-active', 'token-glow-color', 'token-glow-size' // Token triggers
         ];
         if (redrawIds.includes(e.target.id) || e.target.type === 'radio') {
              if (onSettingsChange) onSettingsChange(true); 

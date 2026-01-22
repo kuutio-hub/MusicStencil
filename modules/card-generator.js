@@ -142,9 +142,11 @@ function createCard(song, isBack = false) {
 }
 
 // TOKEN CARD CREATOR
-function createTokenCard(config) {
+function createTokenCard(config, isBack = false) {
     const card = document.createElement('div');
-    card.className = `card token`;
+    // Important: Add 'front' or 'back' class for border logic
+    card.className = `card token ${isBack ? 'back' : 'front'}`;
+    
     // Vinyl bg + Centered Text
     card.innerHTML = `
         <div class="vinyl-bg">${generateVinyl()}</div>
@@ -163,22 +165,22 @@ export function renderPreviewPair(container, song) {
     container.innerHTML = '';
 
     if (isTokenMode) {
-        // TOKEN MODE: Preview shows Front and Back (Identical)
+        // TOKEN MODE: Preview shows Front and Back (Identical content but diff border if set)
         const config = {
             mainText: document.getElementById('token-main-text').value || "TOKEN",
             subText: document.getElementById('token-sub-text').value || ""
         };
         
-        // Show 2 identical cards
-        for(let i=0; i<2; i++) {
+        // Show 2 cards (Front and Back)
+        [false, true].forEach(isBack => {
              const wrap = document.createElement('div');
              wrap.className = 'card-wrapper';
-             const card = createTokenCard(config);
+             const card = createTokenCard(config, isBack);
              wrap.appendChild(card);
              container.appendChild(wrap);
              adjustText(card.querySelector('.token-main'));
              adjustText(card.querySelector('.token-sub'));
-        }
+        });
 
     } else {
         // MUSIC MODE: Front and Back
@@ -218,30 +220,51 @@ export function renderAllPages(container, data) {
     if (cols < 1) return;
 
     if (isTokenMode) {
-        // TOKEN MODE GENERATION: Fill 1 page (Front) + 1 page (Back/Duplicate)
-        // User requested "teli oldal". We generate 1 full page.
-        // Actually, for tokens, front and back are same. 
-        // We'll generate a pair of pages (Front Page, Back Page) where both are full of tokens.
+        // TOKEN MODE GENERATION:
+        // Generate 2 full pages. 
+        // Page 1: All Front cards (with borders if enabled)
+        // Page 2: All Back cards (FORCE NO BORDERS)
         
         const tokenConfig = {
             mainText: document.getElementById('token-main-text').value || "TOKEN",
             subText: document.getElementById('token-sub-text').value || ""
         };
 
-        const page = document.createElement('div');
-        page.className = `page-container ${paper}`;
-        page.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
+        // --- PAGE 1: FRONT ---
+        const page1 = document.createElement('div');
+        page1.className = `page-container ${paper}`;
+        page1.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
         
         for(let i=0; i<perPage; i++) {
              const wrap = document.createElement('div');
              wrap.className = 'card-wrapper';
-             const card = createTokenCard(tokenConfig);
+             const card = createTokenCard(tokenConfig, false); // isBack = false -> Front logic
              wrap.appendChild(card);
-             page.appendChild(wrap);
+             page1.appendChild(wrap);
              adjustText(card.querySelector('.token-main'));
              adjustText(card.querySelector('.token-sub'));
         }
-        container.appendChild(page);
+        container.appendChild(page1);
+
+        // --- PAGE 2: BACK (NO BORDERS ENFORCED) ---
+        const page2 = document.createElement('div');
+        page2.className = `page-container ${paper}`;
+        page2.style.gridTemplateColumns = `repeat(${cols}, ${cardSizeMm}mm)`;
+        
+        for(let i=0; i<perPage; i++) {
+             const wrap = document.createElement('div');
+             wrap.className = 'card-wrapper';
+             const card = createTokenCard(tokenConfig, true); // isBack = true
+             
+             // FORCE NO BORDER FOR BACK TOKEN PAGE
+             card.style.borderColor = 'transparent';
+             
+             wrap.appendChild(card);
+             page2.appendChild(wrap);
+             adjustText(card.querySelector('.token-main'));
+             adjustText(card.querySelector('.token-sub'));
+        }
+        container.appendChild(page2);
 
     } else {
         // MUSIC MODE GENERATION (Existing Logic)

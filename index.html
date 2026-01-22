@@ -78,6 +78,19 @@
                                 <label>Alcím (Opciós)</label>
                                 <input type="text" id="token-sub-text" value="" style="width: 120px;" placeholder="...">
                             </div>
+                            
+                            <hr class="divider">
+                            <div class="row wraps" style="justify-content: space-between;">
+                                <label class="checkbox-container"><input type="checkbox" id="token-glow-active"> Szöveg Glória (Háttér)</label>
+                            </div>
+                            <div class="input-row">
+                                <label>Glória Szín</label>
+                                <input type="color" id="token-glow-color" value="#ffffff" data-css-var="--token-glow-color">
+                            </div>
+                            <div class="input-row">
+                                <label>Glória Méret</label>
+                                <input type="number" id="token-glow-size" value="4" min="0" max="20" step="0.5" data-unit="px" data-css-var="--token-glow-size">
+                            </div>
                         </div>
                     </div>
 
@@ -246,15 +259,16 @@
                                 <input type="text" id="qr-logo-text" value="" maxlength="3" placeholder="ABC">
                             </div>
                             <div class="row wraps">
-                                <label class="checkbox-container"><input type="checkbox" id="qr-round"> Kerek</label>
-                                <label class="checkbox-container"><input type="checkbox" id="qr-invert"> Inverz (Fekete)</label>
+                                <!-- QR Defaults: Show OFF, Round ON, Invert ON -->
+                                <label class="checkbox-container"><input type="checkbox" id="qr-round" checked> Kerek</label>
+                                <label class="checkbox-container"><input type="checkbox" id="qr-invert" checked> Inverz (Fekete)</label>
                             </div>
                             <div class="input-row">
                                 <label>QR Méret (%)</label>
                                 <input type="number" id="qr-size-percent" value="40" min="10" max="90" step="1" data-unit="%" data-css-var="--qr-size">
                             </div>
                             <div class="row wraps">
-                                <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód látható</label>
+                                <label class="checkbox-container"><input type="checkbox" id="show-qr"> QR kód látható</label>
                             </div>
                         </div>
                     </div>
@@ -267,6 +281,7 @@
                     <h3>Információ</h3>
                     <div class="help-content">
                         <p><strong>Módok:</strong> A Zene mód Excel alapú, a Zseton mód egyforma, teli oldalakat generál QR nélkül.</p>
+                        <p><strong>Zseton Glow:</strong> Bekapcsolható háttér "glória" a szöveg mögé.</p>
                         <p><strong>Automatikus Margók:</strong> Ha egy oldal nem telik be, a tartalom függőlegesen középre igazodik.</p>
                         <p><strong>Preview:</strong> Kattints a nagyításhoz. A kártyák mostantól egymás mellett helyezkednek el.</p>
                     </div>
@@ -274,7 +289,7 @@
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v6.5.9 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v6.6.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 

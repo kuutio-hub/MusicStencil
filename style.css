@@ -26,6 +26,10 @@
     --text-shadow-artist: none;
     --text-shadow-title: none;
 
+    --token-glow-color: #ffffff;
+    --token-glow-size: 4px;
+    --token-glow-effect: none;
+
     --qr-size: 40%;
 }
 
@@ -171,7 +175,7 @@ select.full-width { width: 100%; margin-bottom: 15px; }
     font-size: var(--font-size-year);
     font-weight: var(--font-weight-year);
     color: #000;
-    text-shadow: var(--text-shadow-year);
+    text-shadow: var(--token-glow-effect); /* GLOW APPLIED HERE */
     line-height: 1.1;
     margin-bottom: 5px;
 }
@@ -182,7 +186,7 @@ select.full-width { width: 100%; margin-bottom: 15px; }
     font-weight: var(--font-weight-artist);
     text-transform: var(--text-transform-artist);
     color: #000;
-    text-shadow: var(--text-shadow-artist);
+    text-shadow: var(--token-glow-effect); /* GLOW APPLIED HERE */
     line-height: 1.1;
 }
 
@@ -272,12 +276,11 @@ body.grid-view-active #preview-area { display: none; }
 */
 .card, .card-wrapper, .page-container, .year, .artist, .title, .code1, .code2, .token-main, .token-sub { 
     box-shadow: none !important; 
-    text-shadow: none !important; 
     filter: none !important;
 }
 
 /* Extra override a glow-hoz, ha valahol bekapcsolva maradna */
-.year, .artist, .title, .token-main, .token-sub { text-shadow: none !important; }
+.year, .artist, .title { text-shadow: none !important; }
 
 /* Grid View specifikus */
 body.grid-view-active .card { 
@@ -291,10 +294,27 @@ body.grid-view-active .card {
         box-shadow: none !important;
         filter: none !important;
     }
-    .year, .artist, .title, .code1, .code2, .token-main, .token-sub { 
+    /* Token Glow-t engedélyezzük nyomtatásban, de a többit nem */
+    .year, .artist, .title, .code1, .code2 { 
         text-shadow: none !important; 
         color: #000000 !important;
     }
+    
+    .token-main, .token-sub {
+        color: #000000 !important;
+        /* Token glow maradhat, ha be van kapcsolva a változóban */
+    }
+
+    /* QR INVERT PRINT FIX */
+    .qr-logo-overlay.inverted {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+
     .page-container { margin: 0 auto !important; border: none !important; }
     
     @page { margin: 0; }
