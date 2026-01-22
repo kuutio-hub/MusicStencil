@@ -2,14 +2,14 @@
     --card-size: 46mm;
     --card-radius: 2mm;
     --card-padding: 4px;
-    --artist-margin: 4mm;
-    --title-margin: 5mm;
-    --code-side-margin: 1mm;
+    --artist-margin: 3mm;
+    --title-margin: 3mm;
+    --code-side-margin: 0.5mm;
     --page-padding: 10mm;
     
     --primary-color: #000000;
-    --border-width: 1px;
-    --border-color-rgba: rgba(0,0,0,1); /* Default, updated by JS */
+    --border-width: 0.5px;
+    --border-color-rgba: rgba(0,0,0,0.5); /* Default 50% opacity */
     
     --card-bg-color: #ffffff;
     --spotify-green: #1DB954;
@@ -34,6 +34,7 @@
     --token-glow-size: 0px;
 
     --qr-size: 40%;
+    --qr-border-width: 0.5px;
 }
 
 @keyframes spin {
@@ -235,6 +236,7 @@ body.codes-rotated .code2 {
     background: #fff; padding: 0; z-index: 10; display: flex; 
     align-items: center; justify-content: center; border-radius: 0; 
     overflow: hidden; pointer-events: none;
+    border: var(--qr-border-width) solid var(--primary-color);
 }
 .qr-container canvas, .qr-container img {
     width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block;

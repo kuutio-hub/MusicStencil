@@ -162,7 +162,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'paper-size', 'card-size', 'qr-size-percent', 'page-padding',
             'vinyl-spacing', 'vinyl-count', 'vinyl-variate', 'vinyl-thickness', 'vinyl-opacity',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
-            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr',
+            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr', 'qr-border-width',
             'token-main-text', 'token-sub-text',
             'token-glow-active', 'token-glow-color', 'token-glow-size' // Token triggers
         ];

@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body class="loading border-mode-both app-mode-music">
+<body class="loading border-mode-front app-mode-music">
 
     <aside id="settings-panel">
         <header>
@@ -124,17 +124,17 @@
                         </div>
                         <div class="input-row">
                             <label>Keret vastagság (px)</label>
-                            <input type="number" id="border-width" value="1" min="0" max="10" step="0.5" data-unit="px" data-css-var="--border-width">
+                            <input type="number" id="border-width" value="0.5" min="0" max="10" step="0.1" data-unit="px" data-css-var="--border-width">
                         </div>
                         <div class="input-row">
                             <label>Keret Opacitás (%)</label>
-                            <input type="number" id="border-opacity" value="100" min="0" max="100" step="5">
+                            <input type="number" id="border-opacity" value="50" min="0" max="100" step="5">
                         </div>
                         <div class="input-row">
                             <label>Keret Mód</label>
                             <select id="border-mode" class="full-width">
                                 <option value="both">Elől + Hátul</option>
-                                <option value="front">Csak Elől</option>
+                                <option value="front" selected>Csak Elől</option>
                                 <option value="back">Csak Hátul</option>
                                 <option value="none">Nincs Keret</option>
                             </select>
@@ -205,15 +205,15 @@
                         <div class="music-only-option">
                             <div class="input-row">
                                 <label>Felső margó (mm)</label>
-                                <input type="number" id="artist-margin" value="4" step="0.5" data-unit="mm" data-css-var="--artist-margin">
+                                <input type="number" id="artist-margin" value="3" step="0.5" data-unit="mm" data-css-var="--artist-margin">
                             </div>
                             <div class="input-row">
                                 <label>Alsó margó (mm)</label>
-                                <input type="number" id="title-margin" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
+                                <input type="number" id="title-margin" value="3" step="0.5" data-unit="mm" data-css-var="--title-margin">
                             </div>
                             <div class="input-row">
                                 <label>Kód margó (mm)</label>
-                                <input type="number" id="code-side-margin" value="1" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
+                                <input type="number" id="code-side-margin" value="0.5" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
                             </div>
                             <div class="row wraps">
                                 <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Vastag</label>
@@ -234,19 +234,19 @@
                     <div class="control-group">
                         <div class="input-row">
                             <label>Barázdák (db)</label>
-                            <input type="number" id="vinyl-count" value="12" min="1" max="50">
+                            <input type="number" id="vinyl-count" value="8" min="1" max="50">
                         </div>
                         <div class="input-row">
                             <label>Barázda köz (mm)</label>
-                            <input type="number" id="vinyl-spacing" value="2.5" step="0.1">
+                            <input type="number" id="vinyl-spacing" value="3" step="0.1">
                         </div>
                         <div class="input-row">
                             <label>Vastagság (px)</label>
-                            <input type="number" id="vinyl-thickness" value="0.4" step="0.1" min="0.1" max="5">
+                            <input type="number" id="vinyl-thickness" value="0.5" step="0.1" min="0.1" max="5">
                         </div>
                         <div class="input-row">
                             <label>Opacitás (%)</label>
-                            <input type="number" id="vinyl-opacity" value="100" min="0" max="100" step="5">
+                            <input type="number" id="vinyl-opacity" value="50" min="0" max="100" step="5">
                         </div>
                         <div class="row wraps">
                              <label class="checkbox-container"><input type="checkbox" id="vinyl-variate" checked> Vastagság variálás</label>
@@ -274,11 +274,15 @@
                         <div class="music-only-option">
                             <hr class="divider">
                             <div class="input-row">
+                                <label>QR Keret (px)</label>
+                                <input type="number" id="qr-border-width" value="0.5" step="0.1" min="0" max="10" data-unit="px" data-css-var="--qr-border-width">
+                            </div>
+                            <div class="input-row">
                                 <label>QR Logó (max 3)</label>
                                 <input type="text" id="qr-logo-text" value="" maxlength="3" placeholder="ABC">
                             </div>
                             <div class="row wraps">
-                                <!-- QR Defaults: Show OFF, Round ON, Invert ON -->
+                                <!-- QR Defaults: Show ON, Round ON, Invert ON -->
                                 <label class="checkbox-container"><input type="checkbox" id="qr-round" checked> Kerek</label>
                                 <label class="checkbox-container"><input type="checkbox" id="qr-invert" checked> Inverz (Fekete)</label>
                             </div>
@@ -287,7 +291,7 @@
                                 <input type="number" id="qr-size-percent" value="40" min="10" max="90" step="1" data-unit="%" data-css-var="--qr-size">
                             </div>
                             <div class="row wraps">
-                                <label class="checkbox-container"><input type="checkbox" id="show-qr"> QR kód látható</label>
+                                <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód látható</label>
                             </div>
                         </div>
                     </div>
@@ -307,7 +311,7 @@
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v6.7.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v6.8.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 
