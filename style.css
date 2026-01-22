@@ -4,7 +4,7 @@
     --card-padding: 4px;
     --artist-margin: 3mm;
     --title-margin: 3mm;
-    --code-side-margin: 0.5mm;
+    --code-side-margin: 0mm;
     --page-padding: 10mm;
     
     --primary-color: #000000;
@@ -34,7 +34,8 @@
     --token-glow-size: 0px;
 
     --qr-size: 40%;
-    --qr-border-width: 0.5px;
+    --qr-border-width: 3px;
+    --qr-border-color: #ffffff;
 }
 
 @keyframes spin {
@@ -127,24 +128,32 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 
 #main-content { flex: 1; background: radial-gradient(circle at center, #1a1a1a, #000); overflow-y: auto; position: relative; }
 
-/* RESZPONZÍV PREVIEW & ZOOM FIX */
+/* RESZPONZÍV PREVIEW & INDIVIDUAL ZOOM */
 #preview-area { 
     display: flex; align-items: center; justify-content: center; 
     min-height: 100%; 
     gap: 0; 
-    padding: 40px; cursor: zoom-in; 
+    padding: 40px; 
     flex-wrap: wrap; 
 }
-#preview-area.zoomed { cursor: zoom-out; }
+
+/* Base state: smaller to fit pairs */
 #preview-area .card-wrapper { 
     width: var(--card-size); height: var(--card-size); 
-    transform: scale(2); /* Alap nagyítás */
-    margin: calc(var(--card-size) * 0.6); 
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(1.6); 
+    margin: calc(var(--card-size) * 0.4); 
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
+    cursor: zoom-in;
+    z-index: 1;
 }
-#preview-area.zoomed .card-wrapper { 
-    transform: scale(3.5); 
-    margin: calc(var(--card-size) * 1.5);
+
+/* Zoomed state: Individual card pops out */
+#preview-area .card-wrapper.zoomed-card { 
+    transform: scale(4.2); 
+    z-index: 1000;
+    cursor: zoom-out;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
 }
 
 /* Card alapok */
@@ -152,8 +161,6 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 .card {
     width: 100%; height: 100%; background: var(--card-bg-color); border-radius: var(--card-radius);
     position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    
-    /* UPDATED BORDER LOGIC */
     border: var(--border-width) solid var(--border-color-rgba);
 }
 
@@ -175,9 +182,6 @@ select.full-width { width: 100%; margin-bottom: 15px; }
     color: #000;
     line-height: 1.1;
     margin-bottom: 5px;
-    
-    /* STICKER / CUTOUT EFFECT */
-    /* Ez teszi a körvonalat a kitöltés alá (MÖGÉ), így tiszta marad a betű */
     paint-order: stroke fill;
     -webkit-text-stroke: var(--token-glow-size) var(--token-glow-color);
 }
@@ -205,26 +209,59 @@ body.border-mode-none .card {
 .artist { position: absolute; top: var(--artist-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); text-shadow: var(--text-shadow-artist); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 .title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 
-/* CODES: Alap pozíció lent */
+/* CODES POSITIONING */
 .code1, .code2 { 
     position: absolute; 
     font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; 
+}
+
+/* POSITION: CENTER (Default) */
+body.code-pos-center .code1, body.code-pos-center .code2 {
     top: 50%;
     transform: translateY(-50%);
 }
-.code1 { left: var(--code-side-margin); }
-.code2 { right: var(--code-side-margin); }
+body.code-pos-center .code1 { left: var(--code-side-margin); }
+body.code-pos-center .code2 { right: var(--code-side-margin); }
 
-/* FORGATOTT KÓDOK */
-body.codes-rotated .code1 { 
+/* POSITION: CORNER */
+body.code-pos-corner .code1, body.code-pos-corner .code2 {
+    top: auto;
+    bottom: var(--code-side-margin);
+    transform: none;
+}
+body.code-pos-corner .code1 { left: var(--code-side-margin); }
+body.code-pos-corner .code2 { right: var(--code-side-margin); }
+
+
+/* ROTATED CODES + CENTER */
+body.code-pos-center.codes-rotated .code1 { 
     left: var(--code-side-margin); right: auto; top: 50%; bottom: auto;
-    transform: translateY(-50%) rotate(-90deg) translateX(0);
+    transform: translateY(-50%) rotate(-90deg);
     transform-origin: center center;
     text-align: center;
 }
-body.codes-rotated .code2 { 
+body.code-pos-center.codes-rotated .code2 { 
     right: var(--code-side-margin); left: auto; top: 50%; bottom: auto;
-    transform: translateY(-50%) rotate(-90deg) translateX(0); 
+    transform: translateY(-50%) rotate(-90deg); 
+    transform-origin: center center;
+    text-align: center;
+}
+
+/* ROTATED CODES + CORNER */
+/* When rotated in corner, we still want them near the vertical edges, but shifted down to the "corner" */
+body.code-pos-corner.codes-rotated .code1 { 
+    left: var(--code-side-margin); 
+    bottom: var(--code-side-margin); 
+    top: auto;
+    transform: rotate(-90deg);
+    transform-origin: center center;
+    text-align: center;
+}
+body.code-pos-corner.codes-rotated .code2 { 
+    right: var(--code-side-margin); 
+    bottom: var(--code-side-margin);
+    top: auto;
+    transform: rotate(-90deg);
     transform-origin: center center;
     text-align: center;
 }
@@ -236,7 +273,7 @@ body.codes-rotated .code2 {
     background: #fff; padding: 0; z-index: 10; display: flex; 
     align-items: center; justify-content: center; border-radius: 0; 
     overflow: hidden; pointer-events: none;
-    border: var(--qr-border-width) solid var(--primary-color);
+    border: var(--qr-border-width) solid var(--qr-border-color);
 }
 .qr-container canvas, .qr-container img {
     width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block;
@@ -288,7 +325,6 @@ body.grid-view-active .card {
         filter: none !important;
     }
     
-    /* Token Glow maradhat nyomtatásban is, mivel paint-order stroke */
     .token-main, .token-sub {
         color: #000000 !important;
          -webkit-print-color-adjust: exact;

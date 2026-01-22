@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body class="loading border-mode-front app-mode-music">
+<body class="loading border-mode-front app-mode-music code-pos-center">
 
     <aside id="settings-panel">
         <header>
@@ -212,8 +212,15 @@
                                 <input type="number" id="title-margin" value="3" step="0.5" data-unit="mm" data-css-var="--title-margin">
                             </div>
                             <div class="input-row">
+                                <label>Kód Pozíció</label>
+                                <select id="code-position" class="full-width" style="margin-bottom:0;">
+                                    <option value="center" selected>Közép</option>
+                                    <option value="corner">Sarok</option>
+                                </select>
+                            </div>
+                            <div class="input-row">
                                 <label>Kód margó (mm)</label>
-                                <input type="number" id="code-side-margin" value="0.5" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
+                                <input type="number" id="code-side-margin" value="0" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
                             </div>
                             <div class="row wraps">
                                 <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Vastag</label>
@@ -275,7 +282,11 @@
                             <hr class="divider">
                             <div class="input-row">
                                 <label>QR Keret (px)</label>
-                                <input type="number" id="qr-border-width" value="0.5" step="0.1" min="0" max="10" data-unit="px" data-css-var="--qr-border-width">
+                                <input type="number" id="qr-border-width" value="3" step="1.0" min="0" max="10" data-unit="px" data-css-var="--qr-border-width">
+                            </div>
+                             <div class="input-row">
+                                <label>QR Keret Szín</label>
+                                <input type="color" id="qr-border-color" value="#ffffff" data-css-var="--qr-border-color">
                             </div>
                             <div class="input-row">
                                 <label>QR Logó (max 3)</label>
@@ -303,20 +314,20 @@
                 <div class="settings-section">
                     <h3>Információ</h3>
                     <div class="help-content">
-                        <p><strong>Matrica Effekt:</strong> A zseton szöveg körüli vastag keret, ami kitakarja a hátteret (vinyl barázdákat).</p>
-                        <p><strong>Opacitás:</strong> A keret és a vinyl átlátszósága %-ban állítható.</p>
+                        <p><strong>Zoom:</strong> Kattints egy kártyára a nagyításhoz!</p>
+                        <p><strong>Matrica Effekt:</strong> A zseton szöveg körüli vastag keret, ami kitakarja a hátteret.</p>
                         <p><strong>Automatikus Margók:</strong> Ha egy oldal nem telik be, a tartalom függőlegesen középre igazodik.</p>
                     </div>
                 </div>
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v6.8.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v6.9.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 
     <main id="main-content">
-        <div id="preview-area" title="Kattints a nagyításhoz"></div>
+        <div id="preview-area" title="Kattints a kártyákra"></div>
         <div id="print-area"></div>
     </main>
 

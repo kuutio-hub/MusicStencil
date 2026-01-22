@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v6.8.0 - Final Tuning. Adjusted defaults for margins, borders, and vinyls. Added configurable QR border.",
+  "description": "MusicStencil v6.9.0 - Individual Zoom & Code Positioning. Click-to-zoom specific cards, corner alignment for codes, and white QR borders.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v6.8.0"
+  "name": "MusicStencil v6.9.0"
 }

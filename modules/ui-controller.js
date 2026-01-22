@@ -51,6 +51,11 @@ export function applyAllStyles() {
     // Flags & Modes
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
     
+    // Code Positioning
+    const codePos = document.getElementById('code-position')?.value || 'center';
+    document.body.classList.remove('code-pos-center', 'code-pos-corner');
+    document.body.classList.add(`code-pos-${codePos}`);
+
     // Border Mode
     const borderMode = document.getElementById('border-mode')?.value || 'both';
     document.body.classList.remove('border-mode-both', 'border-mode-front', 'border-mode-back', 'border-mode-none');
@@ -71,7 +76,6 @@ export function applyAllStyles() {
         document.documentElement.style.setProperty('--token-glow-size', '0px');
     } else {
         // Just enforce what the input says (unit is handled by data-unit in general loop above)
-        // But we need to make sure the loop above ran. It did.
     }
 }
 
@@ -162,9 +166,10 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'paper-size', 'card-size', 'qr-size-percent', 'page-padding',
             'vinyl-spacing', 'vinyl-count', 'vinyl-variate', 'vinyl-thickness', 'vinyl-opacity',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
-            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr', 'qr-border-width',
+            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr', 'qr-border-width', 'qr-border-color',
+            'code-position', // Trigger redraw for class changes? No, applyAllStyles handles it, redraw not needed usually but safe to do
             'token-main-text', 'token-sub-text',
-            'token-glow-active', 'token-glow-color', 'token-glow-size' // Token triggers
+            'token-glow-active', 'token-glow-color', 'token-glow-size' 
         ];
         if (redrawIds.includes(e.target.id) || e.target.type === 'radio') {
              if (onSettingsChange) onSettingsChange(true); 
@@ -201,11 +206,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
     };
 
     const previewArea = document.getElementById('preview-area');
-    if(previewArea) {
-        previewArea.onclick = () => {
-            previewArea.classList.toggle('zoomed');
-        };
-    }
+    // Removed old zoomed logic here, moved to main.js
 
     document.getElementById('reset-settings').onclick = () => {
         if (confirm("Minden beállítást alaphelyzetbe állítasz?")) {

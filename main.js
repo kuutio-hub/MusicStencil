@@ -25,9 +25,35 @@ const App = {
                 this.renderPrintView();
                 this.startPreviewCycle();
                 
-                document.getElementById('preview-area').addEventListener('click', () => {
-                    this.showNextPreview();
-                    this.resetCycle();
+                // NEW: Individual card zoom delegation
+                document.getElementById('preview-area').addEventListener('click', (e) => {
+                    const cardWrapper = e.target.closest('.card-wrapper');
+                    
+                    if (cardWrapper) {
+                        // Toggle zoom on THIS card
+                        if (cardWrapper.classList.contains('zoomed-card')) {
+                            cardWrapper.classList.remove('zoomed-card');
+                            this.startPreviewCycle(); // Resume cycle on un-zoom
+                        } else {
+                            // Remove zoom from others
+                            document.querySelectorAll('.card-wrapper.zoomed-card').forEach(el => el.classList.remove('zoomed-card'));
+                            
+                            cardWrapper.classList.add('zoomed-card');
+                            // Pause cycle while zoomed
+                            if (this.previewIntervalId) clearInterval(this.previewIntervalId);
+                        }
+                    } else {
+                        // Clicked outside cards? Maybe next preview?
+                        // If any card is zoomed, close zoom. Else next.
+                        const anyZoomed = document.querySelector('.card-wrapper.zoomed-card');
+                        if (anyZoomed) {
+                             anyZoomed.classList.remove('zoomed-card');
+                             this.startPreviewCycle();
+                        } else {
+                            this.showNextPreview();
+                            this.resetCycle();
+                        }
+                    }
                 });
             }
         } catch (error) {
@@ -75,6 +101,9 @@ const App = {
         const isToken = document.getElementById('mode-token')?.checked;
         if (!isToken && (!this.data || this.data.length === 0)) return;
         
+        // Don't switch if zoomed
+        if (document.querySelector('.zoomed-card')) return;
+
         if (!isToken) {
             this.currentPreviewIndex = (this.currentPreviewIndex + 1) % this.data.length;
         }
