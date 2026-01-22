@@ -30,13 +30,13 @@
     --text-shadow-artist: none;
     --text-shadow-title: none;
 
-    --token-glow-color: #ffffff;
-    --token-glow-size: 0px;
+    --token-glow-color: #ffffff; /* Deprecated but kept for safety */
+    --token-glow-size: 0px;      /* Deprecated but kept for safety */
 
     --qr-size: 40%;
     --qr-border-width: 3px;
     --qr-border-color: #ffffff;
-    --qr-box-shadow: none; /* NEW QR GLOW */
+    --qr-box-shadow: none;
 }
 
 @keyframes spin {
@@ -197,11 +197,19 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 
 .token-main, .token-sub {
     font-family: var(--font-family); color: #000; line-height: 1.1; margin-bottom: 5px;
-    paint-order: stroke fill;
-    -webkit-text-stroke: var(--token-glow-size) var(--token-glow-color);
+    /* Removed text-stroke Matrica effect */
 }
-.token-main { font-size: var(--font-size-year); font-weight: var(--font-weight-year); }
-.token-sub { font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); }
+.token-main { 
+    font-size: var(--font-size-year); 
+    font-weight: var(--font-weight-year);
+    text-shadow: var(--text-shadow-year); /* Link to Year Glow */
+}
+.token-sub { 
+    font-size: var(--font-size-artist); 
+    font-weight: var(--font-weight-artist); 
+    text-transform: var(--text-transform-artist);
+    text-shadow: var(--text-shadow-artist); /* Link to Artist Glow */
+}
 
 body.border-mode-front .card.back,
 body.border-mode-back .card.front,
@@ -210,7 +218,6 @@ body.border-mode-none .card {
 }
 
 /* TEXT ELEMENTS (Music Mode) */
-/* REMOVED !important from text-shadow to allow Glow to work */
 .year { 
     font-family: var(--font-family); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: #000; 
     text-shadow: var(--text-shadow-year); 
@@ -256,7 +263,7 @@ body.code-pos-corner .code2 {
     align-items: center; justify-content: center; border-radius: 0; 
     overflow: hidden; pointer-events: none;
     border: var(--qr-border-width) solid var(--qr-border-color);
-    box-shadow: var(--qr-box-shadow); /* Applied here */
+    box-shadow: var(--qr-box-shadow);
 }
 .qr-container canvas, .qr-container img { width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block; }
 
@@ -295,9 +302,9 @@ body.grid-view-active .card { background: #ffffff !important; transition: none !
     }
     .token-main, .token-sub { color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     
-    /* SHADOW KILLER FOR PRINT ONLY */
+    /* PRINT FIX: Shadows enabled for neon/glow effects */
     .year, .artist, .title, .code1, .code2 { 
-        text-shadow: none !important; 
+        /* text-shadow: none !important; <--- REMOVED TO ALLOW GLOW PRINTING */
         color: #000000 !important;
     }
 
@@ -306,8 +313,9 @@ body.grid-view-active .card { background: #ffffff !important; transition: none !
         border: 1px solid #000 !important; box-shadow: none !important;
     }
 
-    /* REMOVE QR BOX SHADOW ON PRINT */
-    .qr-container { box-shadow: none !important; }
+    /* REMOVE QR BOX SHADOW ON PRINT IF DESIRED, OR KEEP FOR GLOW */
+    /* Keeping it enabled since user asked for glow printing */
+    /* .qr-container { box-shadow: none !important; } */
 
     .page-container { margin: 0 auto !important; border: none !important; }
     @page { margin: 0; }

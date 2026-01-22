@@ -49,6 +49,7 @@ export function applyAllStyles() {
     });
 
     // UNIVERSAL GLOW LOGIC (Year, Artist, Title)
+    // Works for Token Mode too via shared CSS variables
     ['year', 'artist', 'title'].forEach(type => {
         const glowActive = document.getElementById(`glow-${type}`)?.checked;
         if (glowActive) {
@@ -79,15 +80,6 @@ export function applyAllStyles() {
     const borderMode = document.getElementById('border-mode')?.value || 'both';
     document.body.classList.remove('border-mode-both', 'border-mode-front', 'border-mode-back', 'border-mode-none');
     document.body.classList.add(`border-mode-${borderMode}`);
-
-    // Token Glow (Solid Stroke Effect)
-    const tokenGlowActive = document.getElementById('token-glow-active')?.checked;
-    
-    if (!tokenGlowActive) {
-        document.documentElement.style.setProperty('--token-glow-size', '0px');
-    } else {
-        // Just enforce what the input says (unit is handled by data-unit in general loop above)
-    }
 
     // Toggle Visibility Logic
     document.querySelectorAll('[data-toggle-target]').forEach(toggle => {
@@ -207,7 +199,6 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'glow-qr', 'glow-qr-color', 'glow-qr-blur',
             'code-position', 
             'token-main-text', 'token-sub-text',
-            'token-glow-active', 'token-glow-color', 'token-glow-size',
             'glow-year', 'glow-year-color', 'glow-year-blur',
             'glow-artist', 'glow-artist-color', 'glow-artist-blur',
             'glow-title', 'glow-title-color', 'glow-title-blur'

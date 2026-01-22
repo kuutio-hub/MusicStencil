@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v1.5.0 - Neon Vinyl & QR Glow. Added color picker for vinyl grooves, Neon mode with random HSL colors and adjustable glow, plus box-shadow glow options for QR codes.",
+  "description": "MusicStencil v1.6.0 - Print Glow Fix & Token Shadow. Enabled text-shadow in print mode, replaced Token stroke effect with standard glow integration linked to Typography settings.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v1.5.0"
+  "name": "MusicStencil v1.6.0"
 }
