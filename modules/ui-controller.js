@@ -24,7 +24,6 @@ export function applyAllStyles() {
     boldConfigs.forEach(conf => {
         const chk = document.getElementById(conf.id);
         const weightInput = conf.weightId ? document.getElementById(conf.weightId) : null;
-        // Alapértelmezés: Ha nincs csekkolva, akkor 400 (normal), ha van, akkor 700 vagy input érték
         const val = chk && chk.checked ? (weightInput ? weightInput.value : '700') : '400';
         document.documentElement.style.setProperty(conf.var, val);
     });
@@ -32,12 +31,12 @@ export function applyAllStyles() {
     // Flags & Modes
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
     
-    // Border Mode Select Logic
+    // Border Mode
     const borderMode = document.getElementById('border-mode')?.value || 'both';
     document.body.classList.remove('border-mode-both', 'border-mode-front', 'border-mode-back', 'border-mode-none');
     document.body.classList.add(`border-mode-${borderMode}`);
 
-    // Glow - Neon Style (Visual only, CSS kills it in preview/print if needed)
+    // Glow
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
         const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.3)` : 'none';
@@ -79,10 +78,10 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         
         const redrawIds = [
-            'paper-size', 'card-size', 'qr-size-percent', 
-            'vinyl-spacing', 'vinyl-thickness', 'vinyl-count', 
+            'paper-size', 'card-size', 'qr-size-percent', 'page-padding',
+            'vinyl-spacing', 'vinyl-count', 'vinyl-variate',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
-            'border-mode', 'rotate-codes'
+            'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr'
         ];
         if (redrawIds.includes(e.target.id)) {
              if (onSettingsChange) onSettingsChange(true); 
@@ -98,14 +97,30 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
 
     document.getElementById('view-toggle-button').onclick = () => {
         document.body.classList.toggle('grid-view-active');
+        document.body.classList.remove('is-printing');
+        // Trigger resize event to force redraw check if needed
+        window.dispatchEvent(new Event('resize'));
+        // Force redraw to apply limit
+        if (onSettingsChange) onSettingsChange(true);
     };
 
     document.getElementById('print-button').onclick = () => {
         document.body.classList.add('grid-view-active');
-        setTimeout(() => window.print(), 500);
+        document.body.classList.add('is-printing'); // Jelző a teljes rendereléshez
+        
+        // Render full data
+        if (onSettingsChange) onSettingsChange(true);
+
+        setTimeout(() => {
+            window.print();
+            // Cleanup after print dialog closes (approximate)
+            setTimeout(() => {
+                document.body.classList.remove('is-printing');
+                if (onSettingsChange) onSettingsChange(true); // Vissza a limitált nézethez
+            }, 1000);
+        }, 800);
     };
 
-    // Zoom Toggle for Preview
     const previewArea = document.getElementById('preview-area');
     if(previewArea) {
         previewArea.onclick = () => {
@@ -126,7 +141,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
 export function updateRecordCount(count, isVisible) {
     const el = document.getElementById('record-count-display');
     const bar = document.getElementById('stats-bar');
-    if (el) el.textContent = count;
+    if (el) el.textContent = count + ' db';
     if (bar) {
         bar.style.visibility = isVisible ? 'visible' : 'hidden';
     }

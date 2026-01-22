@@ -5,6 +5,7 @@
     --artist-margin: 4mm;
     --title-margin: 5mm;
     --code-side-margin: 1mm;
+    --page-padding: 10mm;
     --primary-color: #000000; 
     --card-bg-color: #ffffff;
     --spotify-green: #1DB954;
@@ -73,6 +74,18 @@ body {
 .input-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .input-row label { font-size: 0.8rem; color: #bbb; flex: 1; }
 
+/* COMPACT TYPO GRID */
+.typo-grid { display: grid; grid-template-columns: 1fr 60px 80px; gap: 10px; align-items: center; }
+.typo-header { font-size: 0.6rem; color: #666; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
+.typo-label { font-size: 0.75rem; color: #ccc; }
+.tiny-input { width: 100% !important; padding: 4px !important; text-align: center; }
+.tiny-select { width: 100% !important; padding: 4px !important; font-size: 0.7rem !important; }
+.typo-tools { display: flex; gap: 8px; justify-content: flex-end; }
+.typo-tools label { display: flex; align-items: center; gap: 4px; cursor: pointer; color: #888; font-size: 0.8rem; }
+.typo-tools input[type="checkbox"] { width: auto !important; margin: 0; }
+.typo-tools label:hover { color: #fff; }
+.typo-tools input:checked + b, .typo-tools input:checked + i { color: var(--spotify-green); }
+
 .dual-input { display: flex; align-items: center; gap: 5px; }
 .dual-input span { font-size: 0.7rem; color: #555; }
 .dual-input input { width: 45px !important; }
@@ -89,20 +102,22 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 
 #main-content { flex: 1; background: radial-gradient(circle at center, #1a1a1a, #000); overflow-y: auto; position: relative; }
 
-/* RESZPONZÍV PREVIEW & ZOOM */
+/* RESZPONZÍV PREVIEW & ZOOM FIX */
 #preview-area { 
     display: flex; align-items: center; justify-content: center; 
-    min-height: 100%; gap: 10vmin; padding: 40px; cursor: zoom-in; 
-    flex-wrap: wrap; transition: gap 0.3s;
+    min-height: 100%; 
+    gap: 0; /* Szoros illeszkedés */
+    padding: 40px; cursor: zoom-in; 
+    flex-wrap: wrap; 
 }
-#preview-area.zoomed { cursor: zoom-out; gap: 150px; }
+#preview-area.zoomed { cursor: zoom-out; }
 #preview-area .card-wrapper { 
     width: var(--card-size); height: var(--card-size); 
     transform: scale(2); /* Alap nagyítás */
-    margin: 20px; 
+    margin: 30px; /* Hely a scale miatt */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#preview-area.zoomed .card-wrapper { transform: scale(3.5); }
+#preview-area.zoomed .card-wrapper { transform: scale(3.5); margin: 60px; }
 
 /* Card alapok */
 .card-wrapper { width: var(--card-size); height: var(--card-size); position: relative; flex-shrink: 0; }
@@ -125,20 +140,27 @@ body.border-mode-none .card {
 .title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 
 /* CODES: Alap pozíció lent */
-.code1, .code2 { position: absolute; bottom: 2mm; font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; }
+.code1, .code2 { 
+    position: absolute; 
+    font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; 
+    /* Vertikális középre igazítás */
+    top: 50%;
+    transform: translateY(-50%);
+}
 .code1 { left: var(--code-side-margin); }
 .code2 { right: var(--code-side-margin); }
 
 /* FORGATOTT KÓDOK - KÖZÉPEN, SZÉLEKHEZ KÖZEL, JOBBRÓL OLVASHATÓ */
 body.codes-rotated .code1 { 
-    left: var(--code-side-margin); bottom: auto; top: 50%; 
-    transform: translateY(-50%) rotate(-90deg) translateX(-50%);
+    left: var(--code-side-margin); right: auto; top: 50%; bottom: auto;
+    /* -90 fok forgatás, + X/Y korrekció a középponthoz */
+    transform: translateY(-50%) rotate(-90deg) translateX(0);
     transform-origin: center center;
     text-align: center;
 }
 body.codes-rotated .code2 { 
-    right: var(--code-side-margin); bottom: auto; top: 50%; 
-    transform: translateY(-50%) rotate(-90deg) translateX(50%); 
+    right: var(--code-side-margin); left: auto; top: 50%; bottom: auto;
+    transform: translateY(-50%) rotate(-90deg) translateX(0); 
     transform-origin: center center;
     text-align: center;
 }
@@ -164,6 +186,10 @@ body.codes-rotated .code2 {
     border-radius: 2px;
     border: 1px solid #000;
 }
+/* QR Logo Styles */
+.qr-logo-overlay.rounded { border-radius: 50%; box-shadow: 0 0 0 1px #fff; }
+.qr-logo-overlay.inverted { background: #000; color: #fff; border: 1px solid #fff; }
+
 
 #print-area { display: none; padding: 0; background: #222; min-height: 100vh; padding-bottom: 50px; }
 body.grid-view-active #print-area { display: block; }
@@ -171,7 +197,10 @@ body.grid-view-active #preview-area { display: none; }
 
 .page-container { 
     background: #fff; width: 210mm; height: 297mm; display: grid; 
-    justify-content: center; align-content: start; padding: 10mm; 
+    justify-content: center; 
+    /* Függőleges középre igazítás, hogy a margók egyenlőek legyenek */
+    align-content: center; 
+    padding: var(--page-padding); 
     margin: 40px auto; box-sizing: border-box; page-break-after: always; 
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }

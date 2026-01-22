@@ -17,6 +17,11 @@ function generateQRCode(element, text, logoText) {
         if (logoText && logoText.trim().length > 0) {
             const logo = document.createElement('div');
             logo.className = 'qr-logo-overlay';
+            
+            // Stílusok alkalmazása
+            if (document.getElementById('qr-round')?.checked) logo.classList.add('rounded');
+            if (document.getElementById('qr-invert')?.checked) logo.classList.add('inverted');
+            
             logo.textContent = logoText.substring(0, 3);
             element.appendChild(logo);
         }
@@ -51,14 +56,14 @@ function adjustText(element, isTitle = false) {
 
 function generateVinyl() {
     const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 2.5;
-    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4;
-    const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 18;
+    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4; // Mostantól nincs külön input, de kód szinten marad
+    const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 12;
     
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
-    const gMax = parseInt(document.getElementById('glitch-max')?.value) || 4;
+    const gMax = parseInt(document.getElementById('glitch-max')?.value) || 2;
     
-    const gWidthMin = parseFloat(document.getElementById('glitch-width-min')?.value) || 5;
-    const gWidthMax = parseFloat(document.getElementById('glitch-width-max')?.value) || 15;
+    const gWidthMin = parseFloat(document.getElementById('glitch-width-min')?.value) || 25;
+    const gWidthMax = parseFloat(document.getElementById('glitch-width-max')?.value) || 30;
     
     const variate = document.getElementById('vinyl-variate')?.checked;
 
@@ -103,7 +108,7 @@ function generateVinyl() {
             if (finalPart > 0) dash.push(finalPart, 0);
         }
 
-        const sw = variate ? (thickness * (0.6 + Math.random() * 0.8)) : thickness;
+        const sw = variate ? (0.4 * (0.6 + Math.random() * 0.8)) : 0.4;
         svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.12 + (i * (0.8 / grooveCount))}" />`;
     }
     svg += `</svg>`;
@@ -158,6 +163,18 @@ export function renderAllPages(container, data) {
     container.innerHTML = '';
     const paper = document.getElementById('paper-size').value;
     const cardSizeMm = parseFloat(document.getElementById('card-size').value) || 46;
+    const isPrinting = window.matchMedia('print').matches; // Ez JS-ben nem mindig reaktív, de a logika: 
+    // Grid View-ban (képernyőn) limitálunk. 
+    // Mivel a nyomtatást külön gomb indítja, ott majd felülbíráljuk, 
+    // de egyelőre a képernyős megjelenítéshez feltételezünk egy limitet, 
+    // kivéve ha a hívó expliciten jelzi a teljes renderelést.
+    // A main.js-ben a 'print-button' kezeli a teljes renderelést.
+    
+    // De itt egyszerűsítünk: Ha a container ID-je 'print-area' ÉS NEM nyomtatunk épp,
+    // akkor limitáljuk. Viszont a main.js meghívja a renderelést.
+    // Megoldás: Adunk egy paramétert a függvénynek vagy a main.js-ben szűrünk.
+    // Itt a legbiztosabb: Ha a body nem 'printing' állapotú (amit majd a main.js rak rá),
+    // akkor vágjuk az adatot. De a 'grid-view-active' alatt látni akarjuk a mintát.
     
     const pW = paper === 'A3' ? 277 : 190; 
     const pH = paper === 'A3' ? 400 : 277; 
@@ -168,8 +185,15 @@ export function renderAllPages(container, data) {
 
     if (cols < 1) return;
 
-    for (let i = 0; i < data.length; i += perPage) {
-        const chunk = data.slice(i, i + perPage);
+    // LIMIT LOGIKA: Ha a body-n nincs 'is-printing' osztály, akkor csak 1 lapnyi adatot dolgozunk fel.
+    // (Azaz 1 front + 1 back page)
+    let processData = data;
+    if (!document.body.classList.contains('is-printing')) {
+        processData = data.slice(0, perPage); 
+    }
+
+    for (let i = 0; i < processData.length; i += perPage) {
+        const chunk = processData.slice(i, i + perPage);
         
         // ELŐLAPOK
         const frontPage = document.createElement('div');

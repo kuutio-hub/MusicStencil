@@ -1,32 +1,20 @@
-export default [
-    { "year": 1982, "artist": "Michael Jackson", "title": "Billie Jean", "qr_data": "spotify:track:5ChkMS8OtdzJeqyybXgT27", "code1": "MJ-01", "code2": "82-TH" },
-    { "year": 1991, "artist": "Nirvana", "title": "Smells Like Teen Spirit", "qr_data": "spotify:track:5ghIJDpPoe3CfHMGu71E6T", "code1": "NV-01", "code2": "91-NV" },
-    { "year": 1975, "artist": "Queen", "title": "Bohemian Rhapsody", "qr_data": "spotify:track:3z8h0TU7syA3drc5k1gL0I", "code1": "QN-04", "code2": "75-OP" },
-    { "year": 2017, "artist": "Ed Sheeran", "title": "Shape of You", "qr_data": "spotify:track:7qiZfU4dY1lWllzX7mPBI", "code1": "ES-03", "code2": "17-DV" },
-    { "year": 1987, "artist": "U2", "title": "With or Without You", "qr_data": "spotify:track:6ADSaE87h8Y3Y2FdSAHHy", "code1": "U2-05", "code2": "87-JT" },
-    { "year": 2003, "artist": "Beyoncé ft. Jay-Z", "title": "Crazy in Love", "qr_data": "spotify:track:5IVuqXILoxVWvWEPm82Jxr", "code1": "BY-01", "code2": "03-DL" },
-    { "year": 1965, "artist": "The Rolling Stones", "title": "(I Can't Get No) Satisfaction", "qr_data": "spotify:track:2PzU4IB8Dr6mxV3lHuaG3t", "code1": "RS-04", "code2": "65-OB" },
-    { "year": 1999, "artist": "Britney Spears", "title": "...Baby One More Time", "qr_data": "spotify:track:3MjUtNVVq3C8Fn0MP3zhXa", "code1": "BS-01", "code2": "99-BO" },
-    { "year": 2011, "artist": "Adele", "title": "Rolling in the Deep", "qr_data": "spotify:track:1CkvWZme3pRgbzaxTsoVan", "code1": "AD-02", "code2": "11-21" },
-    { "year": 1984, "artist": "Prince", "title": "When Doves Cry", "qr_data": "spotify:track:51H2y6YrNNXcy3dfc3qSbA", "code1": "PR-06", "code2": "84-PR" },
-    { "year": 2012, "artist": "Gotye ft. Kimbra", "title": "Somebody That I Used to Know", "qr_data": "spotify:track:4LRPiXqCikLlN15c3yImP7", "code1": "GT-03", "code2": "12-ME" },
-    { "year": 1971, "artist": "Led Zeppelin", "title": "Stairway to Heaven", "qr_data": "spotify:track:5CQ30WqJwcep0pYcV4AMNc", "code1": "LZ-04", "code2": "71-IV" },
-    { "year": 1980, "artist": "Blondie", "title": "Call Me", "qr_data": "spotify:track:7HrmI242cRIh16vYUv4a3h", "code1": "BL-05", "code2": "80-AG" },
-    { "year": 2008, "artist": "Lady Gaga", "title": "Poker Face", "qr_data": "spotify:track:1QV6tiMFM6fSOKOGLMHYYg", "code1": "LG-01", "code2": "08-FM" },
-    { "year": 1997, "artist": "Spice Girls", "title": "Wannabe", "qr_data": "spotify:track:1Je1IMUlBXcx1Fz0WE7oPT", "code1": "SG-01", "code2": "97-SW" },
-    { "year": 2015, "artist": "Mark Ronson ft. Bruno Mars", "title": "Uptown Funk", "qr_data": "spotify:track:32OlwpcMpofmOI5RSoSCqk", "code1": "MR-04", "code2": "15-US" },
-    { "year": 1977, "artist": "Bee Gees", "title": "Stayin' Alive", "qr_data": "spotify:track:4UDmDIqJIbrW0hMBQMcs8k", "code1": "BG-05", "code2": "77-SN" },
-    { "year": 2002, "artist": "Eminem", "title": "Lose Yourself", "qr_data": "spotify:track:5Z01UMMf7V1o0MzF86s6WJ", "code1": "EM-08", "code2": "02-8M" },
-    { "year": 1985, "artist": "a-ha", "title": "Take On Me", "qr_data": "spotify:track:2WfaOiMkCvy7F5fcp2zZ8L", "code1": "AH-01", "code2": "85-HB" },
-    { "year": 1994, "artist": "Mariah Carey", "title": "All I Want for Christmas Is You", "qr_data": "spotify:track:0bYg9bo50gSsH3LeXe2SQP", "code1": "MC-04", "code2": "94-MC" },
-    { "year": 2016, "artist": "Drake", "title": "One Dance", "qr_data": "spotify:track:1zi7xx7UVEFkmKfv06H8x0", "code1": "DR-01", "code2": "16-OD" },
-    { "year": 1969, "artist": "The Beatles", "title": "Come Together", "qr_data": "spotify:track:2EqlS6tkEnglzr7tkKAAYD", "code1": "TB-09", "code2": "69-CT" },
-    { "year": 2019, "artist": "Billie Eilish", "title": "Bad Guy", "qr_data": "spotify:track:2Fxmhks0bxGSBdJ92vM42m", "code1": "BE-02", "code2": "19-BG" },
-    { "year": 1995, "artist": "Oasis", "title": "Wonderwall", "qr_data": "spotify:track:5qqabIl2vWzo9ApSC81725", "code1": "OA-03", "code2": "95-WW" },
-    { "year": 2014, "artist": "Taylor Swift", "title": "Shake It Off", "qr_data": "spotify:track:0cqRj7pUJDkTRI5RX8o49u", "code1": "TS-89", "code2": "14-SI" },
-    { "year": 1983, "artist": "The Police", "title": "Every Breath You Take", "qr_data": "spotify:track:1JSTJqkT5qHq8MDJnKppMV", "code1": "TP-05", "code2": "83-EB" },
-    { "year": 2020, "artist": "The Weeknd", "title": "Blinding Lights", "qr_data": "spotify:track:0VjIjW4GlUZAMYd2vXMi3b", "code1": "TW-04", "code2": "20-BL" },
-    { "year": 1979, "artist": "Pink Floyd", "title": "Another Brick in the Wall", "qr_data": "spotify:track:7rPzE5NxxPdGtHjW2pieOv", "code1": "PF-11", "code2": "79-AB" },
-    { "year": 2021, "artist": "Dua Lipa", "title": "Levitating", "qr_data": "spotify:track:5nujrmhLynf4yMoMtj8AQF", "code1": "DL-02", "code2": "21-LV" },
-    { "year": 1989, "artist": "Madonna", "title": "Like a Prayer", "qr_data": "spotify:track:1z3ugFmUKoCzGsI6jdY4Ci", "code1": "MD-07", "code2": "89-LP" }
-];
+// Generátor script a mintaadatokhoz
+const artists = ["Queen", "Michael Jackson", "Madonna", "The Beatles", "Led Zeppelin", "Pink Floyd", "U2", "Nirvana", "Metallica", "AC/DC", "David Bowie", "Prince", "Elton John", "The Rolling Stones", "Fleetwood Mac", "Eagles", "Bee Gees", "ABBA", "Whitney Houston", "Mariah Carey", "Celine Dion", "Adele", "Beyoncé", "Taylor Swift", "Ed Sheeran", "Drake", "Eminem", "Rihanna", "Katy Perry", "Lady Gaga"];
+const titles = ["Bohemian Rhapsody", "Billie Jean", "Like a Prayer", "Hey Jude", "Stairway to Heaven", "Another Brick in the Wall", "With or Without You", "Smells Like Teen Spirit", "Enter Sandman", "Back in Black", "Heroes", "Purple Rain", "Rocket Man", "Paint It Black", "Dreams", "Hotel California", "Stayin' Alive", "Dancing Queen", "I Will Always Love You", "All I Want for Christmas", "My Heart Will Go On", "Rolling in the Deep", "Crazy in Love", "Shake It Off", "Shape of You", "God's Plan", "Lose Yourself", "Umbrella", "Firework", "Bad Romance"];
+
+const data = [];
+for (let i = 0; i < 120; i++) {
+    const artist = artists[i % artists.length];
+    const title = titles[i % titles.length];
+    const year = 1970 + (i % 55);
+    data.push({
+        year: year,
+        artist: artist,
+        title: title,
+        qr_data: `https://example.com/song/${i}`,
+        code1: `${artist.substring(0,2).toUpperCase()}-${(i+1).toString().padStart(2, '0')}`,
+        code2: `${year.toString().slice(-2)}-${title.substring(0,2).toUpperCase()}`
+    });
+}
+
+export default data;

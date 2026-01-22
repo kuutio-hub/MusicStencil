@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicStencil - Precision Master v6.5.9</title>
+    <title>MusicStencil</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22 stroke=%22%231DB954%22 stroke-width=%224%22/><circle cx=%2250%22 cy=%2250%22 r=%2215%22 fill=%22%231DB954%22/></svg>">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,21 +23,21 @@
             </div>
             <div class="top-actions">
                 <div class="stats-bar" id="stats-bar" style="visibility: hidden;">
-                    <i class="fa-solid fa-layer-group"></i> <span id="record-count-display">0</span> kártya
+                    <i class="fa-solid fa-layer-group"></i> <span id="record-count-display">0</span>
                 </div>
                 <button id="reset-settings" class="icon-btn mini" title="Alaphelyzet"><i class="fa-solid fa-rotate-left"></i></button>
             </div>
             <div class="actions main-actions">
                 <label for="file-upload-button" class="action-btn upload-btn" title="Adatok betöltése"><i class="fa-solid fa-file-circle-plus"></i> XLS</label>
                 <input type="file" id="file-upload-button" accept=".xls, .xlsx" style="display: none;">
-                <button id="view-toggle-button" class="action-btn" title="Rácsnézet ki/be"><i class="fa-solid fa-table-cells"></i> NÉZET</button>
-                <button id="print-button" class="action-btn print-btn" title="Nyomtatás indítása"><i class="fa-solid fa-print"></i> NYOMTAT</button>
+                <button id="view-toggle-button" class="action-btn" title="Rácsnézet (Max 2 oldal)"><i class="fa-solid fa-table-cells"></i> NÉZET</button>
+                <button id="print-button" class="action-btn print-btn" title="Teljes Nyomtatás"><i class="fa-solid fa-print"></i> NYOMTAT</button>
             </div>
         </header>
 
         <nav class="tab-nav">
             <button class="tab-btn active" data-tab="general" title="Méretek"><i class="fa-solid fa-sliders"></i></button>
-            <button class="tab-btn" data-tab="typography" title="Betűk"><i class="fa-solid fa-pen-nib"></i></button>
+            <button class="tab-btn" data-tab="typography" title="Betűk"><i class="fa-solid fa-font"></i></button>
             <button class="tab-btn" data-tab="layout" title="Elhelyezés"><i class="fa-solid fa-arrows-to-dot"></i></button>
             <button class="tab-btn" data-tab="backside" title="Vinyl & QR"><i class="fa-solid fa-record-vinyl"></i></button>
             <button class="tab-btn" data-tab="help" title="Súgó"><i class="fa-solid fa-circle-question"></i></button>
@@ -49,11 +50,15 @@
                     <h3>Papír & Kártya</h3>
                     <div class="control-group">
                         <div class="input-row">
-                            <label>Papír méret</label>
+                            <label>Papír</label>
                             <select id="paper-size">
-                                <option value="A4">Standard A4</option>
-                                <option value="A3">Nagy A3</option>
+                                <option value="A4">A4</option>
+                                <option value="A3">A3</option>
                             </select>
+                        </div>
+                        <div class="input-row">
+                            <label>Oldal Padding (mm)</label>
+                            <input type="number" id="page-padding" value="10" min="0" max="50" step="1" data-unit="mm" data-css-var="--page-padding">
                         </div>
                         <div class="input-row">
                             <label>Kártya (mm)</label>
@@ -80,11 +85,11 @@
                 </div>
             </div>
 
-            <!-- TYPOGRAPHY -->
+            <!-- TYPOGRAPHY COMPACT -->
             <div class="tab-pane" id="tab-typography">
                 <div class="settings-section">
                     <h3>Tipográfia</h3>
-                    <select id="font-family" data-css-var="--font-family" class="full-width">
+                    <select id="font-family" data-css-var="--font-family" class="full-width" style="margin-bottom:10px;">
                         <option value="'Montserrat', sans-serif">Montserrat</option>
                         <option value="'Poppins', sans-serif">Poppins</option>
                         <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
@@ -92,49 +97,48 @@
                         <option value="'Syncopate', sans-serif">Syncopate</option>
                     </select>
 
-                    <div class="sub-group">
-                        <label class="sub-label">Évszám (Középen)</label>
-                        <div class="input-row">
-                            <input type="number" id="font-size-year-input" value="30" step="1" data-unit="pt" data-css-var="--font-size-year">
-                            <input type="number" id="weight-year" value="800" step="100" min="100" max="900">
+                    <!-- Compact Grid Layout for Typography -->
+                    <div class="typo-grid">
+                        <div class="typo-header">Elem</div>
+                        <div class="typo-header">Méret</div>
+                        <div class="typo-header">Opciók</div>
+
+                        <!-- Year -->
+                        <div class="typo-label">Év</div>
+                        <div><input type="number" id="font-size-year-input" value="30" class="tiny-input" data-unit="pt" data-css-var="--font-size-year"></div>
+                        <div class="typo-tools">
+                            <label title="Vastag"><input type="checkbox" id="bold-year" checked> <b>B</b></label>
+                            <label title="Glow"><input type="checkbox" id="glow-year"> <i class="fa-regular fa-sun"></i></label>
+                            <input type="hidden" id="weight-year" value="800">
                         </div>
-                        <div class="row wraps">
-                             <label class="checkbox-container"><input type="checkbox" id="bold-year" checked> Vastag</label>
-                             <label class="checkbox-container"><input type="checkbox" id="glow-year"> Ragyogás</label>
+
+                        <!-- Artist -->
+                        <div class="typo-label">Előadó</div>
+                        <div><input type="number" id="font-size-artist-input" value="12" class="tiny-input" step="0.5" data-unit="pt" data-css-var="--font-size-artist"></div>
+                        <div class="typo-tools">
+                            <label title="Vastag"><input type="checkbox" id="bold-artist" checked> <b>B</b></label>
+                            <select id="text-transform-artist" class="tiny-select" data-css-var="--text-transform-artist">
+                                <option value="none">Aa</option>
+                                <option value="uppercase">AA</option>
+                            </select>
+                            <input type="hidden" id="weight-artist" value="700">
+                        </div>
+
+                        <!-- Title -->
+                        <div class="typo-label">Cím</div>
+                        <div><input type="number" id="font-size-title-input" value="10" class="tiny-input" step="0.5" data-unit="pt" data-css-var="--font-size-title"></div>
+                        <div class="typo-tools">
+                            <label title="Vastag"><input type="checkbox" id="bold-title" checked> <b>B</b></label>
+                            <select id="text-transform-title" class="tiny-select" data-css-var="--text-transform-title">
+                                <option value="none">Aa</option>
+                                <option value="uppercase">AA</option>
+                            </select>
+                            <input type="hidden" id="weight-title" value="700">
                         </div>
                     </div>
-
-                    <div class="sub-group">
-                        <label class="sub-label">Előadó (Fent)</label>
-                        <div class="input-row">
-                            <input type="number" id="font-size-artist-input" value="12" step="0.5" data-unit="pt" data-css-var="--font-size-artist">
-                            <input type="number" id="weight-artist" value="700" step="100" min="100" max="900">
-                        </div>
-                        <div class="row wraps">
-                            <label class="checkbox-container"><input type="checkbox" id="bold-artist" checked> Vastag</label>
-                            <select id="text-transform-artist" class="mini-select" data-css-var="--text-transform-artist">
-                                <option value="none">Normál</option>
-                                <option value="uppercase">ABC</option>
-                                <option value="capitalize">Abc</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="sub-group">
-                        <label class="sub-label">Cím (Lent)</label>
-                        <div class="input-row">
-                            <input type="number" id="font-size-title-input" value="10" step="0.5" data-unit="pt" data-css-var="--font-size-title">
-                            <input type="number" id="weight-title" value="700" step="100" min="100" max="900">
-                        </div>
-                        <div class="row wraps">
-                            <label class="checkbox-container"><input type="checkbox" id="bold-title" checked> Vastag</label>
-                            <input type="number" id="max-lines" value="2" min="1" max="5" title="Max sor">
-                            <select id="text-transform-title" class="mini-select" data-css-var="--text-transform-title">
-                                <option value="none">Normál</option>
-                                <option value="uppercase">ABC</option>
-                                <option value="capitalize">Abc</option>
-                            </select>
-                        </div>
+                    <div class="input-row" style="margin-top:10px; justify-content: flex-end;">
+                        <label style="font-size:0.7rem;">Max sor (Cím):</label>
+                        <input type="number" id="max-lines" value="2" min="1" max="5" class="tiny-input">
                     </div>
                 </div>
             </div>
@@ -152,7 +156,6 @@
                             <label>Alsó margó (mm)</label>
                             <input type="number" id="title-margin" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
                         </div>
-                        <!-- Kód margó alapértelmezett: 1mm -->
                         <div class="input-row">
                             <label>Kód margó (mm)</label>
                             <input type="number" id="code-side-margin" value="1" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
@@ -171,8 +174,45 @@
                     <h3>Vinyl & QR Stílus</h3>
                     <div class="control-group">
                         <div class="input-row">
+                            <label>Barázdák (db)</label>
+                            <input type="number" id="vinyl-count" value="12" min="1" max="50">
+                        </div>
+                        <div class="row wraps">
+                             <label class="checkbox-container"><input type="checkbox" id="vinyl-variate" checked> Vastagság variálás</label>
+                        </div>
+                        <div class="input-row">
+                            <label>Barázda köz (mm)</label>
+                            <input type="number" id="vinyl-spacing" value="2.5" step="0.1">
+                        </div>
+                        
+                        <hr class="divider">
+                        
+                        <div class="input-row">
+                            <label>Glitch / kör (db)</label>
+                            <div class="dual-input">
+                                <input type="number" id="glitch-min" value="1">
+                                <span>-</span>
+                                <input type="number" id="glitch-max" value="2">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <label>Szélesség % (tól-ig)</label>
+                            <div class="dual-input">
+                                <input type="number" id="glitch-width-min" value="25" min="1" max="60">
+                                <span>-</span>
+                                <input type="number" id="glitch-width-max" value="30" min="1" max="60">
+                            </div>
+                        </div>
+
+                        <hr class="divider">
+
+                        <div class="input-row">
                             <label>QR Logó (max 3)</label>
                             <input type="text" id="qr-logo-text" value="" maxlength="3" placeholder="ABC">
+                        </div>
+                        <div class="row wraps">
+                            <label class="checkbox-container"><input type="checkbox" id="qr-round"> Kerek</label>
+                            <label class="checkbox-container"><input type="checkbox" id="qr-invert"> Inverz (Fekete)</label>
                         </div>
                         <div class="input-row">
                             <label>QR Méret (%)</label>
@@ -180,32 +220,6 @@
                         </div>
                         <div class="row wraps">
                             <label class="checkbox-container"><input type="checkbox" id="show-qr" checked> QR kód látható</label>
-                            <label class="checkbox-container"><input type="checkbox" id="vinyl-variate"> Vastagság vari.</label>
-                        </div>
-                        <hr class="divider">
-                        <div class="input-row">
-                            <label>Barázdák száma</label>
-                            <input type="number" id="vinyl-count" value="18" min="1" max="50">
-                        </div>
-                        <div class="input-row">
-                            <label>Barázda köz (mm)</label>
-                            <input type="number" id="vinyl-spacing" value="2.5" step="0.1">
-                        </div>
-                        <div class="input-row">
-                            <label>Glitch / kör (db)</label>
-                            <div class="dual-input">
-                                <input type="number" id="glitch-min" value="1">
-                                <span>-</span>
-                                <input type="number" id="glitch-max" value="4">
-                            </div>
-                        </div>
-                        <div class="input-row">
-                            <label>G. szélesség % (tól-ig)</label>
-                            <div class="dual-input">
-                                <input type="number" id="glitch-width-min" value="5" min="1" max="40">
-                                <span>-</span>
-                                <input type="number" id="glitch-width-max" value="15" min="1" max="40">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,9 +230,9 @@
                 <div class="settings-section">
                     <h3>Információ</h3>
                     <div class="help-content">
-                        <p><strong>Shadow-Kill:</strong> Előnézetben és nyomtatáskor minden árnyék törlődik a tiszta képért.</p>
-                        <p><strong>Zoom:</strong> Kattints az előnézeti kártyára a nagyításhoz.</p>
-                        <p><strong>Glitch:</strong> A barázda-hibák intelligensen kerülnek generálásra.</p>
+                        <p><strong>Automatikus Margók:</strong> Ha egy oldal nem telik be, a tartalom függőlegesen középre igazodik.</p>
+                        <p><strong>Preview:</strong> A gyorsaság érdekében csak az első 2 oldalt látod itt. Nyomtatáskor az összes oldal generálódik.</p>
+                        <p><strong>Zoom:</strong> Kattints az előnézeti kártyára.</p>
                     </div>
                 </div>
             </div>
