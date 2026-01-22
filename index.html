@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicStencil - Precision Master v6.5.8</title>
+    <title>MusicStencil - Precision Master v6.5.9</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body class="loading">
+<body class="loading border-mode-both">
 
     <aside id="settings-panel">
         <header>
@@ -67,8 +67,14 @@
                             <label>Keret szín</label>
                             <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
                         </div>
-                        <div class="row wraps">
-                             <label class="checkbox-container"><input type="checkbox" id="border-front-only" checked> Keret csak elől</label>
+                        <div class="input-row">
+                            <label>Keret Mód</label>
+                            <select id="border-mode" class="full-width">
+                                <option value="both">Elől + Hátul</option>
+                                <option value="front">Csak Elől</option>
+                                <option value="back">Csak Hátul</option>
+                                <option value="none">Nincs Keret</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -146,17 +152,14 @@
                             <label>Alsó margó (mm)</label>
                             <input type="number" id="title-margin" value="5" step="0.5" data-unit="mm" data-css-var="--title-margin">
                         </div>
+                        <!-- Kód margó alapértelmezett: 1mm -->
                         <div class="input-row">
-                            <label>Kód mélység (mm)</label>
-                            <input type="number" id="code-margin" value="2" step="0.5" data-unit="mm" data-css-var="--code-margin">
-                        </div>
-                        <div class="input-row">
-                            <label>Oldal margó (mm)</label>
-                            <input type="number" id="code-side-margin" value="2" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
+                            <label>Kód margó (mm)</label>
+                            <input type="number" id="code-side-margin" value="1" step="0.5" data-unit="mm" data-css-var="--code-side-margin">
                         </div>
                         <div class="row wraps">
-                            <label class="checkbox-container"><input type="checkbox" id="bold-codes" checked> Kód Vastag</label>
-                            <label class="checkbox-container"><input type="checkbox" id="rotate-codes"> 90° forgatás</label>
+                            <label class="checkbox-container"><input type="checkbox" id="bold-codes"> Kód Vastag</label>
+                            <label class="checkbox-container"><input type="checkbox" id="rotate-codes" checked> 90° forgatás</label>
                         </div>
                     </div>
                 </div>
@@ -213,23 +216,26 @@
                 <div class="settings-section">
                     <h3>Információ</h3>
                     <div class="help-content">
-                        <p><strong>Shadow-Kill:</strong> Rácsnézetben minden réteg és árnyék törlődik a tűéles nyomtatásért.</p>
-                        <p><strong>Glitch Tartomány:</strong> A rendszer minden körnél a megadott határok között sorsol szélességet.</p>
-                        <p><strong>Olvasási Irány:</strong> Az elforgatott kódok mindkét oldalon jobbról olvashatóak.</p>
+                        <p><strong>Shadow-Kill:</strong> Előnézetben és nyomtatáskor minden árnyék törlődik a tiszta képért.</p>
+                        <p><strong>Zoom:</strong> Kattints az előnézeti kártyára a nagyításhoz.</p>
+                        <p><strong>Glitch:</strong> A barázda-hibák intelligensen kerülnek generálásra.</p>
                     </div>
                 </div>
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v6.5.8 &copy; 2024</p>
+            <p>MusicStencil v6.5.9 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 
     <main id="main-content">
-        <div id="preview-area"></div>
+        <div id="preview-area" title="Kattints a nagyításhoz"></div>
         <div id="print-area"></div>
     </main>
 
     <script type="module" src="main.js"></script>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear() < 2026 ? "2026" : new Date().getFullYear();
+    </script>
 </body>
 </html>

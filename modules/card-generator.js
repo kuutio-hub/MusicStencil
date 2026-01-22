@@ -63,6 +63,8 @@ function generateVinyl() {
     const variate = document.getElementById('vinyl-variate')?.checked;
 
     let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
+    let lastRandomShift = 0;
+
     for (let i = 0; i < grooveCount; i++) {
         const r = 48 - (i * spacing);
         if (r < 5) break;
@@ -74,15 +76,22 @@ function generateVinyl() {
         if (gCount === 0) {
             dash.push(circ, 0);
         } else {
+            // Intelligens offset: próbálunk olyan elforgatást adni, ami távol van az előzőtől
+            let shift = Math.random() * circ;
+            if (Math.abs(shift - lastRandomShift) < (circ * 0.1)) {
+                 shift = (shift + (circ * 0.3)) % circ;
+            }
+            lastRandomShift = shift;
+
             let segments = [];
             for (let g = 0; g < gCount; g++) {
-                segments.push(Math.random() * circ);
+                // Hozzáadjuk a shiftet a véletlen pozíciókhoz
+                segments.push((Math.random() * circ + shift) % circ);
             }
             segments.sort((a, b) => a - b);
             
             let lastPos = 0;
             for (let p of segments) {
-                // Tól-ig tartomány sorsolása minden egyes glitch-hez külön-külön
                 const randomWidthPercent = Math.random() * (gWidthMax - gWidthMin) + gWidthMin;
                 const gapWidth = circ * (randomWidthPercent / 100) / gCount; 
                 

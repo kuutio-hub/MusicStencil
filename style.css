@@ -4,8 +4,7 @@
     --card-padding: 4px;
     --artist-margin: 4mm;
     --title-margin: 5mm;
-    --code-margin: 2mm;
-    --code-side-margin: 2mm;
+    --code-side-margin: 1mm;
     --primary-color: #000000; 
     --card-bg-color: #ffffff;
     --spotify-green: #1DB954;
@@ -17,7 +16,7 @@
     --font-weight-artist: 700;
     --font-size-title: 10pt;
     --font-weight-title: 700;
-    --font-weight-codes: 700;
+    --font-weight-codes: 400;
 
     --text-transform-artist: none;
     --text-transform-title: none;
@@ -86,44 +85,62 @@ input[type="text"] { width: 100px; }
 select.full-width { width: 100%; margin-bottom: 15px; }
 .divider { border: none; border-top: 1px solid #222; margin: 5px 0; }
 
+.app-footer { text-align: center; padding: 20px; font-size: 0.7rem; color: #444; border-top: 1px solid #222; margin-top: auto; }
+
 #main-content { flex: 1; background: radial-gradient(circle at center, #1a1a1a, #000); overflow-y: auto; position: relative; }
 
+/* RESZPONZÍV PREVIEW & ZOOM */
 #preview-area { 
     display: flex; align-items: center; justify-content: center; 
-    min-height: 100%; gap: 140px; padding: 80px; cursor: pointer; 
+    min-height: 100%; gap: 10vmin; padding: 40px; cursor: zoom-in; 
+    flex-wrap: wrap; transition: gap 0.3s;
 }
-#preview-area .card-wrapper { transform: scale(2.2); margin: 40px; }
+#preview-area.zoomed { cursor: zoom-out; gap: 150px; }
+#preview-area .card-wrapper { 
+    width: var(--card-size); height: var(--card-size); 
+    transform: scale(2); /* Alap nagyítás */
+    margin: 20px; 
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#preview-area.zoomed .card-wrapper { transform: scale(3.5); }
 
+/* Card alapok */
 .card-wrapper { width: var(--card-size); height: var(--card-size); position: relative; flex-shrink: 0; }
-
 .card {
     width: 100%; height: 100%; background: var(--card-bg-color); border-radius: var(--card-radius);
     position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid var(--primary-color);
 }
-.card.front { border: 1px solid var(--primary-color); }
-body.back-border-off .card.back { border: 1px solid transparent; }
-body:not(.back-border-off) .card.back { border: 1px solid var(--primary-color); }
 
+/* 4-WAY BORDER LOGIC */
+body.border-mode-front .card.back,
+body.border-mode-back .card.front,
+body.border-mode-none .card {
+    border-color: transparent !important;
+}
+
+/* TEXT ELEMENTS */
 .year { font-family: var(--font-family); font-size: var(--font-size-year); font-weight: var(--font-weight-year); color: #000; text-shadow: var(--text-shadow-year); position: absolute; z-index: 5; pointer-events: none; }
 .artist { position: absolute; top: var(--artist-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-artist); font-weight: var(--font-weight-artist); text-transform: var(--text-transform-artist); text-shadow: var(--text-shadow-artist); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 .title { position: absolute; bottom: var(--title-margin); width: 100%; text-align: center; font-family: var(--font-family); font-size: var(--font-size-title); font-weight: var(--font-weight-title); text-transform: var(--text-transform-title); text-shadow: var(--text-shadow-title); padding: 0 4px; box-sizing: border-box; line-height: 1.1; color: #000; pointer-events: none; }
 
-.code1, .code2 { position: absolute; bottom: var(--code-margin); font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; }
+/* CODES: Alap pozíció lent */
+.code1, .code2 { position: absolute; bottom: 2mm; font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; }
 .code1 { left: var(--code-side-margin); }
 .code2 { right: var(--code-side-margin); }
 
-/* FORGATOTT KÓDOK - JOBBRÓL OLVASHATÓ */
+/* FORGATOTT KÓDOK - KÖZÉPEN, SZÉLEKHEZ KÖZEL, JOBBRÓL OLVASHATÓ */
 body.codes-rotated .code1 { 
     left: var(--code-side-margin); bottom: auto; top: 50%; 
     transform: translateY(-50%) rotate(-90deg) translateX(-50%);
     transform-origin: center center;
+    text-align: center;
 }
 body.codes-rotated .code2 { 
     right: var(--code-side-margin); bottom: auto; top: 50%; 
     transform: translateY(-50%) rotate(-90deg) translateX(50%); 
     transform-origin: center center;
+    text-align: center;
 }
 
 .vinyl-bg { position: absolute; width: 98%; height: 98%; opacity: 0.8; display: flex; align-items: center; justify-content: center; pointer-events: none; }
@@ -138,7 +155,15 @@ body.codes-rotated .code2 {
     width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block;
 }
 
-.qr-logo-overlay { position: absolute; background: #fff; color: #000; font-weight: 900; font-size: 7px; padding: 2px 4px; border: 1px solid #000; border-radius: 2px; z-index: 20; text-transform: uppercase; box-shadow: 0 0 0 1px #fff; }
+.qr-logo-overlay { 
+    position: absolute; background: #fff; color: #000; 
+    font-weight: 900; font-size: 7px; z-index: 20; text-transform: uppercase; 
+    box-shadow: 0 0 0 1px #fff; 
+    display: flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; /* Fix négyzet */
+    border-radius: 2px;
+    border: 1px solid #000;
+}
 
 #print-area { display: none; padding: 0; background: #222; min-height: 100vh; padding-bottom: 50px; }
 body.grid-view-active #print-area { display: block; }
@@ -153,26 +178,23 @@ body.grid-view-active #preview-area { display: none; }
 .page-container.A3 { width: 297mm; height: 420mm; }
 
 /* 
-   EXTRÉM SHADOW-KILL & FLAT-MODE (Javított szintaxis)
-   Rácsnézetben minden effektet és mélységet eltávolítunk.
+   CLEAN LOOK & SHADOW KILL
+   Ez mostantól érvényes a sima Preview-ra is (#preview-area), 
+   nem csak a Grid View-ra, a felhasználó kérésére.
 */
-body.grid-view-active .card,
-body.grid-view-active .card-wrapper,
-body.grid-view-active .page-container,
-body.grid-view-active .year,
-body.grid-view-active .artist,
-body.grid-view-active .title,
-body.grid-view-active .code1,
-body.grid-view-active .code2 { 
+.card, .card-wrapper, .page-container, .year, .artist, .title, .code1, .code2 { 
     box-shadow: none !important; 
     text-shadow: none !important; 
     filter: none !important;
-    transition: none !important;
 }
 
+/* Extra override a glow-hoz, ha valahol bekapcsolva maradna */
+.year, .artist, .title { text-shadow: none !important; }
+
+/* Grid View specifikus */
 body.grid-view-active .card { 
     background: #ffffff !important;
-    border: 1px solid var(--primary-color) !important;
+    transition: none !important;
 }
 
 @media print {
@@ -185,7 +207,6 @@ body.grid-view-active .card {
         text-shadow: none !important; 
         color: #000000 !important;
     }
-    .card { border: 1px solid var(--primary-color) !important; }
     .page-container { margin: 0 auto !important; border: none !important; }
     
     @page { margin: 0; }

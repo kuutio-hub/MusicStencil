@@ -18,5 +18,15 @@ export default [
     { "year": 1977, "artist": "Bee Gees", "title": "Stayin' Alive", "qr_data": "spotify:track:4UDmDIqJIbrW0hMBQMcs8k", "code1": "BG-05", "code2": "77-SN" },
     { "year": 2002, "artist": "Eminem", "title": "Lose Yourself", "qr_data": "spotify:track:5Z01UMMf7V1o0MzF86s6WJ", "code1": "EM-08", "code2": "02-8M" },
     { "year": 1985, "artist": "a-ha", "title": "Take On Me", "qr_data": "spotify:track:2WfaOiMkCvy7F5fcp2zZ8L", "code1": "AH-01", "code2": "85-HB" },
-    { "year": 1994, "artist": "Mariah Carey", "title": "All I Want for Christmas Is You", "qr_data": "spotify:track:0bYg9bo50gSsH3LeXe2SQP", "code1": "MC-04", "code2": "94-MC" }
+    { "year": 1994, "artist": "Mariah Carey", "title": "All I Want for Christmas Is You", "qr_data": "spotify:track:0bYg9bo50gSsH3LeXe2SQP", "code1": "MC-04", "code2": "94-MC" },
+    { "year": 2016, "artist": "Drake", "title": "One Dance", "qr_data": "spotify:track:1zi7xx7UVEFkmKfv06H8x0", "code1": "DR-01", "code2": "16-OD" },
+    { "year": 1969, "artist": "The Beatles", "title": "Come Together", "qr_data": "spotify:track:2EqlS6tkEnglzr7tkKAAYD", "code1": "TB-09", "code2": "69-CT" },
+    { "year": 2019, "artist": "Billie Eilish", "title": "Bad Guy", "qr_data": "spotify:track:2Fxmhks0bxGSBdJ92vM42m", "code1": "BE-02", "code2": "19-BG" },
+    { "year": 1995, "artist": "Oasis", "title": "Wonderwall", "qr_data": "spotify:track:5qqabIl2vWzo9ApSC81725", "code1": "OA-03", "code2": "95-WW" },
+    { "year": 2014, "artist": "Taylor Swift", "title": "Shake It Off", "qr_data": "spotify:track:0cqRj7pUJDkTRI5RX8o49u", "code1": "TS-89", "code2": "14-SI" },
+    { "year": 1983, "artist": "The Police", "title": "Every Breath You Take", "qr_data": "spotify:track:1JSTJqkT5qHq8MDJnKppMV", "code1": "TP-05", "code2": "83-EB" },
+    { "year": 2020, "artist": "The Weeknd", "title": "Blinding Lights", "qr_data": "spotify:track:0VjIjW4GlUZAMYd2vXMi3b", "code1": "TW-04", "code2": "20-BL" },
+    { "year": 1979, "artist": "Pink Floyd", "title": "Another Brick in the Wall", "qr_data": "spotify:track:7rPzE5NxxPdGtHjW2pieOv", "code1": "PF-11", "code2": "79-AB" },
+    { "year": 2021, "artist": "Dua Lipa", "title": "Levitating", "qr_data": "spotify:track:5nujrmhLynf4yMoMtj8AQF", "code1": "DL-02", "code2": "21-LV" },
+    { "year": 1989, "artist": "Madonna", "title": "Like a Prayer", "qr_data": "spotify:track:1z3ugFmUKoCzGsI6jdY4Ci", "code1": "MD-07", "code2": "89-LP" }
 ];

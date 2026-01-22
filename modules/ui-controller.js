@@ -1,6 +1,6 @@
 import { parseXLS } from './data-handler.js';
 
-const STORAGE_KEY = 'musicstencil_v658_settings';
+const STORAGE_KEY = 'musicstencil_v659_settings';
 
 export function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select, #settings-panel input');
@@ -24,15 +24,20 @@ export function applyAllStyles() {
     boldConfigs.forEach(conf => {
         const chk = document.getElementById(conf.id);
         const weightInput = conf.weightId ? document.getElementById(conf.weightId) : null;
+        // Alapértelmezés: Ha nincs csekkolva, akkor 400 (normal), ha van, akkor 700 vagy input érték
         const val = chk && chk.checked ? (weightInput ? weightInput.value : '700') : '400';
         document.documentElement.style.setProperty(conf.var, val);
     });
 
-    // Flags
+    // Flags & Modes
     document.body.classList.toggle('codes-rotated', document.getElementById('rotate-codes')?.checked);
-    document.body.classList.toggle('back-border-off', document.getElementById('border-front-only')?.checked);
+    
+    // Border Mode Select Logic
+    const borderMode = document.getElementById('border-mode')?.value || 'both';
+    document.body.classList.remove('border-mode-both', 'border-mode-front', 'border-mode-back', 'border-mode-none');
+    document.body.classList.add(`border-mode-${borderMode}`);
 
-    // Glow - Neon Style (Only in preview via CSS)
+    // Glow - Neon Style (Visual only, CSS kills it in preview/print if needed)
     ['year', 'artist', 'title'].forEach(g => {
         const chk = document.getElementById(`glow-${g}`);
         const val = chk && chk.checked ? `0 0 8px rgba(0,0,0,0.3)` : 'none';
@@ -77,7 +82,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
             'paper-size', 'card-size', 'qr-size-percent', 
             'vinyl-spacing', 'vinyl-thickness', 'vinyl-count', 
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
-            'border-front-only', 'rotate-codes'
+            'border-mode', 'rotate-codes'
         ];
         if (redrawIds.includes(e.target.id)) {
              if (onSettingsChange) onSettingsChange(true); 
@@ -99,6 +104,14 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         document.body.classList.add('grid-view-active');
         setTimeout(() => window.print(), 500);
     };
+
+    // Zoom Toggle for Preview
+    const previewArea = document.getElementById('preview-area');
+    if(previewArea) {
+        previewArea.onclick = () => {
+            previewArea.classList.toggle('zoomed');
+        };
+    }
 
     document.getElementById('reset-settings').onclick = () => {
         if (confirm("Minden beállítást alaphelyzetbe állítasz?")) {
