@@ -6,7 +6,11 @@
     --title-margin: 5mm;
     --code-side-margin: 1mm;
     --page-padding: 10mm;
-    --primary-color: #000000; 
+    
+    --primary-color: #000000;
+    --border-width: 1px;
+    --border-color-rgba: rgba(0,0,0,1); /* Default, updated by JS */
+    
     --card-bg-color: #ffffff;
     --spotify-green: #1DB954;
     
@@ -27,8 +31,7 @@
     --text-shadow-title: none;
 
     --token-glow-color: #ffffff;
-    --token-glow-size: 4px;
-    --token-glow-effect: none;
+    --token-glow-size: 0px;
 
     --qr-size: 40%;
 }
@@ -135,17 +138,11 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 #preview-area .card-wrapper { 
     width: var(--card-size); height: var(--card-size); 
     transform: scale(2); /* Alap nagyítás */
-    
-    /* FIX: Hogy ne másszanak egymásra, a marginnak kompenzálnia kell a scale-t */
-    /* A scale 2 azt jelenti, hogy 100% extra hely kell mindkét oldalon 50-50%-ban */
-    /* Biztonsági okból 60%-ot használunk */
     margin: calc(var(--card-size) * 0.6); 
-    
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #preview-area.zoomed .card-wrapper { 
     transform: scale(3.5); 
-    /* Zoomoláskor még nagyobb hely kell */
     margin: calc(var(--card-size) * 1.5);
 }
 
@@ -154,7 +151,9 @@ select.full-width { width: 100%; margin-bottom: 15px; }
 .card {
     width: 100%; height: 100%; background: var(--card-bg-color); border-radius: var(--card-radius);
     position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: 1px solid var(--primary-color);
+    
+    /* UPDATED BORDER LOGIC */
+    border: var(--border-width) solid var(--border-color-rgba);
 }
 
 /* TOKEN STYLE */
@@ -170,24 +169,27 @@ select.full-width { width: 100%; margin-bottom: 15px; }
     text-align: center;
 }
 
-.token-main {
+.token-main, .token-sub {
     font-family: var(--font-family);
-    font-size: var(--font-size-year);
-    font-weight: var(--font-weight-year);
     color: #000;
-    text-shadow: var(--token-glow-effect); /* GLOW APPLIED HERE */
     line-height: 1.1;
     margin-bottom: 5px;
+    
+    /* STICKER / CUTOUT EFFECT */
+    /* Ez teszi a körvonalat a kitöltés alá (MÖGÉ), így tiszta marad a betű */
+    paint-order: stroke fill;
+    -webkit-text-stroke: var(--token-glow-size) var(--token-glow-color);
+}
+
+.token-main {
+    font-size: var(--font-size-year);
+    font-weight: var(--font-weight-year);
 }
 
 .token-sub {
-    font-family: var(--font-family);
     font-size: var(--font-size-artist);
     font-weight: var(--font-weight-artist);
     text-transform: var(--text-transform-artist);
-    color: #000;
-    text-shadow: var(--token-glow-effect); /* GLOW APPLIED HERE */
-    line-height: 1.1;
 }
 
 /* 4-WAY BORDER LOGIC */
@@ -206,17 +208,15 @@ body.border-mode-none .card {
 .code1, .code2 { 
     position: absolute; 
     font-size: 6pt; color: #000; font-weight: var(--font-weight-codes); z-index: 10; pointer-events: none; 
-    /* Vertikális középre igazítás */
     top: 50%;
     transform: translateY(-50%);
 }
 .code1 { left: var(--code-side-margin); }
 .code2 { right: var(--code-side-margin); }
 
-/* FORGATOTT KÓDOK - KÖZÉPEN, SZÉLEKHEZ KÖZEL, JOBBRÓL OLVASHATÓ */
+/* FORGATOTT KÓDOK */
 body.codes-rotated .code1 { 
     left: var(--code-side-margin); right: auto; top: 50%; bottom: auto;
-    /* -90 fok forgatás, + X/Y korrekció a középponthoz */
     transform: translateY(-50%) rotate(-90deg) translateX(0);
     transform-origin: center center;
     text-align: center;
@@ -249,7 +249,6 @@ body.codes-rotated .code2 {
     border-radius: 2px;
     border: 1px solid #000;
 }
-/* QR Logo Styles */
 .qr-logo-overlay.rounded { border-radius: 50%; box-shadow: 0 0 0 1px #fff; }
 .qr-logo-overlay.inverted { background: #000; color: #fff; border: 1px solid #fff; }
 
@@ -261,7 +260,6 @@ body.grid-view-active #preview-area { display: none; }
 .page-container { 
     background: #fff; width: 210mm; height: 297mm; display: grid; 
     justify-content: center; 
-    /* Függőleges középre igazítás, hogy a margók egyenlőek legyenek */
     align-content: center; 
     padding: var(--page-padding); 
     margin: 40px auto; box-sizing: border-box; page-break-after: always; 
@@ -269,20 +267,13 @@ body.grid-view-active #preview-area { display: none; }
 }
 .page-container.A3 { width: 297mm; height: 420mm; }
 
-/* 
-   CLEAN LOOK & SHADOW KILL
-   Ez mostantól érvényes a sima Preview-ra is (#preview-area), 
-   nem csak a Grid View-ra, a felhasználó kérésére.
-*/
 .card, .card-wrapper, .page-container, .year, .artist, .title, .code1, .code2, .token-main, .token-sub { 
     box-shadow: none !important; 
     filter: none !important;
 }
 
-/* Extra override a glow-hoz, ha valahol bekapcsolva maradna */
 .year, .artist, .title { text-shadow: none !important; }
 
-/* Grid View specifikus */
 body.grid-view-active .card { 
     background: #ffffff !important;
     transition: none !important;
@@ -294,18 +285,19 @@ body.grid-view-active .card {
         box-shadow: none !important;
         filter: none !important;
     }
-    /* Token Glow-t engedélyezzük nyomtatásban, de a többit nem */
+    
+    /* Token Glow maradhat nyomtatásban is, mivel paint-order stroke */
+    .token-main, .token-sub {
+        color: #000000 !important;
+         -webkit-print-color-adjust: exact;
+         print-color-adjust: exact;
+    }
+    
     .year, .artist, .title, .code1, .code2 { 
         text-shadow: none !important; 
         color: #000000 !important;
     }
-    
-    .token-main, .token-sub {
-        color: #000000 !important;
-        /* Token glow maradhat, ha be van kapcsolva a változóban */
-    }
 
-    /* QR INVERT PRINT FIX */
     .qr-logo-overlay.inverted {
         background-color: #000000 !important;
         color: #ffffff !important;

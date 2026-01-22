@@ -56,7 +56,8 @@ function adjustText(element, isTitle = false) {
 
 function generateVinyl() {
     const spacing = parseFloat(document.getElementById('vinyl-spacing')?.value) || 2.5;
-    const thickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4;
+    const baseThickness = parseFloat(document.getElementById('vinyl-thickness')?.value) || 0.4;
+    const opacityPercent = parseFloat(document.getElementById('vinyl-opacity')?.value) || 100;
     const grooveCount = parseInt(document.getElementById('vinyl-count')?.value) || 12;
     
     const gMin = parseInt(document.getElementById('glitch-min')?.value) || 1;
@@ -106,8 +107,11 @@ function generateVinyl() {
             if (finalPart > 0) dash.push(finalPart, 0);
         }
 
-        const sw = variate ? (0.4 * (0.6 + Math.random() * 0.8)) : 0.4;
-        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${0.12 + (i * (0.8 / grooveCount))}" />`;
+        const sw = variate ? (baseThickness * (0.6 + Math.random() * 0.8)) : baseThickness;
+        const op = (opacityPercent / 100) * (0.12 + (i * (0.8 / grooveCount))); 
+        // Base opacity calculation * user opacity multiplier
+
+        svg += `<circle cx="50" cy="50" r="${r}" fill="none" stroke="black" stroke-width="${sw}" stroke-dasharray="${dash.join(' ')}" opacity="${op}" />`;
     }
     svg += `</svg>`;
     return svg;

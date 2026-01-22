@@ -1,5 +1,5 @@
 {
-  "description": "MusicStencil v6.6.0 - Token Master Edition. Enhanced token generation with glow effects, print fixes, and refined layout logic.",
+  "description": "MusicStencil v6.7.0 - Custom Borders & Solid Sticker Effect. Full parametric control over borders/vinyls and solid masking for token text.",
   "requestFramePermissions": [],
-  "name": "MusicStencil v6.6.0"
+  "name": "MusicStencil v6.7.0"
 }

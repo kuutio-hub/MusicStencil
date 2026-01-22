@@ -2,6 +2,20 @@ import { parseXLS } from './data-handler.js';
 
 const STORAGE_KEY = 'musicstencil_v659_settings';
 
+// Helper to convert HEX to RGBA
+function hexToRgba(hex, alphaPercent) {
+    let c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+','+(alphaPercent/100)+')';
+    }
+    return hex; // Fallback
+}
+
 export function applyAllStyles() {
     const controls = document.querySelectorAll('#settings-panel [data-css-var], #settings-panel select, #settings-panel input');
     
@@ -12,6 +26,12 @@ export function applyAllStyles() {
         const unit = ctrl.dataset.unit || '';
         document.documentElement.style.setProperty(cssVar, ctrl.value + unit);
     });
+
+    // BORDER OPACITY Logic
+    const borderColor = document.getElementById('primary-color').value;
+    const borderOpacity = document.getElementById('border-opacity').value;
+    const borderRgba = hexToRgba(borderColor, borderOpacity);
+    document.documentElement.style.setProperty('--border-color-rgba', borderRgba);
 
     // Bold states
     const boldConfigs = [
@@ -43,23 +63,15 @@ export function applyAllStyles() {
         document.documentElement.style.setProperty(`--text-shadow-${g}`, val);
     });
 
-    // Token Glow (Halo)
+    // Token Glow (Solid Stroke Effect)
     const tokenGlowActive = document.getElementById('token-glow-active')?.checked;
-    const tokenGlowColor = document.getElementById('token-glow-color')?.value || '#ffffff';
-    const tokenGlowSize = document.getElementById('token-glow-size')?.value || 4;
+    const tokenGlowSize = document.getElementById('token-glow-size')?.value || 0;
     
-    if (tokenGlowActive) {
-        // Create a stroke effect using multiple text-shadows
-        const s = tokenGlowSize;
-        const c = tokenGlowColor;
-        // 8-direction shadow for better coverage
-        const shadow = `
-            ${s}px ${s}px 0 ${c}, -${s}px ${s}px 0 ${c}, ${s}px -${s}px 0 ${c}, -${s}px -${s}px 0 ${c},
-            ${s}px 0 0 ${c}, -${s}px 0 0 ${c}, 0 ${s}px 0 ${c}, 0 -${s}px 0 ${c}
-        `;
-        document.documentElement.style.setProperty('--token-glow-effect', shadow);
+    if (!tokenGlowActive) {
+        document.documentElement.style.setProperty('--token-glow-size', '0px');
     } else {
-        document.documentElement.style.setProperty('--token-glow-effect', 'none');
+        // Just enforce what the input says (unit is handled by data-unit in general loop above)
+        // But we need to make sure the loop above ran. It did.
     }
 }
 
@@ -148,7 +160,7 @@ export function initializeUI(onSettingsChange, onDataLoaded) {
         
         const redrawIds = [
             'paper-size', 'card-size', 'qr-size-percent', 'page-padding',
-            'vinyl-spacing', 'vinyl-count', 'vinyl-variate',
+            'vinyl-spacing', 'vinyl-count', 'vinyl-variate', 'vinyl-thickness', 'vinyl-opacity',
             'glitch-width-min', 'glitch-width-max', 'glitch-min', 'glitch-max',
             'border-mode', 'rotate-codes', 'qr-round', 'qr-invert', 'qr-logo-text', 'show-qr',
             'token-main-text', 'token-sub-text',

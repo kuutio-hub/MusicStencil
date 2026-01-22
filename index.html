@@ -81,15 +81,15 @@
                             
                             <hr class="divider">
                             <div class="row wraps" style="justify-content: space-between;">
-                                <label class="checkbox-container"><input type="checkbox" id="token-glow-active"> Szöveg Glória (Háttér)</label>
+                                <label class="checkbox-container"><input type="checkbox" id="token-glow-active"> Matrica Effekt (Kitakarás)</label>
                             </div>
                             <div class="input-row">
-                                <label>Glória Szín</label>
+                                <label>Maszk Szín</label>
                                 <input type="color" id="token-glow-color" value="#ffffff" data-css-var="--token-glow-color">
                             </div>
                             <div class="input-row">
-                                <label>Glória Méret</label>
-                                <input type="number" id="token-glow-size" value="4" min="0" max="20" step="0.5" data-unit="px" data-css-var="--token-glow-size">
+                                <label>Maszk Vastagság</label>
+                                <input type="number" id="token-glow-size" value="6" min="0" max="30" step="0.5" data-unit="px" data-css-var="--token-glow-size">
                             </div>
                         </div>
                     </div>
@@ -115,9 +115,20 @@
                             <label>Sarok (mm)</label>
                             <input type="number" id="card-radius" value="2" step="1" data-unit="mm" data-css-var="--card-radius">
                         </div>
+                        
+                        <hr class="divider">
+                        
                         <div class="input-row">
                             <label>Keret szín</label>
-                            <input type="color" id="primary-color" value="#000000" data-css-var="--primary-color">
+                            <input type="color" id="primary-color" value="#000000">
+                        </div>
+                        <div class="input-row">
+                            <label>Keret vastagság (px)</label>
+                            <input type="number" id="border-width" value="1" min="0" max="10" step="0.5" data-unit="px" data-css-var="--border-width">
+                        </div>
+                        <div class="input-row">
+                            <label>Keret Opacitás (%)</label>
+                            <input type="number" id="border-opacity" value="100" min="0" max="100" step="5">
                         </div>
                         <div class="input-row">
                             <label>Keret Mód</label>
@@ -225,12 +236,20 @@
                             <label>Barázdák (db)</label>
                             <input type="number" id="vinyl-count" value="12" min="1" max="50">
                         </div>
-                        <div class="row wraps">
-                             <label class="checkbox-container"><input type="checkbox" id="vinyl-variate" checked> Vastagság variálás</label>
-                        </div>
                         <div class="input-row">
                             <label>Barázda köz (mm)</label>
                             <input type="number" id="vinyl-spacing" value="2.5" step="0.1">
+                        </div>
+                        <div class="input-row">
+                            <label>Vastagság (px)</label>
+                            <input type="number" id="vinyl-thickness" value="0.4" step="0.1" min="0.1" max="5">
+                        </div>
+                        <div class="input-row">
+                            <label>Opacitás (%)</label>
+                            <input type="number" id="vinyl-opacity" value="100" min="0" max="100" step="5">
+                        </div>
+                        <div class="row wraps">
+                             <label class="checkbox-container"><input type="checkbox" id="vinyl-variate" checked> Vastagság variálás</label>
                         </div>
                         
                         <hr class="divider">
@@ -280,16 +299,15 @@
                 <div class="settings-section">
                     <h3>Információ</h3>
                     <div class="help-content">
-                        <p><strong>Módok:</strong> A Zene mód Excel alapú, a Zseton mód egyforma, teli oldalakat generál QR nélkül.</p>
-                        <p><strong>Zseton Glow:</strong> Bekapcsolható háttér "glória" a szöveg mögé.</p>
+                        <p><strong>Matrica Effekt:</strong> A zseton szöveg körüli vastag keret, ami kitakarja a hátteret (vinyl barázdákat).</p>
+                        <p><strong>Opacitás:</strong> A keret és a vinyl átlátszósága %-ban állítható.</p>
                         <p><strong>Automatikus Margók:</strong> Ha egy oldal nem telik be, a tartalom függőlegesen középre igazodik.</p>
-                        <p><strong>Preview:</strong> Kattints a nagyításhoz. A kártyák mostantól egymás mellett helyezkednek el.</p>
                     </div>
                 </div>
             </div>
         </div>
         <footer class="app-footer">
-            <p>MusicStencil v6.6.0 &copy; <span id="current-year">2026</span></p>
+            <p>MusicStencil v6.7.0 &copy; <span id="current-year">2026</span></p>
         </footer>
     </aside>
 
